@@ -13,12 +13,13 @@
 #ifndef _MDAPI_WRAP_H_
 #define _MDAPI_WRAP_H_
 
-class QCTPMdSpi : public CThostFtdcMdSpi {
+class TTSCTPMdSpi : public CThostFtdcMdSpi {
 public:
-    QCTPMdSpi(CThostFtdcMdApi* pUserApi);
-    QCTPMdSpi(CThostFtdcMdApi* pUserApi, uintptr_t gUserApi);
-    QCTPMdSpi();
-    ~QCTPMdSpi() {};
+    TTSCTPMdSpi(CThostFtdcMdApi* pUserApi);
+    TTSCTPMdSpi(CThostFtdcMdApi* pUserApi, uintptr_t gUserApi);
+    TTSCTPMdSpi(uintptr_t gUserApi, const char* pszDLLPath, const char* pszFlowPath, const bool bIsUsingUdp, const bool bIsMulticast);
+    TTSCTPMdSpi();
+    virtual ~TTSCTPMdSpi();
 
     // 当客户端与交易后台建立起通信连接时（还未登录前），该方法被调用。
     void OnFrontConnected();
@@ -144,6 +145,7 @@ public:
 private:
     CThostFtdcMdApi* pUserApi;
     uintptr_t gUserApi;
+    void* dllHandle;
 };
 
 #endif // end _MDAPI_WRAP_H_

@@ -13,12 +13,13 @@
 #ifndef _TRADERAPI_WRAP_H_
 #define _TRADERAPI_WRAP_H_
 
-class QCTPTraderSpi : public CThostFtdcTraderSpi {
+class TTSCTPTraderSpi : public CThostFtdcTraderSpi {
 public:
-    QCTPTraderSpi(CThostFtdcTraderApi* pUserApi);
-    QCTPTraderSpi(CThostFtdcTraderApi* pUserApi, uintptr_t gUserApi);
-    QCTPTraderSpi();
-    ~QCTPTraderSpi() { }
+    TTSCTPTraderSpi(CThostFtdcTraderApi* pUserApi);
+    TTSCTPTraderSpi(CThostFtdcTraderApi* pUserApi, uintptr_t gUserApi);
+    TTSCTPTraderSpi(uintptr_t gUserApi, const char* pszDLLPath, const char* pszFlowPath);
+    TTSCTPTraderSpi();
+    virtual ~TTSCTPTraderSpi();
 
     // 当客户端与交易后台建立起通信连接时（还未登录前），该方法被调用。
     void OnFrontConnected();
@@ -750,6 +751,7 @@ public:
 private:
     CThostFtdcTraderApi* pUserApi;
     uintptr_t gUserApi;
+    void* dllHandle;
 };
 
 #endif // end _TRADERAPI_WRAP_H_

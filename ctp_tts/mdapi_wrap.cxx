@@ -10,13 +10,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <iostream>
+#include <dlfcn.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <string>
 #include <sys/types.h>
+
+#include <iostream>
+#include <string>
 
 #include "ThostFtdcMdApi.h"
 #include "ThostFtdcTraderApi.h"
@@ -42,47 +44,59 @@ typedef struct
 #ifdef __cplusplus
 extern "C" {
 #endif
-QCTPMdSpi* _wrap_CThostFtdcMdApi_CreateFtdcMdApi()
+TTSCTPMdSpi* _wrap_tts_CThostFtdcMdApi_CreateFtdcMdApi()
 {
-    CThostFtdcMdApi* pUserApi = CThostFtdcMdApi::CreateFtdcMdApi("./data/", false);
-    QCTPMdSpi* pUserSpi = new QCTPMdSpi(pUserApi);
-    pUserSpi->RegisterSpi(pUserSpi);
-    return pUserSpi;
+    // CThostFtdcMdApi* pUserApi = CThostFtdcMdApi::CreateFtdcMdApi("./data/", false);
+    // TTSCTPMdSpi* pUserSpi = new TTSCTPMdSpi(pUserApi);
+    // pUserSpi->RegisterSpi(pUserSpi);
+    // return pUserSpi;
+    return nullptr;
 }
 
-QCTPMdSpi* _wrap_CThostFtdcMdApi_CreateFtdcMdApi2(uintptr_t gUserApi, const char* pszFlowPath, const bool bIsUsingUdp, const bool bIsMulticast)
+TTSCTPMdSpi* _wrap_tts_CThostFtdcMdApi_CreateFtdcMdApi2(uintptr_t gUserApi, const char* pszFlowPath, const bool bIsUsingUdp, const bool bIsMulticast)
 {
     // printf("go_user_api %lu\n", gUserApi);
-    CThostFtdcMdApi* pUserApi = CThostFtdcMdApi::CreateFtdcMdApi(pszFlowPath, bIsUsingUdp, bIsMulticast);
-    QCTPMdSpi* pUserSpi = new QCTPMdSpi(pUserApi, gUserApi);
+    // CThostFtdcMdApi* pUserApi = CThostFtdcMdApi::CreateFtdcMdApi(pszFlowPath, bIsUsingUdp, bIsMulticast);
+    // TTSCTPMdSpi* pUserSpi = new TTSCTPMdSpi(pUserApi, gUserApi);
+    // TTSCTPMdSpi* pUserSpi = new TTSCTPMdSpi(gUserApi, pszDLLPath, pszFlowPath, bIsUsingUdp, bIsMulticast);
+    // pUserSpi->RegisterSpi(pUserSpi);
+    return nullptr;
+}
+
+TTSCTPMdSpi* _wrap_tts_CThostFtdcMdApi_CreateFtdcMdApi3(uintptr_t gUserApi, const char* pszDLLPath, const char* pszFlowPath, const bool bIsUsingUdp, const bool bIsMulticast)
+{
+    // printf("go_user_api %lu\n", gUserApi);
+    // CThostFtdcMdApi* pUserApi = CThostFtdcMdApi::CreateFtdcMdApi(pszFlowPath, bIsUsingUdp, bIsMulticast);
+    // TTSCTPMdSpi* pUserSpi = new TTSCTPMdSpi(pUserApi, gUserApi);
+    TTSCTPMdSpi* pUserSpi = new TTSCTPMdSpi(gUserApi, pszDLLPath, pszFlowPath, bIsUsingUdp, bIsMulticast);
     pUserSpi->RegisterSpi(pUserSpi);
     return pUserSpi;
 }
 
 // 获取API的版本信息
 ///@retrun 获取到的版本号
-const char* _wrap_CThostFtdcMdApi_GetApiVersion(QCTPMdSpi* pMdApi)
+const char* _wrap_tts_CThostFtdcMdApi_GetApiVersion(TTSCTPMdSpi* pMdApi)
 {
     return pMdApi->GetApiVersion();
 }
 
 // 删除接口对象本身
 ///@remark 不再使用本接口对象时,调用该函数删除接口对象
-void _wrap_CThostFtdcMdApi_Release(QCTPMdSpi* pMdApi)
+void _wrap_tts_CThostFtdcMdApi_Release(TTSCTPMdSpi* pMdApi)
 {
     return pMdApi->Release();
 }
 
 // 初始化
 ///@remark 初始化运行环境,只有调用后,接口才开始工作
-void _wrap_CThostFtdcMdApi_Init(QCTPMdSpi* pMdApi)
+void _wrap_tts_CThostFtdcMdApi_Init(TTSCTPMdSpi* pMdApi)
 {
     return pMdApi->Init();
 }
 
 // 等待接口线程结束运行
 ///@return 线程退出代码
-int _wrap_CThostFtdcMdApi_Join(QCTPMdSpi* pMdApi)
+int _wrap_tts_CThostFtdcMdApi_Join(TTSCTPMdSpi* pMdApi)
 {
     return pMdApi->Join();
 }
@@ -90,7 +104,7 @@ int _wrap_CThostFtdcMdApi_Join(QCTPMdSpi* pMdApi)
 // 获取当前交易日
 ///@retrun 获取到的交易日
 ///@remark 只有登录成功后,才能得到正确的交易日
-const char* _wrap_CThostFtdcMdApi_GetTradingDay(QCTPMdSpi* pMdApi)
+const char* _wrap_tts_CThostFtdcMdApi_GetTradingDay(TTSCTPMdSpi* pMdApi)
 {
     return pMdApi->GetTradingDay();
 }
@@ -99,7 +113,7 @@ const char* _wrap_CThostFtdcMdApi_GetTradingDay(QCTPMdSpi* pMdApi)
 ///@param pszFrontAddress：前置机网络地址。
 ///@remark 网络地址的格式为：“protocol://ipaddress:port”，如：”tcp://127.0.0.1:17001”。
 ///@remark “tcp”代表传输协议，“127.0.0.1”代表服务器地址。”17001”代表服务器端口号。
-void _wrap_CThostFtdcMdApi_RegisterFront(QCTPMdSpi* pMdApi, char* pszFrontAddress)
+void _wrap_tts_CThostFtdcMdApi_RegisterFront(TTSCTPMdSpi* pMdApi, char* pszFrontAddress)
 {
     return pMdApi->RegisterFront(pszFrontAddress);
 }
@@ -109,14 +123,14 @@ void _wrap_CThostFtdcMdApi_RegisterFront(QCTPMdSpi* pMdApi, char* pszFrontAddres
 ///@remark 网络地址的格式为：“protocol://ipaddress:port”，如：”tcp://127.0.0.1:12001”。
 ///@remark “tcp”代表传输协议，“127.0.0.1”代表服务器地址。”12001”代表服务器端口号。
 ///@remark RegisterNameServer优先于RegisterFront
-void _wrap_CThostFtdcMdApi_RegisterNameServer(QCTPMdSpi* pMdApi, char* pszNsAddress)
+void _wrap_tts_CThostFtdcMdApi_RegisterNameServer(TTSCTPMdSpi* pMdApi, char* pszNsAddress)
 {
     return pMdApi->RegisterNameServer(pszNsAddress);
 }
 
 // 注册名字服务器用户信息
 ///@param pFensUserInfo：用户信息。
-void _wrap_CThostFtdcMdApi_RegisterFensUserInfo(QCTPMdSpi* pMdApi, CThostFtdcFensUserInfoField* pFensUserInfo)
+void _wrap_tts_CThostFtdcMdApi_RegisterFensUserInfo(TTSCTPMdSpi* pMdApi, CThostFtdcFensUserInfoField* pFensUserInfo)
 {
     return pMdApi->RegisterFensUserInfo(pFensUserInfo);
 }
@@ -125,7 +139,7 @@ void _wrap_CThostFtdcMdApi_RegisterFensUserInfo(QCTPMdSpi* pMdApi, CThostFtdcFen
 ///@param ppInstrumentID 合约ID
 ///@param nCount 要订阅/退订行情的合约个数
 ///@remark
-int _wrap_CThostFtdcMdApi_SubscribeMarketData(QCTPMdSpi* pMdApi, char** ppInstrumentID, int nCount)
+int _wrap_tts_CThostFtdcMdApi_SubscribeMarketData(TTSCTPMdSpi* pMdApi, char** ppInstrumentID, int nCount)
 {
     return pMdApi->SubscribeMarketData(ppInstrumentID, nCount);
 }
@@ -134,7 +148,7 @@ int _wrap_CThostFtdcMdApi_SubscribeMarketData(QCTPMdSpi* pMdApi, char** ppInstru
 ///@param ppInstrumentID 合约ID
 ///@param nCount 要订阅/退订行情的合约个数
 ///@remark
-int _wrap_CThostFtdcMdApi_UnSubscribeMarketData(QCTPMdSpi* pMdApi, char** ppInstrumentID, int nCount)
+int _wrap_tts_CThostFtdcMdApi_UnSubscribeMarketData(TTSCTPMdSpi* pMdApi, char** ppInstrumentID, int nCount)
 {
     return pMdApi->UnSubscribeMarketData(ppInstrumentID, nCount);
 }
@@ -143,7 +157,7 @@ int _wrap_CThostFtdcMdApi_UnSubscribeMarketData(QCTPMdSpi* pMdApi, char** ppInst
 ///@param ppInstrumentID 合约ID
 ///@param nCount 要订阅/退订行情的合约个数
 ///@remark
-int _wrap_CThostFtdcMdApi_SubscribeForQuoteRsp(QCTPMdSpi* pMdApi, char** ppInstrumentID, int nCount)
+int _wrap_tts_CThostFtdcMdApi_SubscribeForQuoteRsp(TTSCTPMdSpi* pMdApi, char** ppInstrumentID, int nCount)
 {
     return pMdApi->SubscribeForQuoteRsp(ppInstrumentID, nCount);
 }
@@ -152,13 +166,13 @@ int _wrap_CThostFtdcMdApi_SubscribeForQuoteRsp(QCTPMdSpi* pMdApi, char** ppInstr
 ///@param ppInstrumentID 合约ID
 ///@param nCount 要订阅/退订行情的合约个数
 ///@remark
-int _wrap_CThostFtdcMdApi_UnSubscribeForQuoteRsp(QCTPMdSpi* pMdApi, char** ppInstrumentID, int nCount)
+int _wrap_tts_CThostFtdcMdApi_UnSubscribeForQuoteRsp(TTSCTPMdSpi* pMdApi, char** ppInstrumentID, int nCount)
 {
     return pMdApi->UnSubscribeForQuoteRsp(ppInstrumentID, nCount);
 }
 
 // 用户登录请求
-int _wrap_CThostFtdcMdApi_ReqUserLogin(QCTPMdSpi* pMdApi, CThostFtdcReqUserLoginField* pReqUserLoginField, int nRequestID)
+int _wrap_tts_CThostFtdcMdApi_ReqUserLogin(TTSCTPMdSpi* pMdApi, CThostFtdcReqUserLoginField* pReqUserLoginField, int nRequestID)
 {
     int ret = pMdApi->ReqUserLogin(pReqUserLoginField, nRequestID);
     printf("req_user_login: %d", ret);
@@ -166,13 +180,13 @@ int _wrap_CThostFtdcMdApi_ReqUserLogin(QCTPMdSpi* pMdApi, CThostFtdcReqUserLogin
 }
 
 // 登出请求
-int _wrap_CThostFtdcMdApi_ReqUserLogout(QCTPMdSpi* pMdApi, CThostFtdcUserLogoutField* pUserLogout, int nRequestID)
+int _wrap_tts_CThostFtdcMdApi_ReqUserLogout(TTSCTPMdSpi* pMdApi, CThostFtdcUserLogoutField* pUserLogout, int nRequestID)
 {
     return pMdApi->ReqUserLogout(pUserLogout, nRequestID);
 }
 
 // 请求查询组播合约
-int _wrap_CThostFtdcMdApi_ReqQryMulticastInstrument(QCTPMdSpi* pMdApi, CThostFtdcQryMulticastInstrumentField* pQryMulticastInstrument, int nRequestID)
+int _wrap_tts_CThostFtdcMdApi_ReqQryMulticastInstrument(TTSCTPMdSpi* pMdApi, CThostFtdcQryMulticastInstrumentField* pQryMulticastInstrument, int nRequestID)
 {
     return pMdApi->ReqQryMulticastInstrument(pQryMulticastInstrument, nRequestID);
 }
@@ -182,10 +196,10 @@ int _wrap_CThostFtdcMdApi_ReqQryMulticastInstrument(QCTPMdSpi* pMdApi, CThostFtd
 #endif
 
 // 当客户端与交易后台建立起通信连接时（还未登录前），该方法被调用。
-extern "C" void wrapMdOnFrontConnected(uintptr_t);
-void QCTPMdSpi::OnFrontConnected()
+extern "C" void wrap_tts_MdOnFrontConnected(uintptr_t);
+void TTSCTPMdSpi::OnFrontConnected()
 {
-    wrapMdOnFrontConnected(gUserApi);
+    wrap_tts_MdOnFrontConnected(gUserApi);
 }
 
 // 当客户端与交易后台通信连接断开时，该方法被调用。当发生这个情况后，API会自动重新连接，客户端可不做处理。
@@ -195,102 +209,129 @@ void QCTPMdSpi::OnFrontConnected()
 ///        0x2001 接收心跳超时
 ///        0x2002 发送心跳失败
 ///        0x2003 收到错误报文
-extern "C" void wrapMdOnFrontDisconnected(uintptr_t, int);
-void QCTPMdSpi::OnFrontDisconnected(int nReason)
+extern "C" void wrap_tts_MdOnFrontDisconnected(uintptr_t, int);
+void TTSCTPMdSpi::OnFrontDisconnected(int nReason)
 {
-    wrapMdOnFrontDisconnected(gUserApi, nReason);
+    wrap_tts_MdOnFrontDisconnected(gUserApi, nReason);
 }
 
 // 心跳超时警告。当长时间未收到报文时，该方法被调用。
 ///@param nTimeLapse 距离上次接收报文的时间
-extern "C" void wrapMdOnHeartBeatWarning(uintptr_t, int);
-void QCTPMdSpi::OnHeartBeatWarning(int nTimeLapse)
+extern "C" void wrap_tts_MdOnHeartBeatWarning(uintptr_t, int);
+void TTSCTPMdSpi::OnHeartBeatWarning(int nTimeLapse)
 {
-    wrapMdOnHeartBeatWarning(gUserApi, nTimeLapse);
+    wrap_tts_MdOnHeartBeatWarning(gUserApi, nTimeLapse);
 }
 
 // 登录请求响应
-extern "C" void wrapMdOnRspUserLogin(uintptr_t, CThostFtdcRspUserLoginField*, CThostFtdcRspInfoField*, int, bool);
-void QCTPMdSpi::OnRspUserLogin(CThostFtdcRspUserLoginField* pRspUserLogin, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+extern "C" void wrap_tts_MdOnRspUserLogin(uintptr_t, CThostFtdcRspUserLoginField*, CThostFtdcRspInfoField*, int, bool);
+void TTSCTPMdSpi::OnRspUserLogin(CThostFtdcRspUserLoginField* pRspUserLogin, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
 {
-    wrapMdOnRspUserLogin(gUserApi, pRspUserLogin, pRspInfo, nRequestID, bIsLast);
+    wrap_tts_MdOnRspUserLogin(gUserApi, pRspUserLogin, pRspInfo, nRequestID, bIsLast);
 }
 
 // 登出请求响应
-extern "C" void wrapMdOnRspUserLogout(uintptr_t, CThostFtdcUserLogoutField*, CThostFtdcRspInfoField*, int, bool);
-void QCTPMdSpi::OnRspUserLogout(CThostFtdcUserLogoutField* pUserLogout, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+extern "C" void wrap_tts_MdOnRspUserLogout(uintptr_t, CThostFtdcUserLogoutField*, CThostFtdcRspInfoField*, int, bool);
+void TTSCTPMdSpi::OnRspUserLogout(CThostFtdcUserLogoutField* pUserLogout, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
 {
-    wrapMdOnRspUserLogout(gUserApi, pUserLogout, pRspInfo, nRequestID, bIsLast);
+    wrap_tts_MdOnRspUserLogout(gUserApi, pUserLogout, pRspInfo, nRequestID, bIsLast);
 }
 
 // 请求查询组播合约响应
-extern "C" void wrapMdOnRspQryMulticastInstrument(uintptr_t, CThostFtdcMulticastInstrumentField*, CThostFtdcRspInfoField*, int, bool);
-void QCTPMdSpi::OnRspQryMulticastInstrument(CThostFtdcMulticastInstrumentField* pMulticastInstrument, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+extern "C" void wrap_tts_MdOnRspQryMulticastInstrument(uintptr_t, CThostFtdcMulticastInstrumentField*, CThostFtdcRspInfoField*, int, bool);
+void TTSCTPMdSpi::OnRspQryMulticastInstrument(CThostFtdcMulticastInstrumentField* pMulticastInstrument, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
 {
-    wrapMdOnRspQryMulticastInstrument(gUserApi, pMulticastInstrument, pRspInfo, nRequestID, bIsLast);
+    wrap_tts_MdOnRspQryMulticastInstrument(gUserApi, pMulticastInstrument, pRspInfo, nRequestID, bIsLast);
 }
 
 // 错误应答
-extern "C" void wrapMdOnRspError(uintptr_t, CThostFtdcRspInfoField*, int, bool);
-void QCTPMdSpi::OnRspError(CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+extern "C" void wrap_tts_MdOnRspError(uintptr_t, CThostFtdcRspInfoField*, int, bool);
+void TTSCTPMdSpi::OnRspError(CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
 {
-    wrapMdOnRspError(gUserApi, pRspInfo, nRequestID, bIsLast);
+    wrap_tts_MdOnRspError(gUserApi, pRspInfo, nRequestID, bIsLast);
 }
 
 // 订阅行情应答
-extern "C" void wrapMdOnRspSubMarketData(uintptr_t, CThostFtdcSpecificInstrumentField*, CThostFtdcRspInfoField*, int, bool);
-void QCTPMdSpi::OnRspSubMarketData(CThostFtdcSpecificInstrumentField* pSpecificInstrument, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+extern "C" void wrap_tts_MdOnRspSubMarketData(uintptr_t, CThostFtdcSpecificInstrumentField*, CThostFtdcRspInfoField*, int, bool);
+void TTSCTPMdSpi::OnRspSubMarketData(CThostFtdcSpecificInstrumentField* pSpecificInstrument, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
 {
-    wrapMdOnRspSubMarketData(gUserApi, pSpecificInstrument, pRspInfo, nRequestID, bIsLast);
+    wrap_tts_MdOnRspSubMarketData(gUserApi, pSpecificInstrument, pRspInfo, nRequestID, bIsLast);
 }
 
 // 取消订阅行情应答
-extern "C" void wrapMdOnRspUnSubMarketData(uintptr_t, CThostFtdcSpecificInstrumentField*, CThostFtdcRspInfoField*, int, bool);
-void QCTPMdSpi::OnRspUnSubMarketData(CThostFtdcSpecificInstrumentField* pSpecificInstrument, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+extern "C" void wrap_tts_MdOnRspUnSubMarketData(uintptr_t, CThostFtdcSpecificInstrumentField*, CThostFtdcRspInfoField*, int, bool);
+void TTSCTPMdSpi::OnRspUnSubMarketData(CThostFtdcSpecificInstrumentField* pSpecificInstrument, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
 {
-    wrapMdOnRspUnSubMarketData(gUserApi, pSpecificInstrument, pRspInfo, nRequestID, bIsLast);
+    wrap_tts_MdOnRspUnSubMarketData(gUserApi, pSpecificInstrument, pRspInfo, nRequestID, bIsLast);
 }
 
 // 订阅询价应答
-extern "C" void wrapMdOnRspSubForQuoteRsp(uintptr_t, CThostFtdcSpecificInstrumentField*, CThostFtdcRspInfoField*, int, bool);
-void QCTPMdSpi::OnRspSubForQuoteRsp(CThostFtdcSpecificInstrumentField* pSpecificInstrument, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+extern "C" void wrap_tts_MdOnRspSubForQuoteRsp(uintptr_t, CThostFtdcSpecificInstrumentField*, CThostFtdcRspInfoField*, int, bool);
+void TTSCTPMdSpi::OnRspSubForQuoteRsp(CThostFtdcSpecificInstrumentField* pSpecificInstrument, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
 {
-    wrapMdOnRspSubForQuoteRsp(gUserApi, pSpecificInstrument, pRspInfo, nRequestID, bIsLast);
+    wrap_tts_MdOnRspSubForQuoteRsp(gUserApi, pSpecificInstrument, pRspInfo, nRequestID, bIsLast);
 }
 
 // 取消订阅询价应答
-extern "C" void wrapMdOnRspUnSubForQuoteRsp(uintptr_t, CThostFtdcSpecificInstrumentField*, CThostFtdcRspInfoField*, int, bool);
-void QCTPMdSpi::OnRspUnSubForQuoteRsp(CThostFtdcSpecificInstrumentField* pSpecificInstrument, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+extern "C" void wrap_tts_MdOnRspUnSubForQuoteRsp(uintptr_t, CThostFtdcSpecificInstrumentField*, CThostFtdcRspInfoField*, int, bool);
+void TTSCTPMdSpi::OnRspUnSubForQuoteRsp(CThostFtdcSpecificInstrumentField* pSpecificInstrument, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
 {
-    wrapMdOnRspUnSubForQuoteRsp(gUserApi, pSpecificInstrument, pRspInfo, nRequestID, bIsLast);
+    wrap_tts_MdOnRspUnSubForQuoteRsp(gUserApi, pSpecificInstrument, pRspInfo, nRequestID, bIsLast);
 }
 
 // 深度行情通知
-extern "C" void wrapMdOnRtnDepthMarketData(uintptr_t, CThostFtdcDepthMarketDataField*);
-void QCTPMdSpi::OnRtnDepthMarketData(CThostFtdcDepthMarketDataField* pDepthMarketData)
+extern "C" void wrap_tts_MdOnRtnDepthMarketData(uintptr_t, CThostFtdcDepthMarketDataField*);
+void TTSCTPMdSpi::OnRtnDepthMarketData(CThostFtdcDepthMarketDataField* pDepthMarketData)
 {
-    wrapMdOnRtnDepthMarketData(gUserApi, pDepthMarketData);
+    wrap_tts_MdOnRtnDepthMarketData(gUserApi, pDepthMarketData);
 }
 
 // 询价通知
-extern "C" void wrapMdOnRtnForQuoteRsp(uintptr_t, CThostFtdcForQuoteRspField*);
-void QCTPMdSpi::OnRtnForQuoteRsp(CThostFtdcForQuoteRspField* pForQuoteRsp)
+extern "C" void wrap_tts_MdOnRtnForQuoteRsp(uintptr_t, CThostFtdcForQuoteRspField*);
+void TTSCTPMdSpi::OnRtnForQuoteRsp(CThostFtdcForQuoteRspField* pForQuoteRsp)
 {
-    wrapMdOnRtnForQuoteRsp(gUserApi, pForQuoteRsp);
+    wrap_tts_MdOnRtnForQuoteRsp(gUserApi, pForQuoteRsp);
 }
 
-QCTPMdSpi::QCTPMdSpi(CThostFtdcMdApi* pUserApi)
+TTSCTPMdSpi::TTSCTPMdSpi(CThostFtdcMdApi* pUserApi)
 {
     this->pUserApi = pUserApi;
 }
 
-QCTPMdSpi::QCTPMdSpi(CThostFtdcMdApi* pUserApi, uintptr_t gUserApi)
+TTSCTPMdSpi::TTSCTPMdSpi(CThostFtdcMdApi* pUserApi, uintptr_t gUserApi)
 {
     this->pUserApi = pUserApi;
     this->gUserApi = gUserApi;
 }
 
-uintptr_t _wrap_CThostFtdcMdApi_DestroyUserMdApi(QCTPMdSpi* pMdApi)
+TTSCTPMdSpi::TTSCTPMdSpi(uintptr_t gUserApi, const char* pszDLLPath, const char* pszFlowPath, const bool bIsUsingUdp, const bool bIsMulticast)
+{
+    typedef CThostFtdcMdApi* (*MdApiCreator)(const char*, const bool, const bool);
+    dllHandle = dlopen(pszDLLPath, RTLD_NOW);
+    if (dllHandle == nullptr) {
+        fprintf(stderr, "[%s] dlopen error: %s", pszDLLPath, dlerror());
+        exit(-1);
+    }
+    MdApiCreator mdcreator = (MdApiCreator)dlsym(dllHandle, "_ZN15CThostFtdcMdApi15CreateFtdcMdApiEPKcbb");
+    if (mdcreator == nullptr) {
+        fprintf(stderr, "[%s] dlsym error: %s\n", pszDLLPath, dlerror());
+        exit(-1);
+    }
+    this->pUserApi = mdcreator(pszFlowPath, bIsUsingUdp, bIsMulticast);
+    this->gUserApi = gUserApi;
+}
+
+TTSCTPMdSpi::~TTSCTPMdSpi()
+{
+    if (this->pUserApi) {
+        this->pUserApi->RegisterSpi(nullptr);
+        this->pUserApi->Release();
+        this->pUserApi = nullptr;
+        dlclose(dllHandle);
+    }
+}
+
+uintptr_t _wrap_tts_CThostFtdcMdApi_DestroyUserMdApi(TTSCTPMdSpi* pMdApi)
 {
     delete (pMdApi);
     return 0;
@@ -298,14 +339,17 @@ uintptr_t _wrap_CThostFtdcMdApi_DestroyUserMdApi(QCTPMdSpi* pMdApi)
 
 // 获取API的版本信息
 ///@retrun 获取到的版本号
-const char* QCTPMdSpi::GetApiVersion()
+const char* TTSCTPMdSpi::GetApiVersion()
 {
-    return this->pUserApi->GetApiVersion();
+    typedef const char* (*GetApiVersion)();
+    GetApiVersion getVersion = (GetApiVersion)dlsym(this->dllHandle, "_ZN15CThostFtdcMdApi13GetApiVersionEv");
+    // return this->pUserApi->GetApiVersion();
+    return getVersion();
 }
 
 // 删除接口对象本身
 ///@remark 不再使用本接口对象时,调用该函数删除接口对象
-void QCTPMdSpi::Release()
+void TTSCTPMdSpi::Release()
 {
     this->pUserApi->RegisterSpi(NULL);
     return this->pUserApi->Release();
@@ -313,14 +357,14 @@ void QCTPMdSpi::Release()
 
 // 初始化
 ///@remark 初始化运行环境,只有调用后,接口才开始工作
-void QCTPMdSpi::Init()
+void TTSCTPMdSpi::Init()
 {
     this->pUserApi->Init();
 }
 
 // 等待接口线程结束运行
 ///@return 线程退出代码
-int QCTPMdSpi::Join()
+int TTSCTPMdSpi::Join()
 {
     return this->pUserApi->Join();
 }
@@ -328,7 +372,7 @@ int QCTPMdSpi::Join()
 // 获取当前交易日
 ///@retrun 获取到的交易日
 ///@remark 只有登录成功后,才能得到正确的交易日
-const char* QCTPMdSpi::GetTradingDay()
+const char* TTSCTPMdSpi::GetTradingDay()
 {
     return this->pUserApi->GetTradingDay();
 }
@@ -337,7 +381,7 @@ const char* QCTPMdSpi::GetTradingDay()
 ///@param pszFrontAddress：前置机网络地址。
 ///@remark 网络地址的格式为：“protocol://ipaddress:port”，如：”tcp://127.0.0.1:17001”。
 ///@remark “tcp”代表传输协议，“127.0.0.1”代表服务器地址。”17001”代表服务器端口号。
-void QCTPMdSpi::RegisterFront(char* pszFrontAddress)
+void TTSCTPMdSpi::RegisterFront(char* pszFrontAddress)
 {
     this->pUserApi->RegisterFront(pszFrontAddress);
 }
@@ -347,21 +391,21 @@ void QCTPMdSpi::RegisterFront(char* pszFrontAddress)
 ///@remark 网络地址的格式为：“protocol://ipaddress:port”，如：”tcp://127.0.0.1:12001”。
 ///@remark “tcp”代表传输协议，“127.0.0.1”代表服务器地址。”12001”代表服务器端口号。
 ///@remark RegisterNameServer优先于RegisterFront
-void QCTPMdSpi::RegisterNameServer(char* pszNsAddress)
+void TTSCTPMdSpi::RegisterNameServer(char* pszNsAddress)
 {
     this->pUserApi->RegisterNameServer(pszNsAddress);
 }
 
 // 注册名字服务器用户信息
 ///@param pFensUserInfo：用户信息。
-void QCTPMdSpi::RegisterFensUserInfo(CThostFtdcFensUserInfoField* pFensUserInfo)
+void TTSCTPMdSpi::RegisterFensUserInfo(CThostFtdcFensUserInfoField* pFensUserInfo)
 {
     this->pUserApi->RegisterFensUserInfo(pFensUserInfo);
 }
 
 // 注册回调接口
 ///@param pSpi 派生自回调接口类的实例
-void QCTPMdSpi::RegisterSpi(CThostFtdcMdSpi* pSpi)
+void TTSCTPMdSpi::RegisterSpi(CThostFtdcMdSpi* pSpi)
 {
     this->pUserApi->RegisterSpi(pSpi);
 }
@@ -370,7 +414,7 @@ void QCTPMdSpi::RegisterSpi(CThostFtdcMdSpi* pSpi)
 ///@param ppInstrumentID 合约ID
 ///@param nCount 要订阅/退订行情的合约个数
 ///@remark
-int QCTPMdSpi::SubscribeMarketData(char** ppInstrumentID, int nCount)
+int TTSCTPMdSpi::SubscribeMarketData(char** ppInstrumentID, int nCount)
 {
     return this->pUserApi->SubscribeMarketData(ppInstrumentID, nCount);
 }
@@ -379,7 +423,7 @@ int QCTPMdSpi::SubscribeMarketData(char** ppInstrumentID, int nCount)
 ///@param ppInstrumentID 合约ID
 ///@param nCount 要订阅/退订行情的合约个数
 ///@remark
-int QCTPMdSpi::UnSubscribeMarketData(char** ppInstrumentID, int nCount)
+int TTSCTPMdSpi::UnSubscribeMarketData(char** ppInstrumentID, int nCount)
 {
     return this->pUserApi->UnSubscribeMarketData(ppInstrumentID, nCount);
 }
@@ -388,7 +432,7 @@ int QCTPMdSpi::UnSubscribeMarketData(char** ppInstrumentID, int nCount)
 ///@param ppInstrumentID 合约ID
 ///@param nCount 要订阅/退订行情的合约个数
 ///@remark
-int QCTPMdSpi::SubscribeForQuoteRsp(char** ppInstrumentID, int nCount)
+int TTSCTPMdSpi::SubscribeForQuoteRsp(char** ppInstrumentID, int nCount)
 {
     return this->pUserApi->SubscribeForQuoteRsp(ppInstrumentID, nCount);
 }
@@ -397,25 +441,25 @@ int QCTPMdSpi::SubscribeForQuoteRsp(char** ppInstrumentID, int nCount)
 ///@param ppInstrumentID 合约ID
 ///@param nCount 要订阅/退订行情的合约个数
 ///@remark
-int QCTPMdSpi::UnSubscribeForQuoteRsp(char** ppInstrumentID, int nCount)
+int TTSCTPMdSpi::UnSubscribeForQuoteRsp(char** ppInstrumentID, int nCount)
 {
     return this->pUserApi->UnSubscribeForQuoteRsp(ppInstrumentID, nCount);
 }
 
 // 用户登录请求
-int QCTPMdSpi::ReqUserLogin(CThostFtdcReqUserLoginField* pReqUserLoginField, int nRequestID)
+int TTSCTPMdSpi::ReqUserLogin(CThostFtdcReqUserLoginField* pReqUserLoginField, int nRequestID)
 {
     return this->pUserApi->ReqUserLogin(pReqUserLoginField, nRequestID);
 }
 
 // 登出请求
-int QCTPMdSpi::ReqUserLogout(CThostFtdcUserLogoutField* pUserLogout, int nRequestID)
+int TTSCTPMdSpi::ReqUserLogout(CThostFtdcUserLogoutField* pUserLogout, int nRequestID)
 {
     return this->pUserApi->ReqUserLogout(pUserLogout, nRequestID);
 }
 
 // 请求查询组播合约
-int QCTPMdSpi::ReqQryMulticastInstrument(CThostFtdcQryMulticastInstrumentField* pQryMulticastInstrument, int nRequestID)
+int TTSCTPMdSpi::ReqQryMulticastInstrument(CThostFtdcQryMulticastInstrumentField* pQryMulticastInstrument, int nRequestID)
 {
     return this->pUserApi->ReqQryMulticastInstrument(pQryMulticastInstrument, nRequestID);
 }

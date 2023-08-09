@@ -13,10 +13,10 @@
 package ctp_tts
 
 /*
-#cgo linux LDFLAGS: -fPIC -L. -L${SRCDIR}/lib/v6.6.9_20220920/lin64 -Wl,-rpath=${SRCDIR}/lib/v6.6.9_20220920/lin64  -lthostmduserapi_se -lthosttraderapi_se -lstdc++
+#cgo linux LDFLAGS: -fPIC -L. -L${SRCDIR}/lib/v6.6.9_20220920/lin64 -Wl,-rpath=${SRCDIR}/lib/v6.6.9_20220920/lin64
 #cgo linux CPPFLAGS: -fPIC -I. -I${SRCDIR}/lib/v6.6.9_20220920/
 
-#cgo darwin LDFLAGS: -L. -L${SRCDIR}/lib/v6.6.9_20220920/macosx/ -lthostmduserapi_se -lthosttraderapi_se -lssl -lcrypto -lcomunicationkey
+#cgo darwin LDFLAGS: -L. -L${SRCDIR}/lib/v6.6.9_20220920/mac_arm64/
 #cgo darwin CPPFLAGS: -I. -I${SRCDIR}/lib/v6.6.9_20220920/
 
 */
