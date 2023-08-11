@@ -13,12 +13,16 @@
 package main
 
 import (
+	"bytes"
 	"log"
 	"os"
+	"runtime"
+	"strings"
 	"sync/atomic"
 
 	"github.com/pseudocodes/go2ctp/ctp_tts"
 	"github.com/pseudocodes/go2ctp/thost"
+	"golang.org/x/text/encoding/simplifiedchinese"
 )
 
 var SimnowEnv map[string]map[string]string = map[string]map[string]string{
@@ -59,8 +63,9 @@ func CreateBaseSpi() *baseSpi {
 		brokerID:   "9999",
 		investorID: os.Getenv("SIMNOW_USER_ID"),       // <- 环境变量设置
 		password:   os.Getenv("SIMNOW_USER_PASSWORD"), // <- 环境变量设置
-		appid:      "simnow_client_test",
-		authCode:   "0000000000000000",
+
+		appid:    "simnow_client_test",
+		authCode: "0000000000000000",
 	}
 	return s
 }
@@ -95,52 +100,44 @@ func (s *baseSpi) OnRspAuthenticate(pRspAuthenticateField *thost.CThostFtdcRspAu
 }
 
 func (s *baseSpi) OnRspUserLogin(pRspUserLogin *thost.CThostFtdcRspUserLoginField, pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
-	// dump.Println(r)
-	// dump.Println(f)
-
-	// req := &goctp.SettlementInfoConfirmField{
-	// 	BrokerID:   s.brokerID,
-	// 	InvestorID: s.investorID,
-	// }
-	// ret := s.tdapi.ReqSettlementInfoConfirm(req, int(s.requestID.Add(1)))
-	// log.Printf("req_settlement_info_confirm : %v\n", ret)
 	log.Printf("OnRspUserLogin\n")
+	req := &thost.CThostFtdcSettlementInfoConfirmField{}
+	copy(req.BrokerID[:], []byte(s.brokerID))
+	copy(req.InvestorID[:], []byte(s.investorID))
+
+	ret := s.tdapi.ReqSettlementInfoConfirm(req, int(s.requestID.Add(1)))
+	log.Printf("req_settlement_info_confirm : %v\n", ret)
 
 }
 
-// func (s *baseSpi) OnRspSettlementInfoConfirm(f *goctp.SettlementInfoConfirmField, r *goctp.RspInfoField, nRequestID int, bIsLast bool) {
-// 	dump.Println(r)
-// 	dump.Println(f)
+// OnRspSettlementInfoConfirm 发送投资者结算单确认响应
+func (s *baseSpi) OnRspSettlementInfoConfirm(pSettlementInfoConfirm *thost.CThostFtdcSettlementInfoConfirmField, pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
 
-// 	req := &goctp.QryInstrumentField{}
-// 	ret := s.tdapi.ReqQryInstrument(req, 3)
-// 	log.Printf("user qry ins: %v\n", ret)
-// }
+	// req := &goctp.QryInstrumentField{}
+	// ret := s.tdapi.ReqQryInstrument(req, 3)
+	// log.Printf("user qry ins: %v\n", ret)
 
-// // OnRspSettlementInfoConfirm 发送投资者结算单确认响应
+	req := &thost.CThostFtdcQryTradingAccountField{}
+	copy(req.BrokerID[:], []byte(s.brokerID))
+	copy(req.InvestorID[:], []byte(s.investorID))
+	ret := s.tdapi.ReqQryTradingAccount(req, int(s.requestID.Add(1)))
+	if ret != 0 {
+		log.Printf("req_qry_trading_account failed %v\n", ret)
+	}
 
-// func (s *baseSpi) OnRspQryInstrument(pInstrument *goctp.InstrumentField, pRspInfo *goctp.RspInfoField, nRequestID int, bIsLast bool) {
-// 	// dump.Print(pRspInfo, nRequestID, bIsLast)
-// 	// dump.Println(pInstrument.InstrumentName)
+}
 
-// 	if bIsLast {
-// 		log.Printf("qry ins finished\n")
+func (s *baseSpi) OnRspQryInstrument(pInstrument *thost.CThostFtdcInstrumentField, pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
+}
 
-// 		req := &goctp.QryTradingAccountField{
-// 			BrokerID:   s.brokerID,
-// 			InvestorID: s.investorID,
-// 		}
-// 		ret := s.tdapi.ReqQryTradingAccount(req, int(s.requestID.Add(1)))
-// 		if ret != 0 {
-// 			log.Printf("req_qry_trading_account failed %v\n", ret)
-// 		}
-// 	}
-// }
-
-// // OnRspQryTradingAccount 请求查询资金账户响应
-// func (s *baseSpi) OnRspQryTradingAccount(pTradingAccount *goctp.TradingAccountField, pRspInfo *goctp.RspInfoField, nRequestID int, bIsLast bool) {
-
-// }
+// OnRspQryTradingAccount 请求查询资金账户响应
+func (s *baseSpi) OnRspQryTradingAccount(pTradingAccount *thost.CThostFtdcTradingAccountField, pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
+	if bIsLast && !s.isErrorRspInfo(pRspInfo) {
+		accountID := bytesToString2(pTradingAccount.AccountID[:])
+		balance := pTradingAccount.Balance
+		log.Printf("Account[%v] Balance[%.2f]\n", accountID, balance)
+	}
+}
 
 // // 合约交易状态通知
 // func (s *baseSpi) OnRtnInstrumentStatus(pInstrumentStatus *goctp.InstrumentStatusField) {
@@ -155,10 +152,10 @@ func (s *baseSpi) OnRspUserLogin(pRspUserLogin *thost.CThostFtdcRspUserLoginFiel
 
 // }
 
-// // 错误应答
-// func (s *baseSpi) OnRspError(pRspInfo *goctp.RspInfoField, nRequestID int, bIsLast bool) {
-// 	s.isErrorRspInfo(pRspInfo)
-// }
+// 错误应答
+func (s *baseSpi) OnRspError(pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
+	s.isErrorRspInfo(pRspInfo)
+}
 
 // // 报单操作错误回报
 // func (s *baseSpi) OnErrRtnOrderAction(pOrderAction *goctp.OrderActionField, pRspInfo *goctp.RspInfoField) {
@@ -170,37 +167,54 @@ func (s *baseSpi) OnRspUserLogin(pRspUserLogin *thost.CThostFtdcRspUserLoginFiel
 // 	s.isErrorRspInfo(pRspInfo)
 // }
 
-// // OnRtnTrade 成交通知（委托单在交易所成交了）
-// func (s *baseSpi) OnRtnTrade(pTrade *goctp.TradeField) {
-// }
+// OnRtnTrade 成交通知（委托单在交易所成交了）
+func (s *baseSpi) OnRtnTrade(pTrade *thost.CThostFtdcTradeField) {
+}
 
-// // OnRtnOrder 报单通知（委托单）
-// func (s *baseSpi) OnRtnOrder(pOrder *goctp.OrderField) {
+// OnRtnOrder 报单通知（委托单）
+func (s *baseSpi) OnRtnOrder(pOrder *thost.CThostFtdcOrderField) {
 
-// }
+}
 
-// func (s *baseSpi) isErrorRspInfo(pRspInfo *goctp.RspInfoField) bool {
+func (s *baseSpi) isErrorRspInfo(pRspInfo *thost.CThostFtdcRspInfoField) bool {
 
-// 	// 容错处理 pRspInfo ，部分响应函数中，pRspInfo 为 0
-// 	if pRspInfo == nil {
-// 		return false
-// 	}
-// 	// 如果ErrorID != 0, 说明收到了错误的响应
-// 	bResult := (pRspInfo.ErrorID != 0)
-// 	if bResult {
-// 		log.Printf("ErrorID=%v ErrorMsg=%v\n", pRspInfo.ErrorID, pRspInfo.ErrorMsg)
-// 	}
-// 	return bResult
+	// 容错处理 pRspInfo ，部分响应函数中，pRspInfo 为 0
+	if pRspInfo == nil {
+		return false
+	}
+	// 如果ErrorID != 0, 说明收到了错误的响应
+	bResult := (pRspInfo.ErrorID != 0)
+	if bResult {
+		log.Printf("ErrorID=%v ErrorMsg=%v\n", pRspInfo.ErrorID, Bytes2StringGBK(pRspInfo.ErrorMsg[:]))
+	}
+	return bResult
 
-// }
+}
+
+func bytesToString2(b []byte) string {
+	before, _, _ := bytes.Cut(b, []byte{'\x00'})
+	if len(before) > 0 {
+		return string(before)
+	}
+	return ""
+}
+
+func Bytes2StringGBK(t []byte) string {
+	msg, _ := simplifiedchinese.GB18030.NewDecoder().Bytes(bytes.Split(t, []byte{'\x00'})[0])
+	return strings.Trim(string(msg), "\u0000")
+}
 
 func sample1() {
-
-	tdapi := ctp_tts.CreateTraderApi(ctp_tts.TraderDynamicLibPath("../../ctp_tts/lib/v6.6.9_20220920/mac_arm64/thosttraderapi_se.dylib"), ctp_tts.TraderFlowPath("./data/"))
+	var tdapi ctp_tts.TraderApi
+	if runtime.GOOS == "darwin" {
+		tdapi = ctp_tts.CreateTraderApi(ctp_tts.TraderDynamicLibPath("../../ctp_tts/lib/v6.6.9_20220920/mac_arm64/thosttraderapi_se.dylib"), ctp_tts.TraderFlowPath("./data/"))
+	} else if runtime.GOOS == "linux" {
+		tdapi = ctp_tts.CreateTraderApi(ctp_tts.TraderDynamicLibPath("../../ctp_tts/lib/v6.6.9_20220920/lin64/thosttraderapi_se.so"), ctp_tts.TraderFlowPath("./data/"))
+	}
 
 	baseSpi := CreateBaseSpi()
 	baseSpi.tdapi = tdapi
-	// log.Printf("baseSpi %+v\n", baseSpi)
+
 	tdapi.RegisterSpi(baseSpi)
 	tdapi.RegisterFront("tcp://121.37.90.193:20002")
 

@@ -14,6 +14,7 @@ package main
 
 import (
 	"log"
+	"runtime"
 	"time"
 
 	"github.com/pseudocodes/go2ctp/ctp"
@@ -144,8 +145,13 @@ func CreateBaseSpi2() *baseSpi2 {
 }
 
 func sample1() {
+	var mdapi ctp_tts.MdApi
+	if runtime.GOOS == "darwin" {
+		mdapi = ctp_tts.CreateMdApi(ctp_tts.MdDynamicLibPath("../../ctp_tts/lib/v6.6.9_20220920/mac_arm64/libthostmduserapi_se.dylib"), ctp_tts.MdFlowPath("./data/"), ctp_tts.MdUsingUDP(false), ctp_tts.MdMultiCast(false))
+	} else if runtime.GOOS == "linux" {
+		mdapi = ctp_tts.CreateMdApi(ctp_tts.MdDynamicLibPath("../../ctp_tts/lib/v6.6.9_20220920/lin64/thostmduserapi_se.so"), ctp_tts.MdFlowPath("./data/"), ctp_tts.MdUsingUDP(false), ctp_tts.MdMultiCast(false))
+	}
 
-	mdapi := ctp_tts.CreateMdApi(ctp_tts.MdDynamicLibPath("../../ctp_tts/lib/v6.6.9_20220920/mac_arm64/libthostmduserapi_se.dylib"), ctp_tts.MdFlowPath("./data/"), ctp_tts.MdUsingUDP(false), ctp_tts.MdMultiCast(false))
 	baseSpi := CreateBaseSpi()
 	baseSpi.mdapi = mdapi
 	mdapi.RegisterSpi(baseSpi)
@@ -183,7 +189,6 @@ func sample2() {
 }
 
 func main() {
-
 	sample1()
 	// sample2()
 }
