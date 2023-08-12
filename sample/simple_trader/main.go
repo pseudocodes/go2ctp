@@ -20,6 +20,7 @@ import (
 	"strings"
 	"sync/atomic"
 
+	"github.com/gookit/goutil/dump"
 	"github.com/pseudocodes/go2ctp/ctp_tts"
 	"github.com/pseudocodes/go2ctp/thost"
 	"golang.org/x/text/encoding/simplifiedchinese"
@@ -136,6 +137,27 @@ func (s *baseSpi) OnRspQryTradingAccount(pTradingAccount *thost.CThostFtdcTradin
 		accountID := bytesToString2(pTradingAccount.AccountID[:])
 		balance := pTradingAccount.Balance
 		log.Printf("Account[%v] Balance[%.2f]\n", accountID, balance)
+
+		req := &thost.CThostFtdcQryInstrumentCommissionRateField{}
+		copy(req.BrokerID[:], "9999")
+		copy(req.InstrumentID[:], "ag2310")
+
+		ret := s.tdapi.ReqQryInstrumentCommissionRate(req, int(s.requestID.Add(1)))
+		if ret != 0 {
+			log.Printf("req_qry_ins_commission_rate failed: %v\n", ret)
+		}
+	}
+}
+
+func (s *baseSpi) OnRspQryInstrumentCommissionRate(pInstrumentCommissionRate *thost.CThostFtdcInstrumentCommissionRateField, pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
+	if s.isErrorRspInfo(pRspInfo) {
+		return
+	}
+	if pInstrumentCommissionRate != nil {
+		dump.P(pInstrumentCommissionRate.OpenRatioByMoney)
+	}
+	if bIsLast {
+		log.Println("last")
 	}
 }
 

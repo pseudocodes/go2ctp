@@ -104,6 +104,7 @@ func main() {
 > Q: 与 [*github.com/haifengat/goctp*](https://github.com/haifengat/goctp) 项目有什么区别
 > 
 > A: 海风提供的 goctp 的封装对 golang 的特性应用得最好， [*pseudocodes/goctp*](https://github.com/pseudocodes/goctp) 也参考了该项目的一些细节, 提供 lite 接口的封装; 感谢这个项目在 golang 封装 ctp api 方向的探索
+> 
 > 该项目的问题：
 > * v1 版本的封装比较乱，使用方式与传统的调用方式有出入;
 > * v2 版本进行了进一步的抽象封装，提供了一些交易基础功能;
@@ -135,8 +136,10 @@ func main() {
 * 扩展封装，提供高阶功能
 
 ## Reference
- 【1】[*github.com/pseudocodes/goctp*](https://github.com/pseudocodes/goctp)
+ 【1】[*github.com/pseudocodes/goctp*](https://github.com/pseudocodes/goctp)   
+
  【2】[*github.com/haifengat/goctp*](https://github.com/haifengat/goctp)
+
  【3】[*github.com/hankchan/goctp*](https://github.com/hankchan/goctp) 
 
 ## 免责声明
