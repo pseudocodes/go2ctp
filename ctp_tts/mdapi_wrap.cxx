@@ -27,6 +27,9 @@
 
 #include "mdapi_wrap.h"
 
+const char* MdApiCreateSymbol = "_ZN15CThostFtdcMdApi15CreateFtdcMdApiEPKcbb";
+const char* MdApiVersionSymbol = "_ZN15CThostFtdcMdApi13GetApiVersionEv";
+
 typedef long long intgo;
 typedef struct
 {
@@ -312,7 +315,7 @@ TTSCTPMdSpi::TTSCTPMdSpi(uintptr_t gUserApi, const char* pszDLLPath, const char*
         fprintf(stderr, "[%s] dlopen error: %s", pszDLLPath, dlerror());
         exit(-1);
     }
-    MdApiCreator mdcreator = (MdApiCreator)dlsym(dllHandle, "_ZN15CThostFtdcMdApi15CreateFtdcMdApiEPKcbb");
+    MdApiCreator mdcreator = (MdApiCreator)dlsym(dllHandle, MdApiCreateSymbol);
     if (mdcreator == nullptr) {
         fprintf(stderr, "[%s] dlsym error: %s\n", pszDLLPath, dlerror());
         exit(-1);
@@ -342,7 +345,7 @@ uintptr_t _wrap_tts_CThostFtdcMdApi_DestroyUserMdApi(TTSCTPMdSpi* pMdApi)
 const char* TTSCTPMdSpi::GetApiVersion()
 {
     typedef const char* (*GetApiVersion)();
-    GetApiVersion getVersion = (GetApiVersion)dlsym(this->dllHandle, "_ZN15CThostFtdcMdApi13GetApiVersionEv");
+    GetApiVersion getVersion = (GetApiVersion)dlsym(this->dllHandle, MdApiVersionSymbol);
     // return this->pUserApi->GetApiVersion();
     return getVersion();
 }

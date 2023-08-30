@@ -29,6 +29,9 @@
 
 typedef long long intgo;
 
+const char* TraderApiCreateSymbol = "_ZN19CThostFtdcTraderApi19CreateFtdcTraderApiEPKc";
+const char* TraderApiVersionSymbol = "_ZN19CThostFtdcTraderApi13GetApiVersionEv";
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -1639,7 +1642,7 @@ TTSCTPTraderSpi::TTSCTPTraderSpi(uintptr_t gUserApi, const char* pszDLLPath, con
         fprintf(stderr, "[%s] dlopen error: %s", pszDLLPath, dlerror());
         exit(-1);
     }
-    TdApiCreator tdcreator = (TdApiCreator)dlsym(dllHandle, "_ZN19CThostFtdcTraderApi19CreateFtdcTraderApiEPKc");
+    TdApiCreator tdcreator = (TdApiCreator)dlsym(dllHandle, TraderApiCreateSymbol);
     if (tdcreator == nullptr) {
         fprintf(stderr, "[%s] dlsym error: %s\n", pszDLLPath, dlerror());
         exit(-1);
@@ -1666,7 +1669,7 @@ const char*
 TTSCTPTraderSpi::GetApiVersion()
 {
     typedef const char* (*GetApiVersion)();
-    GetApiVersion getVersion = (GetApiVersion)dlsym(this->dllHandle, "_ZN19CThostFtdcTraderApi13GetApiVersionEv");
+    GetApiVersion getVersion = (GetApiVersion)dlsym(this->dllHandle, TraderApiVersionSymbol);
     // return this->pUserApi->GetApiVersion();
     return getVersion();
 }

@@ -102,7 +102,7 @@ func (s *baseSpi) OnRspSubMarketData(pSpecificInstrument *thost.CThostFtdcSpecif
 }
 
 func (s *baseSpi) OnRtnDepthMarketData(pDepthMarketData *thost.CThostFtdcDepthMarketDataField) {
-	log.Printf("OnRtnDeptMarketData\n")
+	log.Printf("OnRtnDeptMarketData: %s\n", string(pDepthMarketData.InstrumentID[:7]))
 }
 
 func (s *baseSpi) OnRspError(pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
@@ -144,19 +144,29 @@ func CreateBaseSpi2() *baseSpi2 {
 
 }
 
+var (
+	TTSLibPathLinux  = "../../ctp_tts/lib/v6.6.9_20220920/lin64/thostmduserapi_se.so"
+	TTSLibPathDarwin = "../../ctp_tts/lib/v6.6.9_20220920/mac_arm64/libthostmduserapi_se.dylib"
+
+	CTPLibPathLinux = "../../ctp/lib/v6.7.0_20230209_api_traderapi_se_linux64/libthostmduserapi_se.so"
+
+	TTSFront = "tcp://121.37.80.177:20004"
+)
+
 func sample1() {
 	var mdapi ctp_tts.MdApi
 	if runtime.GOOS == "darwin" {
-		mdapi = ctp_tts.CreateMdApi(ctp_tts.MdDynamicLibPath("../../ctp_tts/lib/v6.6.9_20220920/mac_arm64/libthostmduserapi_se.dylib"), ctp_tts.MdFlowPath("./data/"), ctp_tts.MdUsingUDP(false), ctp_tts.MdMultiCast(false))
+		mdapi = ctp_tts.CreateMdApi(ctp_tts.MdDynamicLibPath(TTSLibPathDarwin), ctp_tts.MdFlowPath("./data/"), ctp_tts.MdUsingUDP(false), ctp_tts.MdMultiCast(false))
 	} else if runtime.GOOS == "linux" {
-		mdapi = ctp_tts.CreateMdApi(ctp_tts.MdDynamicLibPath("../../ctp_tts/lib/v6.6.9_20220920/lin64/thostmduserapi_se.so"), ctp_tts.MdFlowPath("./data/"), ctp_tts.MdUsingUDP(false), ctp_tts.MdMultiCast(false))
+		// mdapi = ctp_tts.CreateMdApi(ctp_tts.MdDynamicLibPath(TTSLibPathLinux), ctp_tts.MdFlowPath("./data/"), ctp_tts.MdUsingUDP(false), ctp_tts.MdMultiCast(false))
+		mdapi = ctp_tts.CreateMdApi(ctp_tts.MdDynamicLibPath(CTPLibPathLinux), ctp_tts.MdFlowPath("./data/"), ctp_tts.MdUsingUDP(false), ctp_tts.MdMultiCast(false))
 	}
 
 	baseSpi := CreateBaseSpi()
 	baseSpi.mdapi = mdapi
 	mdapi.RegisterSpi(baseSpi)
 
-	mdapi.RegisterFront("tcp://121.37.80.177:20004")
+	mdapi.RegisterFront(SimnowEnv["md"]["telesim1"])
 	mdapi.Init()
 
 	println(mdapi.GetApiVersion())
