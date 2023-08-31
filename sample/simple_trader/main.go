@@ -158,6 +158,16 @@ func (s *baseSpi) OnRspQryInstrumentCommissionRate(pInstrumentCommissionRate *th
 	}
 	if bIsLast {
 		log.Println("last")
+		req := &thost.CThostFtdcQryClassifiedInstrumentField{
+			TradingType: thost.THOST_FTDC_TD_TRADE,
+			ClassType:   thost.THOST_FTDC_INS_FUTURE,
+		}
+		copy(req.InstrumentID[:], "ag2310")
+
+		ret := s.tdapi.ReqQryClassifiedInstrument(req, int(s.requestID.Add(1)))
+		if ret != 0 {
+			log.Printf("req_qry_classifyed_instrument failed: %v\n", ret)
+		}
 	}
 }
 
@@ -177,6 +187,21 @@ func (s *baseSpi) OnRspQryInstrumentCommissionRate(pInstrumentCommissionRate *th
 // 错误应答
 func (s *baseSpi) OnRspError(pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
 	s.isErrorRspInfo(pRspInfo)
+}
+
+// 请求查询分类合约响应
+func (s *baseSpi) OnRspQryClassifiedInstrument(pInstrument *thost.CThostFtdcInstrumentField, pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
+	if s.isErrorRspInfo(pRspInfo) {
+		return
+	}
+	ins := bytesToString2(pInstrument.InstrumentID[:])
+	log.Printf("[%s] prictick[%v] create_date[%s] open_date[%s] expire_date[%s] long_margin_ratio %.2f\n",
+		ins, pInstrument.PriceTick,
+		bytesToString2(pInstrument.CreateDate[:]),
+		bytesToString2(pInstrument.OpenDate[:]),
+		bytesToString2(pInstrument.ExpireDate[:]),
+		pInstrument.LongMarginRatio,
+	)
 }
 
 // // 报单操作错误回报
@@ -226,19 +251,27 @@ func Bytes2StringGBK(t []byte) string {
 	return strings.Trim(string(msg), "\u0000")
 }
 
+var (
+	CTPLibPathLinux  = "../../ctp/lib/v6.6.7_20220613_api_tradeapi_linux64/libthosttraderapi_se.so"
+	CTPLibPathLinux1 = "../../ctp/lib/v6.6.9_20220914_api_tradeapi_se_linux64/libthosttraderapi_se.so"
+	CTPLibPathLinux2 = "../../ctp/lib/v6.7.0_20230209_api_traderapi_se_linux64/libthosttraderapi_se.so"
+)
+
 func sample1() {
 	var tdapi ctp_tts.TraderApi
 	if runtime.GOOS == "darwin" {
 		tdapi = ctp_tts.CreateTraderApi(ctp_tts.TraderDynamicLibPath("../../ctp_tts/lib/v6.6.9_20220920/mac_arm64/thosttraderapi_se.dylib"), ctp_tts.TraderFlowPath("./data/"))
 	} else if runtime.GOOS == "linux" {
-		tdapi = ctp_tts.CreateTraderApi(ctp_tts.TraderDynamicLibPath("../../ctp_tts/lib/v6.6.9_20220920/lin64/thosttraderapi_se.so"), ctp_tts.TraderFlowPath("./data/"))
+		// tdapi = ctp_tts.CreateTraderApi(ctp_tts.TraderDynamicLibPath("../../ctp_tts/lib/v6.6.9_20220920/lin64/thosttraderapi_se.so"), ctp_tts.TraderFlowPath("./data/"))
+		tdapi = ctp_tts.CreateTraderApi(ctp_tts.TraderDynamicLibPath(CTPLibPathLinux2), ctp_tts.TraderFlowPath("./data/"))
 	}
 
 	baseSpi := CreateBaseSpi()
 	baseSpi.tdapi = tdapi
 
 	tdapi.RegisterSpi(baseSpi)
-	tdapi.RegisterFront("tcp://121.37.90.193:20002")
+	// tdapi.RegisterFront("tcp://121.37.90.193:20002")
+	tdapi.RegisterFront(SimnowEnv["td"]["telesim1"])
 
 	tdapi.Init()
 
