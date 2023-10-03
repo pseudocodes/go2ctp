@@ -125,7 +125,7 @@ func main() {
 > 
 > A: 
 > * ctp 的封装来自 [*pseudocodes/goctp*](https://github.com/pseudocodes/goctp), 剔除了 *lite* 和 *convert* 相关代码，原则上只提供一层封装，直接桥接 Cgo 空间回调过来的数据
-> * ctp 目录属于静态编译链接，其他项目采用该目录下的代码，动态库路径会在编译构建期完成绑定，无需用户关心，同时提供 MacOS 系统支持
+> * ctp 目录属于静态编译链接，其他项目采用该目录下的代码，依赖的动态库的路径会在编译构建期完成初始绑定，默认路径为 go2ctp 库的存放路径，只部署二进制程序在 Linux 环境需要设置 LD_LIBRARY_PATH 环境变量来提供依赖的 ctp 动态库路径，MacOS 环境同理
 > * ctp_tts 封装方式采用了读取动态库符号的方式，通过在运行时提供动态库的路径，完成 API 实例对象的生成和绑定，理论上 ctp_tts 的封装方式更灵活方便，可以通过配置的方式动态的替换 linux 下不同平台的库，包括官方生产和测评版本，rohan(融航)，openctp-tts 平台，无需再编译项目代码. ctp-tts 同时支持 openctp 的 MacOS 版本 dylib
 > * ctp_tts 使用需要用户明确提供动态库地址，部署时需要动态库与二进制程序一起部署
 
