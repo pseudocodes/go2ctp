@@ -55,7 +55,7 @@ type baseSpi struct {
 	requestID atomic.Int32
 
 	ctp_tts.BaseTraderSpi
-	tdapi ctp_tts.TraderApi
+	tdapi thost.TraderApi
 }
 
 func CreateBaseSpi() *baseSpi {
@@ -258,7 +258,7 @@ var (
 )
 
 func sample1() {
-	var tdapi ctp_tts.TraderApi
+	var tdapi thost.TraderApi
 	if runtime.GOOS == "darwin" {
 		tdapi = ctp_tts.CreateTraderApi(ctp_tts.TraderDynamicLibPath("../../ctp_tts/lib/v6.6.9_20220920/mac_arm64/thosttraderapi_se.dylib"), ctp_tts.TraderFlowPath("./data/"))
 	} else if runtime.GOOS == "linux" {

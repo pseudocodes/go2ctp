@@ -63,7 +63,7 @@ func init() {
 type baseSpi struct {
 	ctp_tts.BaseMdSpi
 	// ctp.BaseMdSpi
-	mdapi ctp_tts.MdApi
+	mdapi thost.MdApi
 }
 
 func CreateBaseSpi() *baseSpi {
@@ -93,7 +93,7 @@ func (s *baseSpi) OnFrontDisconnected(nReason int) {
 
 func (s *baseSpi) OnRspUserLogin(pRspUserLogin *thost.CThostFtdcRspUserLoginField, pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
 	log.Printf("RspUserLogin: %+v\nRspInfo: %+v\n", pRspUserLogin, nil)
-	s.mdapi.SubscribeMarketData("ag2310")
+	s.mdapi.SubscribeMarketData("ag2406")
 }
 
 func (s *baseSpi) OnRspSubMarketData(pSpecificInstrument *thost.CThostFtdcSpecificInstrumentField, pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
@@ -112,7 +112,7 @@ func (s *baseSpi) OnRspError(pRspInfo *thost.CThostFtdcRspInfoField, nRequestID 
 
 type baseSpi2 struct {
 	ctp.BaseMdSpi
-	mdapi ctp.MdApi
+	mdapi thost.MdApi
 }
 
 func CreateBaseSpi2() *baseSpi2 {
@@ -134,7 +134,7 @@ func CreateBaseSpi2() *baseSpi2 {
 	}
 	s.OnRspUserLoginCallback = func(pRspUserLogin *thost.CThostFtdcRspUserLoginField, pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
 		log.Printf("RspUserLogin: %+v\nRspInfo: %+v\n", pRspUserLogin, nil)
-		s.mdapi.SubscribeMarketData("ag2310")
+		s.mdapi.SubscribeMarketData("ag2406")
 	}
 	s.OnRtnDepthMarketDataCallback = func(pDepthMarketData *thost.CThostFtdcDepthMarketDataField) {
 		// log.Printf("tick {%+v}\n", quote)
@@ -150,23 +150,30 @@ var (
 
 	CTPLibPathLinux = "../../ctp/lib/v6.7.0_20230209_api_traderapi_se_linux64/libthostmduserapi_se.so"
 
-	TTSFront = "tcp://121.37.80.177:20004"
+	TTSFront    = "tcp://121.37.80.177:20004"
+	SimnowFront = SimnowEnv["md"]["7x24"]
 )
 
 func sample1() {
-	var mdapi ctp_tts.MdApi
+	var (
+		mdapi     thost.MdApi
+		frontAddr string
+	)
 	if runtime.GOOS == "darwin" {
 		mdapi = ctp_tts.CreateMdApi(ctp_tts.MdDynamicLibPath(TTSLibPathDarwin), ctp_tts.MdFlowPath("./data/"), ctp_tts.MdUsingUDP(false), ctp_tts.MdMultiCast(false))
+		frontAddr = TTSFront
 	} else if runtime.GOOS == "linux" {
 		// mdapi = ctp_tts.CreateMdApi(ctp_tts.MdDynamicLibPath(TTSLibPathLinux), ctp_tts.MdFlowPath("./data/"), ctp_tts.MdUsingUDP(false), ctp_tts.MdMultiCast(false))
 		mdapi = ctp_tts.CreateMdApi(ctp_tts.MdDynamicLibPath(CTPLibPathLinux), ctp_tts.MdFlowPath("./data/"), ctp_tts.MdUsingUDP(false), ctp_tts.MdMultiCast(false))
+		frontAddr = SimnowFront
 	}
 
 	baseSpi := CreateBaseSpi()
 	baseSpi.mdapi = mdapi
 	mdapi.RegisterSpi(baseSpi)
 
-	mdapi.RegisterFront(SimnowEnv["md"]["telesim1"])
+	mdapi.RegisterFront(frontAddr)
+
 	mdapi.Init()
 
 	println(mdapi.GetApiVersion())

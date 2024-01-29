@@ -16,7 +16,7 @@ import (
 	"github.com/pseudocodes/go2ctp/thost"
 )
 
-var _ MdSpi = &BaseMdSpi{}
+var _ thost.MdSpi = &BaseMdSpi{}
 
 type BaseMdSpi struct {
 

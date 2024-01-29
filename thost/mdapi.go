@@ -10,9 +10,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package ctp_tts
-
-import "github.com/pseudocodes/go2ctp/thost"
+package thost
 
 type MdSpi interface {
 
@@ -33,34 +31,34 @@ type MdSpi interface {
 	OnHeartBeatWarning(nTimeLapse int)
 
 	///登录请求响应
-	OnRspUserLogin(pRspUserLogin *thost.CThostFtdcRspUserLoginField, pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+	OnRspUserLogin(pRspUserLogin *CThostFtdcRspUserLoginField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
 
 	///登出请求响应
-	OnRspUserLogout(pUserLogout *thost.CThostFtdcUserLogoutField, pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+	OnRspUserLogout(pUserLogout *CThostFtdcUserLogoutField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
 
 	///请求查询组播合约响应
-	OnRspQryMulticastInstrument(pMulticastInstrument *thost.CThostFtdcMulticastInstrumentField, pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+	OnRspQryMulticastInstrument(pMulticastInstrument *CThostFtdcMulticastInstrumentField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
 
 	///错误应答
-	OnRspError(pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+	OnRspError(pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
 
 	///订阅行情应答
-	OnRspSubMarketData(pSpecificInstrument *thost.CThostFtdcSpecificInstrumentField, pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+	OnRspSubMarketData(pSpecificInstrument *CThostFtdcSpecificInstrumentField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
 
 	///取消订阅行情应答
-	OnRspUnSubMarketData(pSpecificInstrument *thost.CThostFtdcSpecificInstrumentField, pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+	OnRspUnSubMarketData(pSpecificInstrument *CThostFtdcSpecificInstrumentField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
 
 	///订阅询价应答
-	OnRspSubForQuoteRsp(pSpecificInstrument *thost.CThostFtdcSpecificInstrumentField, pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+	OnRspSubForQuoteRsp(pSpecificInstrument *CThostFtdcSpecificInstrumentField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
 
 	///取消订阅询价应答
-	OnRspUnSubForQuoteRsp(pSpecificInstrument *thost.CThostFtdcSpecificInstrumentField, pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+	OnRspUnSubForQuoteRsp(pSpecificInstrument *CThostFtdcSpecificInstrumentField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
 
 	///深度行情通知
-	OnRtnDepthMarketData(pDepthMarketData *thost.CThostFtdcDepthMarketDataField)
+	OnRtnDepthMarketData(pDepthMarketData *CThostFtdcDepthMarketDataField)
 
 	///询价通知
-	OnRtnForQuoteRsp(pForQuoteRsp *thost.CThostFtdcForQuoteRspField)
+	OnRtnForQuoteRsp(pForQuoteRsp *CThostFtdcForQuoteRspField)
 }
 
 type MdApi interface {
@@ -101,7 +99,7 @@ type MdApi interface {
 
 	///注册名字服务器用户信息
 	///@param pFensUserInfo：用户信息。
-	RegisterFensUserInfo(pFensUserInfo *thost.CThostFtdcFensUserInfoField)
+	RegisterFensUserInfo(pFensUserInfo *CThostFtdcFensUserInfoField)
 
 	///注册回调接口
 	///@param pSpi 派生自回调接口类的实例
@@ -132,11 +130,11 @@ type MdApi interface {
 	UnSubscribeForQuoteRsp(instrumentIDs ...string) int
 
 	///用户登录请求
-	ReqUserLogin(pReqUserLoginField *thost.CThostFtdcReqUserLoginField, nRequestID int) int
+	ReqUserLogin(pReqUserLoginField *CThostFtdcReqUserLoginField, nRequestID int) int
 
 	///登出请求
-	ReqUserLogout(pUserLogout *thost.CThostFtdcUserLogoutField, nRequestID int) int
+	ReqUserLogout(pUserLogout *CThostFtdcUserLogoutField, nRequestID int) int
 
 	///请求查询组播合约
-	ReqQryMulticastInstrument(pQryMulticastInstrument *thost.CThostFtdcQryMulticastInstrumentField, nRequestID int) int
+	ReqQryMulticastInstrument(pQryMulticastInstrument *CThostFtdcQryMulticastInstrumentField, nRequestID int) int
 }

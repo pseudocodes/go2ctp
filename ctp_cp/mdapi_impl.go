@@ -74,19 +74,19 @@ const (
 	defaultIsMulticast = false
 )
 
-type MdOption func(api *mdApi)
+type MdOption func(api *MdApi)
 
-type mdApi struct {
+type MdApi struct {
 	apiPtr uintptr
-	spi    MdSpi
+	spi    thost.MdSpi
 
 	flowPath  string
 	usingUDP  bool
 	multicast bool
 }
 
-func CreateMdApi(options ...MdOption) *mdApi {
-	api := &mdApi{
+func CreateMdApi(options ...MdOption) thost.MdApi {
+	api := &MdApi{
 		flowPath:  defaultFlowPath,
 		usingUDP:  defaultIsUsingUdp,
 		multicast: defaultIsMulticast,
@@ -110,58 +110,58 @@ func CreateMdApi(options ...MdOption) *mdApi {
 
 // /获取API的版本信息
 // /@retrun 获取到的版本号
-func (c *mdApi) GetApiVersion() string {
+func (c *MdApi) GetApiVersion() string {
 	cString := C._wrap_CThostFtdcMdApi_GetApiVersion(C.uintptr_t(c.apiPtr))
 	return C.GoString(cString)
 }
 
 // 删除接口对象本身
 // /@remark 不再使用本接口对象时,调用该函数删除接口对象
-func (c *mdApi) Release() {
+func (c *MdApi) Release() {
 	C._wrap_CThostFtdcMdApi_Release(C.uintptr_t(c.apiPtr))
 }
 
 // 初始化
 // /@remark 初始化运行环境,只有调用后,接口才开始工作
-func (c *mdApi) Init() {
+func (c *MdApi) Init() {
 	C._wrap_CThostFtdcMdApi_Init(C.uintptr_t(c.apiPtr))
 }
 
 // 等待接口线程结束运行
 // /@return 线程退出代码
-func (c *mdApi) Join() int {
+func (c *MdApi) Join() int {
 	return (int)(C._wrap_CThostFtdcMdApi_Join(C.uintptr_t(c.apiPtr)))
 }
 
 // /获取当前交易日
 // /@retrun 获取到的交易日
 // /@remark 只有登录成功后,才能得到正确的交易日
-func (c *mdApi) GetTradingDay() string {
+func (c *MdApi) GetTradingDay() string {
 	cString := C._wrap_CThostFtdcMdApi_GetTradingDay(C.uintptr_t(c.apiPtr))
 	return C.GoString(cString)
 }
 
-func (c *mdApi) RegisterFront(frontAddress string) {
+func (c *MdApi) RegisterFront(frontAddress string) {
 	addr := C.CString(frontAddress)
 	defer C.free(unsafe.Pointer(addr))
 	C._wrap_CThostFtdcMdApi_RegisterFront(C.uintptr_t(c.apiPtr), addr)
 }
 
 // 注册名字服务器用户信息
-func (c *mdApi) RegisterNameServer(nsAddress string) {
+func (c *MdApi) RegisterNameServer(nsAddress string) {
 	addr := C.CString(nsAddress)
 	defer C.free(unsafe.Pointer(addr))
 	C._wrap_CThostFtdcMdApi_RegisterNameServer(C.uintptr_t(c.apiPtr), addr)
 }
 
 // /@param pFensUserInfo：用户信息。
-func (c *mdApi) RegisterFensUserInfo(pFensUserInfo *thost.CThostFtdcFensUserInfoField) {
+func (c *MdApi) RegisterFensUserInfo(pFensUserInfo *thost.CThostFtdcFensUserInfoField) {
 	C._wrap_CThostFtdcMdApi_RegisterFensUserInfo(C.uintptr_t(c.apiPtr), (*C.struct_CThostFtdcFensUserInfoField)(unsafe.Pointer(pFensUserInfo)))
 }
 
 // 注册回调接口
 // /@param pSpi 派生自回调接口类的实例
-func (c *mdApi) RegisterSpi(pSpi MdSpi) {
+func (c *MdApi) RegisterSpi(pSpi thost.MdSpi) {
 	c.spi = pSpi
 }
 
@@ -169,7 +169,7 @@ func (c *mdApi) RegisterSpi(pSpi MdSpi) {
 // /@param ppInstrumentID 合约ID
 // /@param nCount 要订阅/退订行情的合约个数
 // /@remark
-func (c *mdApi) SubscribeMarketData(instrumentIDs ...string) int {
+func (c *MdApi) SubscribeMarketData(instrumentIDs ...string) int {
 	cinlist := []*C.char{}
 	for _, ins := range instrumentIDs {
 		cinlist = append(cinlist, C.CString(ins))
@@ -187,7 +187,7 @@ func (c *mdApi) SubscribeMarketData(instrumentIDs ...string) int {
 // /@param ppInstrumentID 合约ID
 // /@param nCount 要订阅/退订行情的合约个数
 // /@remark
-func (c *mdApi) UnSubscribeMarketData(instrumentIDs ...string) int {
+func (c *MdApi) UnSubscribeMarketData(instrumentIDs ...string) int {
 	cinlist := []*C.char{}
 	for _, ins := range instrumentIDs {
 		cinlist = append(cinlist, C.CString(ins))
@@ -205,7 +205,7 @@ func (c *mdApi) UnSubscribeMarketData(instrumentIDs ...string) int {
 // /@param ppInstrumentID 合约ID
 // /@param nCount 要订阅/退订行情的合约个数
 // /@remark
-func (c *mdApi) SubscribeForQuoteRsp(instrumentIDs ...string) int {
+func (c *MdApi) SubscribeForQuoteRsp(instrumentIDs ...string) int {
 	cinlist := []*C.char{}
 	for _, ins := range instrumentIDs {
 		cinlist = append(cinlist, C.CString(ins))
@@ -223,7 +223,7 @@ func (c *mdApi) SubscribeForQuoteRsp(instrumentIDs ...string) int {
 // /@param ppInstrumentID 合约ID
 // /@param nCount 要订阅/退订行情的合约个数
 // /@remark
-func (c *mdApi) UnSubscribeForQuoteRsp(instrumentIDs ...string) int {
+func (c *MdApi) UnSubscribeForQuoteRsp(instrumentIDs ...string) int {
 	cinlist := []*C.char{}
 	for _, ins := range instrumentIDs {
 		cinlist = append(cinlist, C.CString(ins))
@@ -238,113 +238,113 @@ func (c *mdApi) UnSubscribeForQuoteRsp(instrumentIDs ...string) int {
 }
 
 // 用户登录请求
-func (c *mdApi) ReqUserLogin(pReqUserLoginField *thost.CThostFtdcReqUserLoginField, nRequestID int) int {
+func (c *MdApi) ReqUserLogin(pReqUserLoginField *thost.CThostFtdcReqUserLoginField, nRequestID int) int {
 	return (int)(C._wrap_CThostFtdcMdApi_ReqUserLogin(C.uintptr_t(c.apiPtr), (*C.struct_CThostFtdcReqUserLoginField)(unsafe.Pointer(pReqUserLoginField)), C.int(nRequestID)))
 }
 
 // 登出请求
-func (c *mdApi) ReqUserLogout(pUserLogout *thost.CThostFtdcUserLogoutField, nRequestID int) int {
+func (c *MdApi) ReqUserLogout(pUserLogout *thost.CThostFtdcUserLogoutField, nRequestID int) int {
 	return (int)(C._wrap_CThostFtdcMdApi_ReqUserLogout(C.uintptr_t(c.apiPtr), (*C.struct_CThostFtdcUserLogoutField)(unsafe.Pointer(pUserLogout)), C.int(nRequestID)))
 }
 
 // 请求查询组播合约
-func (c *mdApi) ReqQryMulticastInstrument(pQryMulticastInstrument *thost.CThostFtdcQryMulticastInstrumentField, nRequestID int) int {
+func (c *MdApi) ReqQryMulticastInstrument(pQryMulticastInstrument *thost.CThostFtdcQryMulticastInstrumentField, nRequestID int) int {
 	return (int)(C._wrap_CThostFtdcMdApi_ReqQryMulticastInstrument(C.uintptr_t(c.apiPtr), (*C.struct_CThostFtdcQryMulticastInstrumentField)(unsafe.Pointer(pQryMulticastInstrument)), C.int(nRequestID)))
 }
 
 //export wrapMdOnFrontConnected
 func wrapMdOnFrontConnected(v uintptr) {
-	api := cgo.Handle(v).Value().(*mdApi)
+	api := cgo.Handle(v).Value().(*MdApi)
 	api.spi.OnFrontConnected()
 }
 
 //export wrapMdOnFrontDisconnected
 func wrapMdOnFrontDisconnected(v uintptr, nReason C.int) {
-	api := cgo.Handle(v).Value().(*mdApi)
+	api := cgo.Handle(v).Value().(*MdApi)
 	api.spi.OnFrontDisconnected(int(nReason))
 }
 
 //export wrapMdOnHeartBeatWarning
 func wrapMdOnHeartBeatWarning(v uintptr, nTimeLapse C.int) {
-	api := cgo.Handle(v).Value().(*mdApi)
+	api := cgo.Handle(v).Value().(*MdApi)
 	api.spi.OnHeartBeatWarning(int(nTimeLapse))
 }
 
 //export wrapMdOnRspUserLogin
 func wrapMdOnRspUserLogin(v uintptr, pRspUserLogin *C.struct_CThostFtdcRspUserLoginField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) {
-	api := cgo.Handle(v).Value().(*mdApi)
+	api := cgo.Handle(v).Value().(*MdApi)
 	api.spi.OnRspUserLogin((*thost.CThostFtdcRspUserLoginField)(unsafe.Pointer(pRspUserLogin)), (*thost.CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
 }
 
 //export wrapMdOnRspUserLogout
 func wrapMdOnRspUserLogout(v uintptr, pUserLogout *C.struct_CThostFtdcUserLogoutField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) {
-	api := cgo.Handle(v).Value().(*mdApi)
+	api := cgo.Handle(v).Value().(*MdApi)
 	api.spi.OnRspUserLogout((*thost.CThostFtdcUserLogoutField)(unsafe.Pointer(pUserLogout)), (*thost.CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
 }
 
 //export wrapMdOnRspQryMulticastInstrument
 func wrapMdOnRspQryMulticastInstrument(v uintptr, pMulticastInstrument *C.struct_CThostFtdcMulticastInstrumentField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) {
-	api := cgo.Handle(v).Value().(*mdApi)
+	api := cgo.Handle(v).Value().(*MdApi)
 	api.spi.OnRspQryMulticastInstrument((*thost.CThostFtdcMulticastInstrumentField)(unsafe.Pointer(pMulticastInstrument)), (*thost.CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
 }
 
 //export wrapMdOnRspError
 func wrapMdOnRspError(v uintptr, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) {
-	api := cgo.Handle(v).Value().(*mdApi)
+	api := cgo.Handle(v).Value().(*MdApi)
 	api.spi.OnRspError((*thost.CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
 }
 
 //export wrapMdOnRspSubMarketData
 func wrapMdOnRspSubMarketData(v uintptr, pSpecificInstrument *C.struct_CThostFtdcSpecificInstrumentField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) {
-	api := cgo.Handle(v).Value().(*mdApi)
+	api := cgo.Handle(v).Value().(*MdApi)
 	api.spi.OnRspSubMarketData((*thost.CThostFtdcSpecificInstrumentField)(unsafe.Pointer(pSpecificInstrument)), (*thost.CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
 }
 
 //export wrapMdOnRspUnSubMarketData
 func wrapMdOnRspUnSubMarketData(v uintptr, pSpecificInstrument *C.struct_CThostFtdcSpecificInstrumentField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) {
-	api := cgo.Handle(v).Value().(*mdApi)
+	api := cgo.Handle(v).Value().(*MdApi)
 	api.spi.OnRspUnSubMarketData((*thost.CThostFtdcSpecificInstrumentField)(unsafe.Pointer(pSpecificInstrument)), (*thost.CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
 }
 
 //export wrapMdOnRspSubForQuoteRsp
 func wrapMdOnRspSubForQuoteRsp(v uintptr, pSpecificInstrument *C.struct_CThostFtdcSpecificInstrumentField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) {
-	api := cgo.Handle(v).Value().(*mdApi)
+	api := cgo.Handle(v).Value().(*MdApi)
 	api.spi.OnRspSubForQuoteRsp((*thost.CThostFtdcSpecificInstrumentField)(unsafe.Pointer(pSpecificInstrument)), (*thost.CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
 }
 
 //export wrapMdOnRspUnSubForQuoteRsp
 func wrapMdOnRspUnSubForQuoteRsp(v uintptr, pSpecificInstrument *C.struct_CThostFtdcSpecificInstrumentField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) {
-	api := cgo.Handle(v).Value().(*mdApi)
+	api := cgo.Handle(v).Value().(*MdApi)
 	api.spi.OnRspUnSubForQuoteRsp((*thost.CThostFtdcSpecificInstrumentField)(unsafe.Pointer(pSpecificInstrument)), (*thost.CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
 }
 
 //export wrapMdOnRtnDepthMarketData
 func wrapMdOnRtnDepthMarketData(v uintptr, pDepthMarketData *C.struct_CThostFtdcDepthMarketDataField) {
-	api := cgo.Handle(v).Value().(*mdApi)
+	api := cgo.Handle(v).Value().(*MdApi)
 	api.spi.OnRtnDepthMarketData((*thost.CThostFtdcDepthMarketDataField)(unsafe.Pointer(pDepthMarketData)))
 }
 
 //export wrapMdOnRtnForQuoteRsp
 func wrapMdOnRtnForQuoteRsp(v uintptr, pForQuoteRsp *C.struct_CThostFtdcForQuoteRspField) {
-	api := cgo.Handle(v).Value().(*mdApi)
+	api := cgo.Handle(v).Value().(*MdApi)
 	api.spi.OnRtnForQuoteRsp((*thost.CThostFtdcForQuoteRspField)(unsafe.Pointer(pForQuoteRsp)))
 }
 
 // -----------------------------------------------------
 func MdFlowPath(path string) MdOption {
-	return func(api *mdApi) {
+	return func(api *MdApi) {
 		api.flowPath = path
 	}
 }
 
 func MdUsingUDP(usingudp bool) MdOption {
-	return func(api *mdApi) {
+	return func(api *MdApi) {
 		api.usingUDP = usingudp
 	}
 }
 
 func MdMultiCast(multicast bool) MdOption {
-	return func(api *mdApi) {
+	return func(api *MdApi) {
 		api.multicast = multicast
 	}
 }

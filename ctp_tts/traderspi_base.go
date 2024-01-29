@@ -16,7 +16,7 @@ import (
 	"github.com/pseudocodes/go2ctp/thost"
 )
 
-var _ TraderSpi = &BaseTraderSpi{}
+var _ thost.TraderSpi = &BaseTraderSpi{}
 
 type BaseTraderSpi struct {
 
