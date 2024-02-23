@@ -1,3 +1,2 @@
 *.go linguist-language=Go
 *.h linguist-language=Go
-*.cxx linguist-language=Go
