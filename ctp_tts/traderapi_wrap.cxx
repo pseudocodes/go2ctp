@@ -1639,7 +1639,7 @@ TTSCTPTraderSpi::TTSCTPTraderSpi(uintptr_t gUserApi, const char* pszDLLPath, con
 
     dllHandle = dlopen(pszDLLPath, RTLD_NOW);
     if (dllHandle == nullptr) {
-        fprintf(stderr, "[%s] dlopen error: %s", pszDLLPath, dlerror());
+        fprintf(stderr, "[%s] dlopen error: %s\n", pszDLLPath, dlerror());
         exit(-1);
     }
     TdApiCreator tdcreator = (TdApiCreator)dlsym(dllHandle, TraderApiCreateSymbol);
