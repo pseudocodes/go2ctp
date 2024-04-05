@@ -154,7 +154,7 @@ func main() {
 
 
 ## Base on `go2ctp`
-* https://github.com/pseudocodes/lite-ctp-trader
+* https://github.com/pseudocodes/light-trader
 * alpha-trade-gateway (incoming)
 
 ## TODO

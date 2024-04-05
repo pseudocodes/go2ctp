@@ -1,5 +1,12 @@
 # Changelog
 
+## [Unreleased] - 2024-04-05
+
+### Changed
+
+- Release 接口增加清空 RegisterSpi 操作
+- 更新 README 文档
+
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased] - 2024-03-11
