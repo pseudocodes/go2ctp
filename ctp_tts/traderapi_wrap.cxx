@@ -146,7 +146,7 @@ void _wrap_tts_CThostFtdcTraderApi_RegisterFensUserInfo(TTSCTPTraderSpi* pTrader
 ///@param pSpi 派生自回调接口类的实例
 void _wrap_tts_CThostFtdcTraderApi_RegisterSpi(TTSCTPTraderSpi* pTraderApi, CThostFtdcTraderSpi* pSpi)
 {
-    // return pTraderApi->RegisterSpi(pSpi);
+    return pTraderApi->RegisterSpi(pSpi);
 }
 
 // 订阅私有流。

@@ -45,6 +45,8 @@ extern void _wrap_tts_CThostFtdcMdApi_RegisterNameServer(uintptr_t, char *);
 
 extern void _wrap_tts_CThostFtdcMdApi_RegisterFensUserInfo(uintptr_t, struct CThostFtdcFensUserInfoField *);
 
+extern void _wrap_tts_CThostFtdcMdApi_RegisterSpi(uintptr_t, uintptr_t);
+
 extern int64_t _wrap_tts_CThostFtdcMdApi_SubscribeMarketData(uintptr_t, char **, int);
 
 extern int64_t _wrap_tts_CThostFtdcMdApi_UnSubscribeMarketData(uintptr_t, char **, int);
@@ -124,6 +126,7 @@ func (c *MdApi) GetApiVersion() string {
 // 删除接口对象本身
 // /@remark 不再使用本接口对象时,调用该函数删除接口对象
 func (c *MdApi) Release() {
+	C._wrap_tts_CThostFtdcMdApi_RegisterSpi(C.uintptr_t(c.apiPtr), C.uintptr_t(0))
 	C._wrap_tts_CThostFtdcMdApi_Release(C.uintptr_t(c.apiPtr))
 }
 

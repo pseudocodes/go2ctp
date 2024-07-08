@@ -139,6 +139,13 @@ void _wrap_tts_CThostFtdcMdApi_RegisterFensUserInfo(TTSCTPMdSpi* pMdApi, CThostF
     return pMdApi->RegisterFensUserInfo(pFensUserInfo);
 }
 
+/// 注册回调接口
+///@param pSpi 派生自回调接口类的实例
+void _wrap_tts_CThostFtdcMdApi_RegisterSpi(TTSCTPMdSpi* pMdApi, CThostFtdcMdSpi* pSpi)
+{
+    return pMdApi->RegisterSpi(pSpi);
+}
+
 // 订阅行情。
 ///@param ppInstrumentID 合约ID
 ///@param nCount 要订阅/退订行情的合约个数

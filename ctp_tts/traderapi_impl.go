@@ -41,7 +41,7 @@ extern void _wrap_tts_CThostFtdcTraderApi_RegisterNameServer(uintptr_t, char *);
 
 extern void _wrap_tts_CThostFtdcTraderApi_RegisterFensUserInfo(uintptr_t, struct CThostFtdcFensUserInfoField *);
 
-// extern void _wrap_tts_CThostFtdcTraderApi_RegisterSpi(uintptr_t, struct CThostFtdcTraderSpi *);
+extern void _wrap_tts_CThostFtdcTraderApi_RegisterSpi(uintptr_t, uintptr_t);
 
 extern void _wrap_tts_CThostFtdcTraderApi_SubscribePrivateTopic(uintptr_t, enum THOST_TE_RESUME_TYPE);
 
@@ -318,6 +318,7 @@ func (c *TraderApi) GetApiVersion() string {
 // 删除接口对象本身
 // /@remark 不再使用本接口对象时,调用该函数删除接口对象
 func (c *TraderApi) Release() {
+	C._wrap_tts_CThostFtdcTraderApi_RegisterSpi(C.uintptr_t(c.apiPtr), C.uintptr_t(0))
 	C._wrap_tts_CThostFtdcTraderApi_Release(C.uintptr_t(c.apiPtr))
 }
 
