@@ -13,11 +13,13 @@
 package ctp
 
 /*
-#cgo linux LDFLAGS: -fPIC -L. -L${SRCDIR}/lib/v6.6.9_20220914_api_tradeapi_se_linux64 -Wl,-rpath=${SRCDIR}/lib/v6.6.9_20220914_api_tradeapi_se_linux64  -lthostmduserapi_se -lthosttraderapi_se -lstdc++
-#cgo linux CPPFLAGS: -fPIC -I. -I${SRCDIR}/lib/v6.6.9_20220914_api_tradeapi_se_linux64
+#cgo linux LDFLAGS: -fPIC -L. -L${SRCDIR}/lib/v6.7.2_20230913_api_traderapi_se_linux64 -Wl,-rpath=${SRCDIR}/lib/v6.7.2_20230913_api_traderapi_se_linux64  -l:thostmduserapi_se.so -l:thosttraderapi_se.so -lstdc++
+#cgo linux CXXFLAGS: -std=c++11
+#cgo linux CPPFLAGS: -fPIC -I. -I${SRCDIR}/lib/v6.7.2_20230913_api_traderapi_se_linux64/
 
-#cgo darwin LDFLAGS: -L. -L${SRCDIR}/lib/v6.6.9_MacOS_20220926 -lthostmduserapi_se -lthosttraderapi_se -lssl -lcrypto -lcomunicationkey
-#cgo darwin CPPFLAGS: -I. -I${SRCDIR}/lib/v6.6.9_MacOS_20220926
+#cgo darwin LDFLAGS: -L. -F${SRCDIR}/lib/v6.7.2_MacOS_20231016 -framework thostmduserapi_se -framework thosttraderapi_se -Wl,-rpath,${SRCDIR}/lib/v6.7.2_MacOS_20231016
+#cgo darwin CXXFLAGS: -std=c++11
+#cgo darwin CPPFLAGS: -I. -I${SRCDIR}/lib/v6.7.2_MacOS_20231016/include/
 
 */
 import "C"

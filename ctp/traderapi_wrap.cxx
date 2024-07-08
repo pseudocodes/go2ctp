@@ -693,6 +693,150 @@ int _wrap_CThostFtdcTraderApi_ReqQryRiskSettleProductStatus(QCTPTraderSpi* pTrad
     return pTraderApi->ReqQryRiskSettleProductStatus(pQryRiskSettleProductStatus, nRequestID);
 }
 
+// SPBM期货合约参数查询
+int _wrap_CThostFtdcTraderApi_ReqQrySPBMFutureParameter(QCTPTraderSpi* pTraderApi, CThostFtdcQrySPBMFutureParameterField* pQrySPBMFutureParameter, int nRequestID)
+{
+    return pTraderApi->ReqQrySPBMFutureParameter(pQrySPBMFutureParameter, nRequestID);
+}
+
+// SPBM期权合约参数查询
+int _wrap_CThostFtdcTraderApi_ReqQrySPBMOptionParameter(QCTPTraderSpi* pTraderApi, CThostFtdcQrySPBMOptionParameterField* pQrySPBMOptionParameter, int nRequestID)
+{
+    return pTraderApi->ReqQrySPBMOptionParameter(pQrySPBMOptionParameter, nRequestID);
+}
+
+// SPBM品种内对锁仓折扣参数查询
+int _wrap_CThostFtdcTraderApi_ReqQrySPBMIntraParameter(QCTPTraderSpi* pTraderApi, CThostFtdcQrySPBMIntraParameterField* pQrySPBMIntraParameter, int nRequestID)
+{
+    return pTraderApi->ReqQrySPBMIntraParameter(pQrySPBMIntraParameter, nRequestID);
+}
+
+// SPBM跨品种抵扣参数查询
+int _wrap_CThostFtdcTraderApi_ReqQrySPBMInterParameter(QCTPTraderSpi* pTraderApi, CThostFtdcQrySPBMInterParameterField* pQrySPBMInterParameter, int nRequestID)
+{
+    return pTraderApi->ReqQrySPBMInterParameter(pQrySPBMInterParameter, nRequestID);
+}
+
+// SPBM组合保证金套餐查询
+int _wrap_CThostFtdcTraderApi_ReqQrySPBMPortfDefinition(QCTPTraderSpi* pTraderApi, CThostFtdcQrySPBMPortfDefinitionField* pQrySPBMPortfDefinition, int nRequestID)
+{
+    return pTraderApi->ReqQrySPBMPortfDefinition(pQrySPBMPortfDefinition, nRequestID);
+}
+
+// 投资者SPBM套餐选择查询
+int _wrap_CThostFtdcTraderApi_ReqQrySPBMInvestorPortfDef(QCTPTraderSpi* pTraderApi, CThostFtdcQrySPBMInvestorPortfDefField* pQrySPBMInvestorPortfDef, int nRequestID)
+{
+    return pTraderApi->ReqQrySPBMInvestorPortfDef(pQrySPBMInvestorPortfDef, nRequestID);
+}
+
+// 投资者新型组合保证金系数查询
+int _wrap_CThostFtdcTraderApi_ReqQryInvestorPortfMarginRatio(QCTPTraderSpi* pTraderApi, CThostFtdcQryInvestorPortfMarginRatioField* pQryInvestorPortfMarginRatio, int nRequestID)
+{
+    return pTraderApi->ReqQryInvestorPortfMarginRatio(pQryInvestorPortfMarginRatio, nRequestID);
+}
+
+// 投资者产品SPBM明细查询
+int _wrap_CThostFtdcTraderApi_ReqQryInvestorProdSPBMDetail(QCTPTraderSpi* pTraderApi, CThostFtdcQryInvestorProdSPBMDetailField* pQryInvestorProdSPBMDetail, int nRequestID)
+{
+    return pTraderApi->ReqQryInvestorProdSPBMDetail(pQryInvestorProdSPBMDetail, nRequestID);
+}
+
+// 投资者商品组SPMM记录查询
+int _wrap_CThostFtdcTraderApi_ReqQryInvestorCommoditySPMMMargin(QCTPTraderSpi* pTraderApi, CThostFtdcQryInvestorCommoditySPMMMarginField* pQryInvestorCommoditySPMMMargin, int nRequestID)
+{
+    return pTraderApi->ReqQryInvestorCommoditySPMMMargin(pQryInvestorCommoditySPMMMargin, nRequestID);
+}
+
+// 投资者商品群SPMM记录查询
+int _wrap_CThostFtdcTraderApi_ReqQryInvestorCommodityGroupSPMMMargin(QCTPTraderSpi* pTraderApi, CThostFtdcQryInvestorCommodityGroupSPMMMarginField* pQryInvestorCommodityGroupSPMMMargin, int nRequestID)
+{
+    return pTraderApi->ReqQryInvestorCommodityGroupSPMMMargin(pQryInvestorCommodityGroupSPMMMargin, nRequestID);
+}
+
+// SPMM合约参数查询
+int _wrap_CThostFtdcTraderApi_ReqQrySPMMInstParam(QCTPTraderSpi* pTraderApi, CThostFtdcQrySPMMInstParamField* pQrySPMMInstParam, int nRequestID)
+{
+    return pTraderApi->ReqQrySPMMInstParam(pQrySPMMInstParam, nRequestID);
+}
+
+// SPMM产品参数查询
+int _wrap_CThostFtdcTraderApi_ReqQrySPMMProductParam(QCTPTraderSpi* pTraderApi, CThostFtdcQrySPMMProductParamField* pQrySPMMProductParam, int nRequestID)
+{
+    return pTraderApi->ReqQrySPMMProductParam(pQrySPMMProductParam, nRequestID);
+}
+
+// SPBM附加跨品种抵扣参数查询
+int _wrap_CThostFtdcTraderApi_ReqQrySPBMAddOnInterParameter(QCTPTraderSpi* pTraderApi, CThostFtdcQrySPBMAddOnInterParameterField* pQrySPBMAddOnInterParameter, int nRequestID)
+{
+    return pTraderApi->ReqQrySPBMAddOnInterParameter(pQrySPBMAddOnInterParameter, nRequestID);
+}
+
+// RCAMS产品组合信息查询
+int _wrap_CThostFtdcTraderApi_ReqQryRCAMSCombProductInfo(QCTPTraderSpi* pTraderApi, CThostFtdcQryRCAMSCombProductInfoField* pQryRCAMSCombProductInfo, int nRequestID)
+{
+    return pTraderApi->ReqQryRCAMSCombProductInfo(pQryRCAMSCombProductInfo, nRequestID);
+}
+
+// RCAMS同合约风险对冲参数查询
+int _wrap_CThostFtdcTraderApi_ReqQryRCAMSInstrParameter(QCTPTraderSpi* pTraderApi, CThostFtdcQryRCAMSInstrParameterField* pQryRCAMSInstrParameter, int nRequestID)
+{
+    return pTraderApi->ReqQryRCAMSInstrParameter(pQryRCAMSInstrParameter, nRequestID);
+}
+
+// RCAMS品种内风险对冲参数查询
+int _wrap_CThostFtdcTraderApi_ReqQryRCAMSIntraParameter(QCTPTraderSpi* pTraderApi, CThostFtdcQryRCAMSIntraParameterField* pQryRCAMSIntraParameter, int nRequestID)
+{
+    return pTraderApi->ReqQryRCAMSIntraParameter(pQryRCAMSIntraParameter, nRequestID);
+}
+
+// RCAMS跨品种风险折抵参数查询
+int _wrap_CThostFtdcTraderApi_ReqQryRCAMSInterParameter(QCTPTraderSpi* pTraderApi, CThostFtdcQryRCAMSInterParameterField* pQryRCAMSInterParameter, int nRequestID)
+{
+    return pTraderApi->ReqQryRCAMSInterParameter(pQryRCAMSInterParameter, nRequestID);
+}
+
+// RCAMS空头期权风险调整参数查询
+int _wrap_CThostFtdcTraderApi_ReqQryRCAMSShortOptAdjustParam(QCTPTraderSpi* pTraderApi, CThostFtdcQryRCAMSShortOptAdjustParamField* pQryRCAMSShortOptAdjustParam, int nRequestID)
+{
+    return pTraderApi->ReqQryRCAMSShortOptAdjustParam(pQryRCAMSShortOptAdjustParam, nRequestID);
+}
+
+// RCAMS策略组合持仓查询
+int _wrap_CThostFtdcTraderApi_ReqQryRCAMSInvestorCombPosition(QCTPTraderSpi* pTraderApi, CThostFtdcQryRCAMSInvestorCombPositionField* pQryRCAMSInvestorCombPosition, int nRequestID)
+{
+    return pTraderApi->ReqQryRCAMSInvestorCombPosition(pQryRCAMSInvestorCombPosition, nRequestID);
+}
+
+// 投资者品种RCAMS保证金查询
+int _wrap_CThostFtdcTraderApi_ReqQryInvestorProdRCAMSMargin(QCTPTraderSpi* pTraderApi, CThostFtdcQryInvestorProdRCAMSMarginField* pQryInvestorProdRCAMSMargin, int nRequestID)
+{
+    return pTraderApi->ReqQryInvestorProdRCAMSMargin(pQryInvestorProdRCAMSMargin, nRequestID);
+}
+
+// RULE合约保证金参数查询
+int _wrap_CThostFtdcTraderApi_ReqQryRULEInstrParameter(QCTPTraderSpi* pTraderApi, CThostFtdcQryRULEInstrParameterField* pQryRULEInstrParameter, int nRequestID)
+{
+    return pTraderApi->ReqQryRULEInstrParameter(pQryRULEInstrParameter, nRequestID);
+}
+
+// RULE品种内对锁仓折扣参数查询
+int _wrap_CThostFtdcTraderApi_ReqQryRULEIntraParameter(QCTPTraderSpi* pTraderApi, CThostFtdcQryRULEIntraParameterField* pQryRULEIntraParameter, int nRequestID)
+{
+    return pTraderApi->ReqQryRULEIntraParameter(pQryRULEIntraParameter, nRequestID);
+}
+
+// RULE跨品种抵扣参数查询
+int _wrap_CThostFtdcTraderApi_ReqQryRULEInterParameter(QCTPTraderSpi* pTraderApi, CThostFtdcQryRULEInterParameterField* pQryRULEInterParameter, int nRequestID)
+{
+    return pTraderApi->ReqQryRULEInterParameter(pQryRULEInterParameter, nRequestID);
+}
+
+// 投资者产品RULE保证金查询
+int _wrap_CThostFtdcTraderApi_ReqQryInvestorProdRULEMargin(QCTPTraderSpi* pTraderApi, CThostFtdcQryInvestorProdRULEMarginField* pQryInvestorProdRULEMargin, int nRequestID)
+{
+    return pTraderApi->ReqQryInvestorProdRULEMargin(pQryInvestorProdRULEMargin, nRequestID);
+}
+
 #ifdef __cplusplus
 }
 #endif
@@ -1607,6 +1751,174 @@ void QCTPTraderSpi::OnRspQryRiskSettleProductStatus(CThostFtdcRiskSettleProductS
     wrapTraderOnRspQryRiskSettleProductStatus(gUserApi, pRiskSettleProductStatus, pRspInfo, nRequestID, bIsLast);
 }
 
+// SPBM期货合约参数查询响应
+extern "C" void wrapTraderOnRspQrySPBMFutureParameter(uintptr_t, CThostFtdcSPBMFutureParameterField*, CThostFtdcRspInfoField*, int, bool);
+void QCTPTraderSpi::OnRspQrySPBMFutureParameter(CThostFtdcSPBMFutureParameterField* pSPBMFutureParameter, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+{
+    wrapTraderOnRspQrySPBMFutureParameter(gUserApi, pSPBMFutureParameter, pRspInfo, nRequestID, bIsLast);
+}
+
+// SPBM期权合约参数查询响应
+extern "C" void wrapTraderOnRspQrySPBMOptionParameter(uintptr_t, CThostFtdcSPBMOptionParameterField*, CThostFtdcRspInfoField*, int, bool);
+void QCTPTraderSpi::OnRspQrySPBMOptionParameter(CThostFtdcSPBMOptionParameterField* pSPBMOptionParameter, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+{
+    wrapTraderOnRspQrySPBMOptionParameter(gUserApi, pSPBMOptionParameter, pRspInfo, nRequestID, bIsLast);
+}
+
+// SPBM品种内对锁仓折扣参数查询响应
+extern "C" void wrapTraderOnRspQrySPBMIntraParameter(uintptr_t, CThostFtdcSPBMIntraParameterField*, CThostFtdcRspInfoField*, int, bool);
+void QCTPTraderSpi::OnRspQrySPBMIntraParameter(CThostFtdcSPBMIntraParameterField* pSPBMIntraParameter, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+{
+    wrapTraderOnRspQrySPBMIntraParameter(gUserApi, pSPBMIntraParameter, pRspInfo, nRequestID, bIsLast);
+}
+
+// SPBM跨品种抵扣参数查询响应
+extern "C" void wrapTraderOnRspQrySPBMInterParameter(uintptr_t, CThostFtdcSPBMInterParameterField*, CThostFtdcRspInfoField*, int, bool);
+void QCTPTraderSpi::OnRspQrySPBMInterParameter(CThostFtdcSPBMInterParameterField* pSPBMInterParameter, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+{
+    wrapTraderOnRspQrySPBMInterParameter(gUserApi, pSPBMInterParameter, pRspInfo, nRequestID, bIsLast);
+}
+
+// SPBM组合保证金套餐查询响应
+extern "C" void wrapTraderOnRspQrySPBMPortfDefinition(uintptr_t, CThostFtdcSPBMPortfDefinitionField*, CThostFtdcRspInfoField*, int, bool);
+void QCTPTraderSpi::OnRspQrySPBMPortfDefinition(CThostFtdcSPBMPortfDefinitionField* pSPBMPortfDefinition, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+{
+    wrapTraderOnRspQrySPBMPortfDefinition(gUserApi, pSPBMPortfDefinition, pRspInfo, nRequestID, bIsLast);
+}
+
+// 投资者SPBM套餐选择查询响应
+extern "C" void wrapTraderOnRspQrySPBMInvestorPortfDef(uintptr_t, CThostFtdcSPBMInvestorPortfDefField*, CThostFtdcRspInfoField*, int, bool);
+void QCTPTraderSpi::OnRspQrySPBMInvestorPortfDef(CThostFtdcSPBMInvestorPortfDefField* pSPBMInvestorPortfDef, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+{
+    wrapTraderOnRspQrySPBMInvestorPortfDef(gUserApi, pSPBMInvestorPortfDef, pRspInfo, nRequestID, bIsLast);
+}
+
+// 投资者新型组合保证金系数查询响应
+extern "C" void wrapTraderOnRspQryInvestorPortfMarginRatio(uintptr_t, CThostFtdcInvestorPortfMarginRatioField*, CThostFtdcRspInfoField*, int, bool);
+void QCTPTraderSpi::OnRspQryInvestorPortfMarginRatio(CThostFtdcInvestorPortfMarginRatioField* pInvestorPortfMarginRatio, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+{
+    wrapTraderOnRspQryInvestorPortfMarginRatio(gUserApi, pInvestorPortfMarginRatio, pRspInfo, nRequestID, bIsLast);
+}
+
+// 投资者产品SPBM明细查询响应
+extern "C" void wrapTraderOnRspQryInvestorProdSPBMDetail(uintptr_t, CThostFtdcInvestorProdSPBMDetailField*, CThostFtdcRspInfoField*, int, bool);
+void QCTPTraderSpi::OnRspQryInvestorProdSPBMDetail(CThostFtdcInvestorProdSPBMDetailField* pInvestorProdSPBMDetail, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+{
+    wrapTraderOnRspQryInvestorProdSPBMDetail(gUserApi, pInvestorProdSPBMDetail, pRspInfo, nRequestID, bIsLast);
+}
+
+// 投资者商品组SPMM记录查询响应
+extern "C" void wrapTraderOnRspQryInvestorCommoditySPMMMargin(uintptr_t, CThostFtdcInvestorCommoditySPMMMarginField*, CThostFtdcRspInfoField*, int, bool);
+void QCTPTraderSpi::OnRspQryInvestorCommoditySPMMMargin(CThostFtdcInvestorCommoditySPMMMarginField* pInvestorCommoditySPMMMargin, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+{
+    wrapTraderOnRspQryInvestorCommoditySPMMMargin(gUserApi, pInvestorCommoditySPMMMargin, pRspInfo, nRequestID, bIsLast);
+}
+
+// 投资者商品群SPMM记录查询响应
+extern "C" void wrapTraderOnRspQryInvestorCommodityGroupSPMMMargin(uintptr_t, CThostFtdcInvestorCommodityGroupSPMMMarginField*, CThostFtdcRspInfoField*, int, bool);
+void QCTPTraderSpi::OnRspQryInvestorCommodityGroupSPMMMargin(CThostFtdcInvestorCommodityGroupSPMMMarginField* pInvestorCommodityGroupSPMMMargin, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+{
+    wrapTraderOnRspQryInvestorCommodityGroupSPMMMargin(gUserApi, pInvestorCommodityGroupSPMMMargin, pRspInfo, nRequestID, bIsLast);
+}
+
+// SPMM合约参数查询响应
+extern "C" void wrapTraderOnRspQrySPMMInstParam(uintptr_t, CThostFtdcSPMMInstParamField*, CThostFtdcRspInfoField*, int, bool);
+void QCTPTraderSpi::OnRspQrySPMMInstParam(CThostFtdcSPMMInstParamField* pSPMMInstParam, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+{
+    wrapTraderOnRspQrySPMMInstParam(gUserApi, pSPMMInstParam, pRspInfo, nRequestID, bIsLast);
+}
+
+// SPMM产品参数查询响应
+extern "C" void wrapTraderOnRspQrySPMMProductParam(uintptr_t, CThostFtdcSPMMProductParamField*, CThostFtdcRspInfoField*, int, bool);
+void QCTPTraderSpi::OnRspQrySPMMProductParam(CThostFtdcSPMMProductParamField* pSPMMProductParam, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+{
+    wrapTraderOnRspQrySPMMProductParam(gUserApi, pSPMMProductParam, pRspInfo, nRequestID, bIsLast);
+}
+
+// SPBM附加跨品种抵扣参数查询响应
+extern "C" void wrapTraderOnRspQrySPBMAddOnInterParameter(uintptr_t, CThostFtdcSPBMAddOnInterParameterField*, CThostFtdcRspInfoField*, int, bool);
+void QCTPTraderSpi::OnRspQrySPBMAddOnInterParameter(CThostFtdcSPBMAddOnInterParameterField* pSPBMAddOnInterParameter, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+{
+    wrapTraderOnRspQrySPBMAddOnInterParameter(gUserApi, pSPBMAddOnInterParameter, pRspInfo, nRequestID, bIsLast);
+}
+
+// RCAMS产品组合信息查询响应
+extern "C" void wrapTraderOnRspQryRCAMSCombProductInfo(uintptr_t, CThostFtdcRCAMSCombProductInfoField*, CThostFtdcRspInfoField*, int, bool);
+void QCTPTraderSpi::OnRspQryRCAMSCombProductInfo(CThostFtdcRCAMSCombProductInfoField* pRCAMSCombProductInfo, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+{
+    wrapTraderOnRspQryRCAMSCombProductInfo(gUserApi, pRCAMSCombProductInfo, pRspInfo, nRequestID, bIsLast);
+}
+
+// RCAMS同合约风险对冲参数查询响应
+extern "C" void wrapTraderOnRspQryRCAMSInstrParameter(uintptr_t, CThostFtdcRCAMSInstrParameterField*, CThostFtdcRspInfoField*, int, bool);
+void QCTPTraderSpi::OnRspQryRCAMSInstrParameter(CThostFtdcRCAMSInstrParameterField* pRCAMSInstrParameter, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+{
+    wrapTraderOnRspQryRCAMSInstrParameter(gUserApi, pRCAMSInstrParameter, pRspInfo, nRequestID, bIsLast);
+}
+
+// RCAMS品种内风险对冲参数查询响应
+extern "C" void wrapTraderOnRspQryRCAMSIntraParameter(uintptr_t, CThostFtdcRCAMSIntraParameterField*, CThostFtdcRspInfoField*, int, bool);
+void QCTPTraderSpi::OnRspQryRCAMSIntraParameter(CThostFtdcRCAMSIntraParameterField* pRCAMSIntraParameter, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+{
+    wrapTraderOnRspQryRCAMSIntraParameter(gUserApi, pRCAMSIntraParameter, pRspInfo, nRequestID, bIsLast);
+}
+
+// RCAMS跨品种风险折抵参数查询响应
+extern "C" void wrapTraderOnRspQryRCAMSInterParameter(uintptr_t, CThostFtdcRCAMSInterParameterField*, CThostFtdcRspInfoField*, int, bool);
+void QCTPTraderSpi::OnRspQryRCAMSInterParameter(CThostFtdcRCAMSInterParameterField* pRCAMSInterParameter, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+{
+    wrapTraderOnRspQryRCAMSInterParameter(gUserApi, pRCAMSInterParameter, pRspInfo, nRequestID, bIsLast);
+}
+
+// RCAMS空头期权风险调整参数查询响应
+extern "C" void wrapTraderOnRspQryRCAMSShortOptAdjustParam(uintptr_t, CThostFtdcRCAMSShortOptAdjustParamField*, CThostFtdcRspInfoField*, int, bool);
+void QCTPTraderSpi::OnRspQryRCAMSShortOptAdjustParam(CThostFtdcRCAMSShortOptAdjustParamField* pRCAMSShortOptAdjustParam, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+{
+    wrapTraderOnRspQryRCAMSShortOptAdjustParam(gUserApi, pRCAMSShortOptAdjustParam, pRspInfo, nRequestID, bIsLast);
+}
+
+// RCAMS策略组合持仓查询响应
+extern "C" void wrapTraderOnRspQryRCAMSInvestorCombPosition(uintptr_t, CThostFtdcRCAMSInvestorCombPositionField*, CThostFtdcRspInfoField*, int, bool);
+void QCTPTraderSpi::OnRspQryRCAMSInvestorCombPosition(CThostFtdcRCAMSInvestorCombPositionField* pRCAMSInvestorCombPosition, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+{
+    wrapTraderOnRspQryRCAMSInvestorCombPosition(gUserApi, pRCAMSInvestorCombPosition, pRspInfo, nRequestID, bIsLast);
+}
+
+// 投资者品种RCAMS保证金查询响应
+extern "C" void wrapTraderOnRspQryInvestorProdRCAMSMargin(uintptr_t, CThostFtdcInvestorProdRCAMSMarginField*, CThostFtdcRspInfoField*, int, bool);
+void QCTPTraderSpi::OnRspQryInvestorProdRCAMSMargin(CThostFtdcInvestorProdRCAMSMarginField* pInvestorProdRCAMSMargin, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+{
+    wrapTraderOnRspQryInvestorProdRCAMSMargin(gUserApi, pInvestorProdRCAMSMargin, pRspInfo, nRequestID, bIsLast);
+}
+
+// RULE合约保证金参数查询响应
+extern "C" void wrapTraderOnRspQryRULEInstrParameter(uintptr_t, CThostFtdcRULEInstrParameterField*, CThostFtdcRspInfoField*, int, bool);
+void QCTPTraderSpi::OnRspQryRULEInstrParameter(CThostFtdcRULEInstrParameterField* pRULEInstrParameter, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+{
+    wrapTraderOnRspQryRULEInstrParameter(gUserApi, pRULEInstrParameter, pRspInfo, nRequestID, bIsLast);
+}
+
+// RULE品种内对锁仓折扣参数查询响应
+extern "C" void wrapTraderOnRspQryRULEIntraParameter(uintptr_t, CThostFtdcRULEIntraParameterField*, CThostFtdcRspInfoField*, int, bool);
+void QCTPTraderSpi::OnRspQryRULEIntraParameter(CThostFtdcRULEIntraParameterField* pRULEIntraParameter, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+{
+    wrapTraderOnRspQryRULEIntraParameter(gUserApi, pRULEIntraParameter, pRspInfo, nRequestID, bIsLast);
+}
+
+// RULE跨品种抵扣参数查询响应
+extern "C" void wrapTraderOnRspQryRULEInterParameter(uintptr_t, CThostFtdcRULEInterParameterField*, CThostFtdcRspInfoField*, int, bool);
+void QCTPTraderSpi::OnRspQryRULEInterParameter(CThostFtdcRULEInterParameterField* pRULEInterParameter, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+{
+    wrapTraderOnRspQryRULEInterParameter(gUserApi, pRULEInterParameter, pRspInfo, nRequestID, bIsLast);
+}
+
+// 投资者产品RULE保证金查询响应
+extern "C" void wrapTraderOnRspQryInvestorProdRULEMargin(uintptr_t, CThostFtdcInvestorProdRULEMarginField*, CThostFtdcRspInfoField*, int, bool);
+void QCTPTraderSpi::OnRspQryInvestorProdRULEMargin(CThostFtdcInvestorProdRULEMarginField* pInvestorProdRULEMargin, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+{
+    wrapTraderOnRspQryInvestorProdRULEMargin(gUserApi, pInvestorProdRULEMargin, pRspInfo, nRequestID, bIsLast);
+}
+
 QCTPTraderSpi::QCTPTraderSpi(CThostFtdcTraderApi* pUserApi)
 {
     this->pUserApi = pUserApi;
@@ -2253,4 +2565,148 @@ int QCTPTraderSpi::ReqQryRiskSettleInvstPosition(CThostFtdcQryRiskSettleInvstPos
 int QCTPTraderSpi::ReqQryRiskSettleProductStatus(CThostFtdcQryRiskSettleProductStatusField* pQryRiskSettleProductStatus, int nRequestID)
 {
     return this->pUserApi->ReqQryRiskSettleProductStatus(pQryRiskSettleProductStatus, nRequestID);
+}
+
+// SPBM期货合约参数查询
+int QCTPTraderSpi::ReqQrySPBMFutureParameter(CThostFtdcQrySPBMFutureParameterField* pQrySPBMFutureParameter, int nRequestID)
+{
+    return this->pUserApi->ReqQrySPBMFutureParameter(pQrySPBMFutureParameter, nRequestID);
+}
+
+// SPBM期权合约参数查询
+int QCTPTraderSpi::ReqQrySPBMOptionParameter(CThostFtdcQrySPBMOptionParameterField* pQrySPBMOptionParameter, int nRequestID)
+{
+    return this->pUserApi->ReqQrySPBMOptionParameter(pQrySPBMOptionParameter, nRequestID);
+}
+
+// SPBM品种内对锁仓折扣参数查询
+int QCTPTraderSpi::ReqQrySPBMIntraParameter(CThostFtdcQrySPBMIntraParameterField* pQrySPBMIntraParameter, int nRequestID)
+{
+    return this->pUserApi->ReqQrySPBMIntraParameter(pQrySPBMIntraParameter, nRequestID);
+}
+
+// SPBM跨品种抵扣参数查询
+int QCTPTraderSpi::ReqQrySPBMInterParameter(CThostFtdcQrySPBMInterParameterField* pQrySPBMInterParameter, int nRequestID)
+{
+    return this->pUserApi->ReqQrySPBMInterParameter(pQrySPBMInterParameter, nRequestID);
+}
+
+// SPBM组合保证金套餐查询
+int QCTPTraderSpi::ReqQrySPBMPortfDefinition(CThostFtdcQrySPBMPortfDefinitionField* pQrySPBMPortfDefinition, int nRequestID)
+{
+    return this->pUserApi->ReqQrySPBMPortfDefinition(pQrySPBMPortfDefinition, nRequestID);
+}
+
+// 投资者SPBM套餐选择查询
+int QCTPTraderSpi::ReqQrySPBMInvestorPortfDef(CThostFtdcQrySPBMInvestorPortfDefField* pQrySPBMInvestorPortfDef, int nRequestID)
+{
+    return this->pUserApi->ReqQrySPBMInvestorPortfDef(pQrySPBMInvestorPortfDef, nRequestID);
+}
+
+// 投资者新型组合保证金系数查询
+int QCTPTraderSpi::ReqQryInvestorPortfMarginRatio(CThostFtdcQryInvestorPortfMarginRatioField* pQryInvestorPortfMarginRatio, int nRequestID)
+{
+    return this->pUserApi->ReqQryInvestorPortfMarginRatio(pQryInvestorPortfMarginRatio, nRequestID);
+}
+
+// 投资者产品SPBM明细查询
+int QCTPTraderSpi::ReqQryInvestorProdSPBMDetail(CThostFtdcQryInvestorProdSPBMDetailField* pQryInvestorProdSPBMDetail, int nRequestID)
+{
+    return this->pUserApi->ReqQryInvestorProdSPBMDetail(pQryInvestorProdSPBMDetail, nRequestID);
+}
+
+// 投资者商品组SPMM记录查询
+int QCTPTraderSpi::ReqQryInvestorCommoditySPMMMargin(CThostFtdcQryInvestorCommoditySPMMMarginField* pQryInvestorCommoditySPMMMargin, int nRequestID)
+{
+    return this->pUserApi->ReqQryInvestorCommoditySPMMMargin(pQryInvestorCommoditySPMMMargin, nRequestID);
+}
+
+// 投资者商品群SPMM记录查询
+int QCTPTraderSpi::ReqQryInvestorCommodityGroupSPMMMargin(CThostFtdcQryInvestorCommodityGroupSPMMMarginField* pQryInvestorCommodityGroupSPMMMargin, int nRequestID)
+{
+    return this->pUserApi->ReqQryInvestorCommodityGroupSPMMMargin(pQryInvestorCommodityGroupSPMMMargin, nRequestID);
+}
+
+// SPMM合约参数查询
+int QCTPTraderSpi::ReqQrySPMMInstParam(CThostFtdcQrySPMMInstParamField* pQrySPMMInstParam, int nRequestID)
+{
+    return this->pUserApi->ReqQrySPMMInstParam(pQrySPMMInstParam, nRequestID);
+}
+
+// SPMM产品参数查询
+int QCTPTraderSpi::ReqQrySPMMProductParam(CThostFtdcQrySPMMProductParamField* pQrySPMMProductParam, int nRequestID)
+{
+    return this->pUserApi->ReqQrySPMMProductParam(pQrySPMMProductParam, nRequestID);
+}
+
+// SPBM附加跨品种抵扣参数查询
+int QCTPTraderSpi::ReqQrySPBMAddOnInterParameter(CThostFtdcQrySPBMAddOnInterParameterField* pQrySPBMAddOnInterParameter, int nRequestID)
+{
+    return this->pUserApi->ReqQrySPBMAddOnInterParameter(pQrySPBMAddOnInterParameter, nRequestID);
+}
+
+// RCAMS产品组合信息查询
+int QCTPTraderSpi::ReqQryRCAMSCombProductInfo(CThostFtdcQryRCAMSCombProductInfoField* pQryRCAMSCombProductInfo, int nRequestID)
+{
+    return this->pUserApi->ReqQryRCAMSCombProductInfo(pQryRCAMSCombProductInfo, nRequestID);
+}
+
+// RCAMS同合约风险对冲参数查询
+int QCTPTraderSpi::ReqQryRCAMSInstrParameter(CThostFtdcQryRCAMSInstrParameterField* pQryRCAMSInstrParameter, int nRequestID)
+{
+    return this->pUserApi->ReqQryRCAMSInstrParameter(pQryRCAMSInstrParameter, nRequestID);
+}
+
+// RCAMS品种内风险对冲参数查询
+int QCTPTraderSpi::ReqQryRCAMSIntraParameter(CThostFtdcQryRCAMSIntraParameterField* pQryRCAMSIntraParameter, int nRequestID)
+{
+    return this->pUserApi->ReqQryRCAMSIntraParameter(pQryRCAMSIntraParameter, nRequestID);
+}
+
+// RCAMS跨品种风险折抵参数查询
+int QCTPTraderSpi::ReqQryRCAMSInterParameter(CThostFtdcQryRCAMSInterParameterField* pQryRCAMSInterParameter, int nRequestID)
+{
+    return this->pUserApi->ReqQryRCAMSInterParameter(pQryRCAMSInterParameter, nRequestID);
+}
+
+// RCAMS空头期权风险调整参数查询
+int QCTPTraderSpi::ReqQryRCAMSShortOptAdjustParam(CThostFtdcQryRCAMSShortOptAdjustParamField* pQryRCAMSShortOptAdjustParam, int nRequestID)
+{
+    return this->pUserApi->ReqQryRCAMSShortOptAdjustParam(pQryRCAMSShortOptAdjustParam, nRequestID);
+}
+
+// RCAMS策略组合持仓查询
+int QCTPTraderSpi::ReqQryRCAMSInvestorCombPosition(CThostFtdcQryRCAMSInvestorCombPositionField* pQryRCAMSInvestorCombPosition, int nRequestID)
+{
+    return this->pUserApi->ReqQryRCAMSInvestorCombPosition(pQryRCAMSInvestorCombPosition, nRequestID);
+}
+
+// 投资者品种RCAMS保证金查询
+int QCTPTraderSpi::ReqQryInvestorProdRCAMSMargin(CThostFtdcQryInvestorProdRCAMSMarginField* pQryInvestorProdRCAMSMargin, int nRequestID)
+{
+    return this->pUserApi->ReqQryInvestorProdRCAMSMargin(pQryInvestorProdRCAMSMargin, nRequestID);
+}
+
+// RULE合约保证金参数查询
+int QCTPTraderSpi::ReqQryRULEInstrParameter(CThostFtdcQryRULEInstrParameterField* pQryRULEInstrParameter, int nRequestID)
+{
+    return this->pUserApi->ReqQryRULEInstrParameter(pQryRULEInstrParameter, nRequestID);
+}
+
+// RULE品种内对锁仓折扣参数查询
+int QCTPTraderSpi::ReqQryRULEIntraParameter(CThostFtdcQryRULEIntraParameterField* pQryRULEIntraParameter, int nRequestID)
+{
+    return this->pUserApi->ReqQryRULEIntraParameter(pQryRULEIntraParameter, nRequestID);
+}
+
+// RULE跨品种抵扣参数查询
+int QCTPTraderSpi::ReqQryRULEInterParameter(CThostFtdcQryRULEInterParameterField* pQryRULEInterParameter, int nRequestID)
+{
+    return this->pUserApi->ReqQryRULEInterParameter(pQryRULEInterParameter, nRequestID);
+}
+
+// 投资者产品RULE保证金查询
+int QCTPTraderSpi::ReqQryInvestorProdRULEMargin(CThostFtdcQryInvestorProdRULEMarginField* pQryInvestorProdRULEMargin, int nRequestID)
+{
+    return this->pUserApi->ReqQryInvestorProdRULEMargin(pQryInvestorProdRULEMargin, nRequestID);
 }

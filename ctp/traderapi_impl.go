@@ -224,6 +224,54 @@ extern int _wrap_CThostFtdcTraderApi_ReqQryRiskSettleInvstPosition(uintptr_t, st
 
 extern int _wrap_CThostFtdcTraderApi_ReqQryRiskSettleProductStatus(uintptr_t, struct CThostFtdcQryRiskSettleProductStatusField *, int);
 
+extern int _wrap_CThostFtdcTraderApi_ReqQrySPBMFutureParameter(uintptr_t, struct CThostFtdcQrySPBMFutureParameterField *, int);
+
+extern int _wrap_CThostFtdcTraderApi_ReqQrySPBMOptionParameter(uintptr_t, struct CThostFtdcQrySPBMOptionParameterField *, int);
+
+extern int _wrap_CThostFtdcTraderApi_ReqQrySPBMIntraParameter(uintptr_t, struct CThostFtdcQrySPBMIntraParameterField *, int);
+
+extern int _wrap_CThostFtdcTraderApi_ReqQrySPBMInterParameter(uintptr_t, struct CThostFtdcQrySPBMInterParameterField *, int);
+
+extern int _wrap_CThostFtdcTraderApi_ReqQrySPBMPortfDefinition(uintptr_t, struct CThostFtdcQrySPBMPortfDefinitionField *, int);
+
+extern int _wrap_CThostFtdcTraderApi_ReqQrySPBMInvestorPortfDef(uintptr_t, struct CThostFtdcQrySPBMInvestorPortfDefField *, int);
+
+extern int _wrap_CThostFtdcTraderApi_ReqQryInvestorPortfMarginRatio(uintptr_t, struct CThostFtdcQryInvestorPortfMarginRatioField *, int);
+
+extern int _wrap_CThostFtdcTraderApi_ReqQryInvestorProdSPBMDetail(uintptr_t, struct CThostFtdcQryInvestorProdSPBMDetailField *, int);
+
+extern int _wrap_CThostFtdcTraderApi_ReqQryInvestorCommoditySPMMMargin(uintptr_t, struct CThostFtdcQryInvestorCommoditySPMMMarginField *, int);
+
+extern int _wrap_CThostFtdcTraderApi_ReqQryInvestorCommodityGroupSPMMMargin(uintptr_t, struct CThostFtdcQryInvestorCommodityGroupSPMMMarginField *, int);
+
+extern int _wrap_CThostFtdcTraderApi_ReqQrySPMMInstParam(uintptr_t, struct CThostFtdcQrySPMMInstParamField *, int);
+
+extern int _wrap_CThostFtdcTraderApi_ReqQrySPMMProductParam(uintptr_t, struct CThostFtdcQrySPMMProductParamField *, int);
+
+extern int _wrap_CThostFtdcTraderApi_ReqQrySPBMAddOnInterParameter(uintptr_t, struct CThostFtdcQrySPBMAddOnInterParameterField *, int);
+
+extern int _wrap_CThostFtdcTraderApi_ReqQryRCAMSCombProductInfo(uintptr_t, struct CThostFtdcQryRCAMSCombProductInfoField *, int);
+
+extern int _wrap_CThostFtdcTraderApi_ReqQryRCAMSInstrParameter(uintptr_t, struct CThostFtdcQryRCAMSInstrParameterField *, int);
+
+extern int _wrap_CThostFtdcTraderApi_ReqQryRCAMSIntraParameter(uintptr_t, struct CThostFtdcQryRCAMSIntraParameterField *, int);
+
+extern int _wrap_CThostFtdcTraderApi_ReqQryRCAMSInterParameter(uintptr_t, struct CThostFtdcQryRCAMSInterParameterField *, int);
+
+extern int _wrap_CThostFtdcTraderApi_ReqQryRCAMSShortOptAdjustParam(uintptr_t, struct CThostFtdcQryRCAMSShortOptAdjustParamField *, int);
+
+extern int _wrap_CThostFtdcTraderApi_ReqQryRCAMSInvestorCombPosition(uintptr_t, struct CThostFtdcQryRCAMSInvestorCombPositionField *, int);
+
+extern int _wrap_CThostFtdcTraderApi_ReqQryInvestorProdRCAMSMargin(uintptr_t, struct CThostFtdcQryInvestorProdRCAMSMarginField *, int);
+
+extern int _wrap_CThostFtdcTraderApi_ReqQryRULEInstrParameter(uintptr_t, struct CThostFtdcQryRULEInstrParameterField *, int);
+
+extern int _wrap_CThostFtdcTraderApi_ReqQryRULEIntraParameter(uintptr_t, struct CThostFtdcQryRULEIntraParameterField *, int);
+
+extern int _wrap_CThostFtdcTraderApi_ReqQryRULEInterParameter(uintptr_t, struct CThostFtdcQryRULEInterParameterField *, int);
+
+extern int _wrap_CThostFtdcTraderApi_ReqQryInvestorProdRULEMargin(uintptr_t, struct CThostFtdcQryInvestorProdRULEMarginField *, int);
+
 */
 import "C"
 import (
@@ -806,6 +854,126 @@ func (c *TraderApi) ReqQryRiskSettleInvstPosition(pQryRiskSettleInvstPosition *t
 // 风险结算产品查询
 func (c *TraderApi) ReqQryRiskSettleProductStatus(pQryRiskSettleProductStatus *thost.CThostFtdcQryRiskSettleProductStatusField, nRequestID int) int {
 	return (int)(C._wrap_CThostFtdcTraderApi_ReqQryRiskSettleProductStatus(C.uintptr_t(c.apiPtr), (*C.struct_CThostFtdcQryRiskSettleProductStatusField)(unsafe.Pointer(pQryRiskSettleProductStatus)), C.int(nRequestID)))
+}
+
+// SPBM期货合约参数查询
+func (c *TraderApi) ReqQrySPBMFutureParameter(pQrySPBMFutureParameter *thost.CThostFtdcQrySPBMFutureParameterField, nRequestID int) int {
+	return (int)(C._wrap_CThostFtdcTraderApi_ReqQrySPBMFutureParameter(C.uintptr_t(c.apiPtr), (*C.struct_CThostFtdcQrySPBMFutureParameterField)(unsafe.Pointer(pQrySPBMFutureParameter)), C.int(nRequestID)))
+}
+
+// SPBM期权合约参数查询
+func (c *TraderApi) ReqQrySPBMOptionParameter(pQrySPBMOptionParameter *thost.CThostFtdcQrySPBMOptionParameterField, nRequestID int) int {
+	return (int)(C._wrap_CThostFtdcTraderApi_ReqQrySPBMOptionParameter(C.uintptr_t(c.apiPtr), (*C.struct_CThostFtdcQrySPBMOptionParameterField)(unsafe.Pointer(pQrySPBMOptionParameter)), C.int(nRequestID)))
+}
+
+// SPBM品种内对锁仓折扣参数查询
+func (c *TraderApi) ReqQrySPBMIntraParameter(pQrySPBMIntraParameter *thost.CThostFtdcQrySPBMIntraParameterField, nRequestID int) int {
+	return (int)(C._wrap_CThostFtdcTraderApi_ReqQrySPBMIntraParameter(C.uintptr_t(c.apiPtr), (*C.struct_CThostFtdcQrySPBMIntraParameterField)(unsafe.Pointer(pQrySPBMIntraParameter)), C.int(nRequestID)))
+}
+
+// SPBM跨品种抵扣参数查询
+func (c *TraderApi) ReqQrySPBMInterParameter(pQrySPBMInterParameter *thost.CThostFtdcQrySPBMInterParameterField, nRequestID int) int {
+	return (int)(C._wrap_CThostFtdcTraderApi_ReqQrySPBMInterParameter(C.uintptr_t(c.apiPtr), (*C.struct_CThostFtdcQrySPBMInterParameterField)(unsafe.Pointer(pQrySPBMInterParameter)), C.int(nRequestID)))
+}
+
+// SPBM组合保证金套餐查询
+func (c *TraderApi) ReqQrySPBMPortfDefinition(pQrySPBMPortfDefinition *thost.CThostFtdcQrySPBMPortfDefinitionField, nRequestID int) int {
+	return (int)(C._wrap_CThostFtdcTraderApi_ReqQrySPBMPortfDefinition(C.uintptr_t(c.apiPtr), (*C.struct_CThostFtdcQrySPBMPortfDefinitionField)(unsafe.Pointer(pQrySPBMPortfDefinition)), C.int(nRequestID)))
+}
+
+// 投资者SPBM套餐选择查询
+func (c *TraderApi) ReqQrySPBMInvestorPortfDef(pQrySPBMInvestorPortfDef *thost.CThostFtdcQrySPBMInvestorPortfDefField, nRequestID int) int {
+	return (int)(C._wrap_CThostFtdcTraderApi_ReqQrySPBMInvestorPortfDef(C.uintptr_t(c.apiPtr), (*C.struct_CThostFtdcQrySPBMInvestorPortfDefField)(unsafe.Pointer(pQrySPBMInvestorPortfDef)), C.int(nRequestID)))
+}
+
+// 投资者新型组合保证金系数查询
+func (c *TraderApi) ReqQryInvestorPortfMarginRatio(pQryInvestorPortfMarginRatio *thost.CThostFtdcQryInvestorPortfMarginRatioField, nRequestID int) int {
+	return (int)(C._wrap_CThostFtdcTraderApi_ReqQryInvestorPortfMarginRatio(C.uintptr_t(c.apiPtr), (*C.struct_CThostFtdcQryInvestorPortfMarginRatioField)(unsafe.Pointer(pQryInvestorPortfMarginRatio)), C.int(nRequestID)))
+}
+
+// 投资者产品SPBM明细查询
+func (c *TraderApi) ReqQryInvestorProdSPBMDetail(pQryInvestorProdSPBMDetail *thost.CThostFtdcQryInvestorProdSPBMDetailField, nRequestID int) int {
+	return (int)(C._wrap_CThostFtdcTraderApi_ReqQryInvestorProdSPBMDetail(C.uintptr_t(c.apiPtr), (*C.struct_CThostFtdcQryInvestorProdSPBMDetailField)(unsafe.Pointer(pQryInvestorProdSPBMDetail)), C.int(nRequestID)))
+}
+
+// 投资者商品组SPMM记录查询
+func (c *TraderApi) ReqQryInvestorCommoditySPMMMargin(pQryInvestorCommoditySPMMMargin *thost.CThostFtdcQryInvestorCommoditySPMMMarginField, nRequestID int) int {
+	return (int)(C._wrap_CThostFtdcTraderApi_ReqQryInvestorCommoditySPMMMargin(C.uintptr_t(c.apiPtr), (*C.struct_CThostFtdcQryInvestorCommoditySPMMMarginField)(unsafe.Pointer(pQryInvestorCommoditySPMMMargin)), C.int(nRequestID)))
+}
+
+// 投资者商品群SPMM记录查询
+func (c *TraderApi) ReqQryInvestorCommodityGroupSPMMMargin(pQryInvestorCommodityGroupSPMMMargin *thost.CThostFtdcQryInvestorCommodityGroupSPMMMarginField, nRequestID int) int {
+	return (int)(C._wrap_CThostFtdcTraderApi_ReqQryInvestorCommodityGroupSPMMMargin(C.uintptr_t(c.apiPtr), (*C.struct_CThostFtdcQryInvestorCommodityGroupSPMMMarginField)(unsafe.Pointer(pQryInvestorCommodityGroupSPMMMargin)), C.int(nRequestID)))
+}
+
+// SPMM合约参数查询
+func (c *TraderApi) ReqQrySPMMInstParam(pQrySPMMInstParam *thost.CThostFtdcQrySPMMInstParamField, nRequestID int) int {
+	return (int)(C._wrap_CThostFtdcTraderApi_ReqQrySPMMInstParam(C.uintptr_t(c.apiPtr), (*C.struct_CThostFtdcQrySPMMInstParamField)(unsafe.Pointer(pQrySPMMInstParam)), C.int(nRequestID)))
+}
+
+// SPMM产品参数查询
+func (c *TraderApi) ReqQrySPMMProductParam(pQrySPMMProductParam *thost.CThostFtdcQrySPMMProductParamField, nRequestID int) int {
+	return (int)(C._wrap_CThostFtdcTraderApi_ReqQrySPMMProductParam(C.uintptr_t(c.apiPtr), (*C.struct_CThostFtdcQrySPMMProductParamField)(unsafe.Pointer(pQrySPMMProductParam)), C.int(nRequestID)))
+}
+
+// SPBM附加跨品种抵扣参数查询
+func (c *TraderApi) ReqQrySPBMAddOnInterParameter(pQrySPBMAddOnInterParameter *thost.CThostFtdcQrySPBMAddOnInterParameterField, nRequestID int) int {
+	return (int)(C._wrap_CThostFtdcTraderApi_ReqQrySPBMAddOnInterParameter(C.uintptr_t(c.apiPtr), (*C.struct_CThostFtdcQrySPBMAddOnInterParameterField)(unsafe.Pointer(pQrySPBMAddOnInterParameter)), C.int(nRequestID)))
+}
+
+// RCAMS产品组合信息查询
+func (c *TraderApi) ReqQryRCAMSCombProductInfo(pQryRCAMSCombProductInfo *thost.CThostFtdcQryRCAMSCombProductInfoField, nRequestID int) int {
+	return (int)(C._wrap_CThostFtdcTraderApi_ReqQryRCAMSCombProductInfo(C.uintptr_t(c.apiPtr), (*C.struct_CThostFtdcQryRCAMSCombProductInfoField)(unsafe.Pointer(pQryRCAMSCombProductInfo)), C.int(nRequestID)))
+}
+
+// RCAMS同合约风险对冲参数查询
+func (c *TraderApi) ReqQryRCAMSInstrParameter(pQryRCAMSInstrParameter *thost.CThostFtdcQryRCAMSInstrParameterField, nRequestID int) int {
+	return (int)(C._wrap_CThostFtdcTraderApi_ReqQryRCAMSInstrParameter(C.uintptr_t(c.apiPtr), (*C.struct_CThostFtdcQryRCAMSInstrParameterField)(unsafe.Pointer(pQryRCAMSInstrParameter)), C.int(nRequestID)))
+}
+
+// RCAMS品种内风险对冲参数查询
+func (c *TraderApi) ReqQryRCAMSIntraParameter(pQryRCAMSIntraParameter *thost.CThostFtdcQryRCAMSIntraParameterField, nRequestID int) int {
+	return (int)(C._wrap_CThostFtdcTraderApi_ReqQryRCAMSIntraParameter(C.uintptr_t(c.apiPtr), (*C.struct_CThostFtdcQryRCAMSIntraParameterField)(unsafe.Pointer(pQryRCAMSIntraParameter)), C.int(nRequestID)))
+}
+
+// RCAMS跨品种风险折抵参数查询
+func (c *TraderApi) ReqQryRCAMSInterParameter(pQryRCAMSInterParameter *thost.CThostFtdcQryRCAMSInterParameterField, nRequestID int) int {
+	return (int)(C._wrap_CThostFtdcTraderApi_ReqQryRCAMSInterParameter(C.uintptr_t(c.apiPtr), (*C.struct_CThostFtdcQryRCAMSInterParameterField)(unsafe.Pointer(pQryRCAMSInterParameter)), C.int(nRequestID)))
+}
+
+// RCAMS空头期权风险调整参数查询
+func (c *TraderApi) ReqQryRCAMSShortOptAdjustParam(pQryRCAMSShortOptAdjustParam *thost.CThostFtdcQryRCAMSShortOptAdjustParamField, nRequestID int) int {
+	return (int)(C._wrap_CThostFtdcTraderApi_ReqQryRCAMSShortOptAdjustParam(C.uintptr_t(c.apiPtr), (*C.struct_CThostFtdcQryRCAMSShortOptAdjustParamField)(unsafe.Pointer(pQryRCAMSShortOptAdjustParam)), C.int(nRequestID)))
+}
+
+// RCAMS策略组合持仓查询
+func (c *TraderApi) ReqQryRCAMSInvestorCombPosition(pQryRCAMSInvestorCombPosition *thost.CThostFtdcQryRCAMSInvestorCombPositionField, nRequestID int) int {
+	return (int)(C._wrap_CThostFtdcTraderApi_ReqQryRCAMSInvestorCombPosition(C.uintptr_t(c.apiPtr), (*C.struct_CThostFtdcQryRCAMSInvestorCombPositionField)(unsafe.Pointer(pQryRCAMSInvestorCombPosition)), C.int(nRequestID)))
+}
+
+// 投资者品种RCAMS保证金查询
+func (c *TraderApi) ReqQryInvestorProdRCAMSMargin(pQryInvestorProdRCAMSMargin *thost.CThostFtdcQryInvestorProdRCAMSMarginField, nRequestID int) int {
+	return (int)(C._wrap_CThostFtdcTraderApi_ReqQryInvestorProdRCAMSMargin(C.uintptr_t(c.apiPtr), (*C.struct_CThostFtdcQryInvestorProdRCAMSMarginField)(unsafe.Pointer(pQryInvestorProdRCAMSMargin)), C.int(nRequestID)))
+}
+
+// RULE合约保证金参数查询
+func (c *TraderApi) ReqQryRULEInstrParameter(pQryRULEInstrParameter *thost.CThostFtdcQryRULEInstrParameterField, nRequestID int) int {
+	return (int)(C._wrap_CThostFtdcTraderApi_ReqQryRULEInstrParameter(C.uintptr_t(c.apiPtr), (*C.struct_CThostFtdcQryRULEInstrParameterField)(unsafe.Pointer(pQryRULEInstrParameter)), C.int(nRequestID)))
+}
+
+// RULE品种内对锁仓折扣参数查询
+func (c *TraderApi) ReqQryRULEIntraParameter(pQryRULEIntraParameter *thost.CThostFtdcQryRULEIntraParameterField, nRequestID int) int {
+	return (int)(C._wrap_CThostFtdcTraderApi_ReqQryRULEIntraParameter(C.uintptr_t(c.apiPtr), (*C.struct_CThostFtdcQryRULEIntraParameterField)(unsafe.Pointer(pQryRULEIntraParameter)), C.int(nRequestID)))
+}
+
+// RULE跨品种抵扣参数查询
+func (c *TraderApi) ReqQryRULEInterParameter(pQryRULEInterParameter *thost.CThostFtdcQryRULEInterParameterField, nRequestID int) int {
+	return (int)(C._wrap_CThostFtdcTraderApi_ReqQryRULEInterParameter(C.uintptr_t(c.apiPtr), (*C.struct_CThostFtdcQryRULEInterParameterField)(unsafe.Pointer(pQryRULEInterParameter)), C.int(nRequestID)))
+}
+
+// 投资者产品RULE保证金查询
+func (c *TraderApi) ReqQryInvestorProdRULEMargin(pQryInvestorProdRULEMargin *thost.CThostFtdcQryInvestorProdRULEMarginField, nRequestID int) int {
+	return (int)(C._wrap_CThostFtdcTraderApi_ReqQryInvestorProdRULEMargin(C.uintptr_t(c.apiPtr), (*C.struct_CThostFtdcQryInvestorProdRULEMarginField)(unsafe.Pointer(pQryInvestorProdRULEMargin)), C.int(nRequestID)))
 }
 
 //------------------------------------------------------------------------------------
@@ -1582,4 +1750,148 @@ func wrapTraderOnRspQryRiskSettleInvstPosition(v uintptr, pRiskSettleInvstPositi
 func wrapTraderOnRspQryRiskSettleProductStatus(v uintptr, pRiskSettleProductStatus *C.struct_CThostFtdcRiskSettleProductStatusField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) {
 	api := cgo.Handle(v).Value().(*TraderApi)
 	api.spi.OnRspQryRiskSettleProductStatus((*thost.CThostFtdcRiskSettleProductStatusField)(unsafe.Pointer(pRiskSettleProductStatus)), (*thost.CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
+}
+
+//export wrapTraderOnRspQrySPBMFutureParameter
+func wrapTraderOnRspQrySPBMFutureParameter(v uintptr, pSPBMFutureParameter *C.struct_CThostFtdcSPBMFutureParameterField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) {
+	api := cgo.Handle(v).Value().(*TraderApi)
+	api.spi.OnRspQrySPBMFutureParameter((*thost.CThostFtdcSPBMFutureParameterField)(unsafe.Pointer(pSPBMFutureParameter)), (*thost.CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
+}
+
+//export wrapTraderOnRspQrySPBMOptionParameter
+func wrapTraderOnRspQrySPBMOptionParameter(v uintptr, pSPBMOptionParameter *C.struct_CThostFtdcSPBMOptionParameterField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) {
+	api := cgo.Handle(v).Value().(*TraderApi)
+	api.spi.OnRspQrySPBMOptionParameter((*thost.CThostFtdcSPBMOptionParameterField)(unsafe.Pointer(pSPBMOptionParameter)), (*thost.CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
+}
+
+//export wrapTraderOnRspQrySPBMIntraParameter
+func wrapTraderOnRspQrySPBMIntraParameter(v uintptr, pSPBMIntraParameter *C.struct_CThostFtdcSPBMIntraParameterField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) {
+	api := cgo.Handle(v).Value().(*TraderApi)
+	api.spi.OnRspQrySPBMIntraParameter((*thost.CThostFtdcSPBMIntraParameterField)(unsafe.Pointer(pSPBMIntraParameter)), (*thost.CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
+}
+
+//export wrapTraderOnRspQrySPBMInterParameter
+func wrapTraderOnRspQrySPBMInterParameter(v uintptr, pSPBMInterParameter *C.struct_CThostFtdcSPBMInterParameterField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) {
+	api := cgo.Handle(v).Value().(*TraderApi)
+	api.spi.OnRspQrySPBMInterParameter((*thost.CThostFtdcSPBMInterParameterField)(unsafe.Pointer(pSPBMInterParameter)), (*thost.CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
+}
+
+//export wrapTraderOnRspQrySPBMPortfDefinition
+func wrapTraderOnRspQrySPBMPortfDefinition(v uintptr, pSPBMPortfDefinition *C.struct_CThostFtdcSPBMPortfDefinitionField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) {
+	api := cgo.Handle(v).Value().(*TraderApi)
+	api.spi.OnRspQrySPBMPortfDefinition((*thost.CThostFtdcSPBMPortfDefinitionField)(unsafe.Pointer(pSPBMPortfDefinition)), (*thost.CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
+}
+
+//export wrapTraderOnRspQrySPBMInvestorPortfDef
+func wrapTraderOnRspQrySPBMInvestorPortfDef(v uintptr, pSPBMInvestorPortfDef *C.struct_CThostFtdcSPBMInvestorPortfDefField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) {
+	api := cgo.Handle(v).Value().(*TraderApi)
+	api.spi.OnRspQrySPBMInvestorPortfDef((*thost.CThostFtdcSPBMInvestorPortfDefField)(unsafe.Pointer(pSPBMInvestorPortfDef)), (*thost.CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
+}
+
+//export wrapTraderOnRspQryInvestorPortfMarginRatio
+func wrapTraderOnRspQryInvestorPortfMarginRatio(v uintptr, pInvestorPortfMarginRatio *C.struct_CThostFtdcInvestorPortfMarginRatioField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) {
+	api := cgo.Handle(v).Value().(*TraderApi)
+	api.spi.OnRspQryInvestorPortfMarginRatio((*thost.CThostFtdcInvestorPortfMarginRatioField)(unsafe.Pointer(pInvestorPortfMarginRatio)), (*thost.CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
+}
+
+//export wrapTraderOnRspQryInvestorProdSPBMDetail
+func wrapTraderOnRspQryInvestorProdSPBMDetail(v uintptr, pInvestorProdSPBMDetail *C.struct_CThostFtdcInvestorProdSPBMDetailField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) {
+	api := cgo.Handle(v).Value().(*TraderApi)
+	api.spi.OnRspQryInvestorProdSPBMDetail((*thost.CThostFtdcInvestorProdSPBMDetailField)(unsafe.Pointer(pInvestorProdSPBMDetail)), (*thost.CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
+}
+
+//export wrapTraderOnRspQryInvestorCommoditySPMMMargin
+func wrapTraderOnRspQryInvestorCommoditySPMMMargin(v uintptr, pInvestorCommoditySPMMMargin *C.struct_CThostFtdcInvestorCommoditySPMMMarginField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) {
+	api := cgo.Handle(v).Value().(*TraderApi)
+	api.spi.OnRspQryInvestorCommoditySPMMMargin((*thost.CThostFtdcInvestorCommoditySPMMMarginField)(unsafe.Pointer(pInvestorCommoditySPMMMargin)), (*thost.CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
+}
+
+//export wrapTraderOnRspQryInvestorCommodityGroupSPMMMargin
+func wrapTraderOnRspQryInvestorCommodityGroupSPMMMargin(v uintptr, pInvestorCommodityGroupSPMMMargin *C.struct_CThostFtdcInvestorCommodityGroupSPMMMarginField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) {
+	api := cgo.Handle(v).Value().(*TraderApi)
+	api.spi.OnRspQryInvestorCommodityGroupSPMMMargin((*thost.CThostFtdcInvestorCommodityGroupSPMMMarginField)(unsafe.Pointer(pInvestorCommodityGroupSPMMMargin)), (*thost.CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
+}
+
+//export wrapTraderOnRspQrySPMMInstParam
+func wrapTraderOnRspQrySPMMInstParam(v uintptr, pSPMMInstParam *C.struct_CThostFtdcSPMMInstParamField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) {
+	api := cgo.Handle(v).Value().(*TraderApi)
+	api.spi.OnRspQrySPMMInstParam((*thost.CThostFtdcSPMMInstParamField)(unsafe.Pointer(pSPMMInstParam)), (*thost.CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
+}
+
+//export wrapTraderOnRspQrySPMMProductParam
+func wrapTraderOnRspQrySPMMProductParam(v uintptr, pSPMMProductParam *C.struct_CThostFtdcSPMMProductParamField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) {
+	api := cgo.Handle(v).Value().(*TraderApi)
+	api.spi.OnRspQrySPMMProductParam((*thost.CThostFtdcSPMMProductParamField)(unsafe.Pointer(pSPMMProductParam)), (*thost.CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
+}
+
+//export wrapTraderOnRspQrySPBMAddOnInterParameter
+func wrapTraderOnRspQrySPBMAddOnInterParameter(v uintptr, pSPBMAddOnInterParameter *C.struct_CThostFtdcSPBMAddOnInterParameterField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) {
+	api := cgo.Handle(v).Value().(*TraderApi)
+	api.spi.OnRspQrySPBMAddOnInterParameter((*thost.CThostFtdcSPBMAddOnInterParameterField)(unsafe.Pointer(pSPBMAddOnInterParameter)), (*thost.CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
+}
+
+//export wrapTraderOnRspQryRCAMSCombProductInfo
+func wrapTraderOnRspQryRCAMSCombProductInfo(v uintptr, pRCAMSCombProductInfo *C.struct_CThostFtdcRCAMSCombProductInfoField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) {
+	api := cgo.Handle(v).Value().(*TraderApi)
+	api.spi.OnRspQryRCAMSCombProductInfo((*thost.CThostFtdcRCAMSCombProductInfoField)(unsafe.Pointer(pRCAMSCombProductInfo)), (*thost.CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
+}
+
+//export wrapTraderOnRspQryRCAMSInstrParameter
+func wrapTraderOnRspQryRCAMSInstrParameter(v uintptr, pRCAMSInstrParameter *C.struct_CThostFtdcRCAMSInstrParameterField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) {
+	api := cgo.Handle(v).Value().(*TraderApi)
+	api.spi.OnRspQryRCAMSInstrParameter((*thost.CThostFtdcRCAMSInstrParameterField)(unsafe.Pointer(pRCAMSInstrParameter)), (*thost.CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
+}
+
+//export wrapTraderOnRspQryRCAMSIntraParameter
+func wrapTraderOnRspQryRCAMSIntraParameter(v uintptr, pRCAMSIntraParameter *C.struct_CThostFtdcRCAMSIntraParameterField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) {
+	api := cgo.Handle(v).Value().(*TraderApi)
+	api.spi.OnRspQryRCAMSIntraParameter((*thost.CThostFtdcRCAMSIntraParameterField)(unsafe.Pointer(pRCAMSIntraParameter)), (*thost.CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
+}
+
+//export wrapTraderOnRspQryRCAMSInterParameter
+func wrapTraderOnRspQryRCAMSInterParameter(v uintptr, pRCAMSInterParameter *C.struct_CThostFtdcRCAMSInterParameterField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) {
+	api := cgo.Handle(v).Value().(*TraderApi)
+	api.spi.OnRspQryRCAMSInterParameter((*thost.CThostFtdcRCAMSInterParameterField)(unsafe.Pointer(pRCAMSInterParameter)), (*thost.CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
+}
+
+//export wrapTraderOnRspQryRCAMSShortOptAdjustParam
+func wrapTraderOnRspQryRCAMSShortOptAdjustParam(v uintptr, pRCAMSShortOptAdjustParam *C.struct_CThostFtdcRCAMSShortOptAdjustParamField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) {
+	api := cgo.Handle(v).Value().(*TraderApi)
+	api.spi.OnRspQryRCAMSShortOptAdjustParam((*thost.CThostFtdcRCAMSShortOptAdjustParamField)(unsafe.Pointer(pRCAMSShortOptAdjustParam)), (*thost.CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
+}
+
+//export wrapTraderOnRspQryRCAMSInvestorCombPosition
+func wrapTraderOnRspQryRCAMSInvestorCombPosition(v uintptr, pRCAMSInvestorCombPosition *C.struct_CThostFtdcRCAMSInvestorCombPositionField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) {
+	api := cgo.Handle(v).Value().(*TraderApi)
+	api.spi.OnRspQryRCAMSInvestorCombPosition((*thost.CThostFtdcRCAMSInvestorCombPositionField)(unsafe.Pointer(pRCAMSInvestorCombPosition)), (*thost.CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
+}
+
+//export wrapTraderOnRspQryInvestorProdRCAMSMargin
+func wrapTraderOnRspQryInvestorProdRCAMSMargin(v uintptr, pInvestorProdRCAMSMargin *C.struct_CThostFtdcInvestorProdRCAMSMarginField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) {
+	api := cgo.Handle(v).Value().(*TraderApi)
+	api.spi.OnRspQryInvestorProdRCAMSMargin((*thost.CThostFtdcInvestorProdRCAMSMarginField)(unsafe.Pointer(pInvestorProdRCAMSMargin)), (*thost.CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
+}
+
+//export wrapTraderOnRspQryRULEInstrParameter
+func wrapTraderOnRspQryRULEInstrParameter(v uintptr, pRULEInstrParameter *C.struct_CThostFtdcRULEInstrParameterField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) {
+	api := cgo.Handle(v).Value().(*TraderApi)
+	api.spi.OnRspQryRULEInstrParameter((*thost.CThostFtdcRULEInstrParameterField)(unsafe.Pointer(pRULEInstrParameter)), (*thost.CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
+}
+
+//export wrapTraderOnRspQryRULEIntraParameter
+func wrapTraderOnRspQryRULEIntraParameter(v uintptr, pRULEIntraParameter *C.struct_CThostFtdcRULEIntraParameterField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) {
+	api := cgo.Handle(v).Value().(*TraderApi)
+	api.spi.OnRspQryRULEIntraParameter((*thost.CThostFtdcRULEIntraParameterField)(unsafe.Pointer(pRULEIntraParameter)), (*thost.CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
+}
+
+//export wrapTraderOnRspQryRULEInterParameter
+func wrapTraderOnRspQryRULEInterParameter(v uintptr, pRULEInterParameter *C.struct_CThostFtdcRULEInterParameterField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) {
+	api := cgo.Handle(v).Value().(*TraderApi)
+	api.spi.OnRspQryRULEInterParameter((*thost.CThostFtdcRULEInterParameterField)(unsafe.Pointer(pRULEInterParameter)), (*thost.CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
+}
+
+//export wrapTraderOnRspQryInvestorProdRULEMargin
+func wrapTraderOnRspQryInvestorProdRULEMargin(v uintptr, pInvestorProdRULEMargin *C.struct_CThostFtdcInvestorProdRULEMarginField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) {
+	api := cgo.Handle(v).Value().(*TraderApi)
+	api.spi.OnRspQryInvestorProdRULEMargin((*thost.CThostFtdcInvestorProdRULEMarginField)(unsafe.Pointer(pInvestorProdRULEMargin)), (*thost.CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
 }
