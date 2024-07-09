@@ -104,8 +104,9 @@ import (
 	"log"
 	"os"
 	"time"
+	"runtime"
 
-	"github.com/pseudocodes/go2ctp/ctp"
+	"github.com/pseudocodes/go2ctp/ctp_dyn"
 	"github.com/pseudocodes/go2ctp/thost"
 )
 
@@ -258,9 +259,9 @@ func main() {
 > * `framework` 静态编译时就需要设定 `@rpath` 路径，运行二进制文件时才能获得动态库的路径，在这种场景下，更合适的方式还是采用动态库 `dlopen` 方式, 
 > * MacOS 命令行下可以直接编译源代码程序并链接 `framework`，首次运行启动之后请到`系统设置->隐私与安全性->安全性` 标签中对 `thostmduserapi_se` 以及 `thosttraderapi_se` 这两个文件进行信任允许操作
 
-**Q.06**: OPENCTP 与上期 CTP 在 MacOS 环境的区别
+**Q.07**: OpenCTP 与上期 CTP 在 MacOS 环境的区别
 
-**A.06**: 相关信息如下
+**A.07**: 相关信息如下
 > * 上期 CTP MacOS 环境与 Linux 环境的区别主要在于 `CThostFtdcTraderApi` 中的 `ReqUserLogin` 接口参数不同, MacOS 对应接口比 Linux 多了两个穿透式信息的参数
 ```cpp
 // Linux 接口
