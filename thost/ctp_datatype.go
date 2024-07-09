@@ -11020,7 +11020,13 @@ const THOST_FTDC_EPF_None TThostFtdcPortfolioType = '0' // 不使用新型组保
 
 const THOST_FTDC_EPF_SPBM TThostFtdcPortfolioType = '1' // SPBM算法
 
-var mpTThostFtdcPortfolioType = map[TThostFtdcPortfolioType]string{'0': "THOST_FTDC_EPF_None", '1': "THOST_FTDC_EPF_SPBM"}
+const THOST_FTDC_EPF_RULE TThostFtdcPortfolioType = '2' // RULE算法
+
+const THOST_FTDC_EPF_SPMM TThostFtdcPortfolioType = '3' // SPMM算法
+
+const THOST_FTDC_EPF_RCAMS TThostFtdcPortfolioType = '4' // RCAMS算法
+
+var mpTThostFtdcPortfolioType = map[TThostFtdcPortfolioType]string{'0': "THOST_FTDC_EPF_None", '1': "THOST_FTDC_EPF_SPBM", '2': "THOST_FTDC_EPF_RULE", '3': "THOST_FTDC_EPF_SPMM", '4': "THOST_FTDC_EPF_RCAMS"}
 
 func (e TThostFtdcPortfolioType) String() string {
 	if s, ok := mpTThostFtdcPortfolioType[e]; ok {
@@ -11075,3 +11081,184 @@ func (e TThostFtdcInvstTradingRightType) String() string {
 
 // Thost终端功能代码类型
 type TThostFtdcThostFunctionCodeType int32
+
+// SPMM折扣率类型
+type TThostFtdcSPMMDiscountRatioType float64
+
+func (f TThostFtdcSPMMDiscountRatioType) String() string {
+	return strings.TrimRight(strings.TrimRight(fmt.Sprintf("%.6f", f), "0"), ".")
+}
+
+// SPMM模板描述类型
+type TThostFtdcSPMMModelDescType [129]byte
+
+func (s TThostFtdcSPMMModelDescType) String() string {
+	return BytesToString(s[:])
+}
+
+func (s TThostFtdcSPMMModelDescType) GBString() string {
+	return BytesToGBK(s[:])
+}
+
+// SPMM模板ID类型
+type TThostFtdcSPMMModelIDType [33]byte
+
+func (s TThostFtdcSPMMModelIDType) String() string {
+	return BytesToString(s[:])
+}
+
+func (s TThostFtdcSPMMModelIDType) GBString() string {
+	return BytesToGBK(s[:])
+}
+
+// SPMM商品群商品组ID类型
+type TThostFtdcSPMMProductIDType [41]byte
+
+func (s TThostFtdcSPMMProductIDType) String() string {
+	return BytesToString(s[:])
+}
+
+func (s TThostFtdcSPMMProductIDType) GBString() string {
+	return BytesToGBK(s[:])
+}
+
+// SPMM合约保证金算法类型
+type TThostFtdcInstMarginCalIDType byte
+
+const THOST_FTDC_IMID_BothSide TThostFtdcInstMarginCalIDType = '1' // 标准算法收取双边
+
+const THOST_FTDC_IMID_MMSA TThostFtdcInstMarginCalIDType = '2' // 单向大边
+
+const THOST_FTDC_IMID_SPMM TThostFtdcInstMarginCalIDType = '3' // 新组保SPMM
+
+var mpTThostFtdcInstMarginCalIDType = map[TThostFtdcInstMarginCalIDType]string{'1': "THOST_FTDC_IMID_BothSide", '2': "THOST_FTDC_IMID_MMSA", '3': "THOST_FTDC_IMID_SPMM"}
+
+func (e TThostFtdcInstMarginCalIDType) String() string {
+	if s, ok := mpTThostFtdcInstMarginCalIDType[e]; ok {
+		return s[strings.LastIndex(s, "_")+1:]
+	}
+	return string(e) + "值未定义"
+}
+
+// 产品ID类型
+type TThostFtdcProductIDType [41]byte
+
+func (s TThostFtdcProductIDType) String() string {
+	return BytesToString(s[:])
+}
+
+func (s TThostFtdcProductIDType) GBString() string {
+	return BytesToGBK(s[:])
+}
+
+// HedgeRate类型类型
+type TThostFtdcHedgeRateType float64
+
+func (f TThostFtdcHedgeRateType) String() string {
+	return strings.TrimRight(strings.TrimRight(fmt.Sprintf("%.6f", f), "0"), ".")
+}
+
+// 优先级类型
+type TThostFtdcRCAMSPriorityType int32
+
+// 空头期权风险调整标准类型类型
+type TThostFtdcAdjustValueType float64
+
+func (f TThostFtdcAdjustValueType) String() string {
+	return strings.TrimRight(strings.TrimRight(fmt.Sprintf("%.6f", f), "0"), ".")
+}
+
+// RCAMS组合类型类型
+type TThostFtdcRCAMSCombinationTypeType byte
+
+const THOST_FTDC_ERComb_BUC TThostFtdcRCAMSCombinationTypeType = '0' // 牛市看涨价差组合
+
+const THOST_FTDC_ERComb_BEC TThostFtdcRCAMSCombinationTypeType = '1' // 熊市看涨价差组合
+
+const THOST_FTDC_ERComb_BEP TThostFtdcRCAMSCombinationTypeType = '2' // 熊市看跌价差组合
+
+const THOST_FTDC_ERComb_BUP TThostFtdcRCAMSCombinationTypeType = '3' // 牛市看跌价差组合
+
+const THOST_FTDC_ERComb_CAS TThostFtdcRCAMSCombinationTypeType = '4' // 日历价差组合
+
+var mpTThostFtdcRCAMSCombinationTypeType = map[TThostFtdcRCAMSCombinationTypeType]string{'0': "THOST_FTDC_ERComb_BUC", '1': "THOST_FTDC_ERComb_BEC", '2': "THOST_FTDC_ERComb_BEP", '3': "THOST_FTDC_ERComb_BUP", '4': "THOST_FTDC_ERComb_CAS"}
+
+func (e TThostFtdcRCAMSCombinationTypeType) String() string {
+	if s, ok := mpTThostFtdcRCAMSCombinationTypeType[e]; ok {
+		return s[strings.LastIndex(s, "_")+1:]
+	}
+	return string(e) + "值未定义"
+}
+
+// 策略id类型
+type TThostFtdcRuleIdType [51]byte
+
+func (s TThostFtdcRuleIdType) String() string {
+	return BytesToString(s[:])
+}
+
+func (s TThostFtdcRuleIdType) GBString() string {
+	return BytesToGBK(s[:])
+}
+
+// 新组保算法启用类型类型
+type TThostFtdcPortfTypeType byte
+
+const THOST_FTDC_EET_None TThostFtdcPortfTypeType = '0' // 使用初版交易所算法
+
+const THOST_FTDC_EET_SPBM_AddOnHedge TThostFtdcPortfTypeType = '1' // SPBM算法V1.1.0_附加保证金调整
+
+var mpTThostFtdcPortfTypeType = map[TThostFtdcPortfTypeType]string{'0': "THOST_FTDC_EET_None", '1': "THOST_FTDC_EET_SPBM_AddOnHedge"}
+
+func (e TThostFtdcPortfTypeType) String() string {
+	if s, ok := mpTThostFtdcPortfTypeType[e]; ok {
+		return s[strings.LastIndex(s, "_")+1:]
+	}
+	return string(e) + "值未定义"
+}
+
+// 合约类型类型
+type TThostFtdcInstrumentClassType byte
+
+const THOST_FTDC_EIC_Usual TThostFtdcInstrumentClassType = '1' // 一般月份合约
+
+const THOST_FTDC_EIC_Delivery TThostFtdcInstrumentClassType = '2' // 临近交割合约
+
+const THOST_FTDC_EIC_NonComb TThostFtdcInstrumentClassType = '3' // 非组合合约
+
+var mpTThostFtdcInstrumentClassType = map[TThostFtdcInstrumentClassType]string{'1': "THOST_FTDC_EIC_Usual", '2': "THOST_FTDC_EIC_Delivery", '3': "THOST_FTDC_EIC_NonComb"}
+
+func (e TThostFtdcInstrumentClassType) String() string {
+	if s, ok := mpTThostFtdcInstrumentClassType[e]; ok {
+		return s[strings.LastIndex(s, "_")+1:]
+	}
+	return string(e) + "值未定义"
+}
+
+// 商品群号类型
+type TThostFtdcCommodityGroupIDType int32
+
+// 标准持仓类型类型
+type TThostFtdcStdPositionType float64
+
+func (f TThostFtdcStdPositionType) String() string {
+	return strings.TrimRight(strings.TrimRight(fmt.Sprintf("%.6f", f), "0"), ".")
+}
+
+// 品种记录改变状态类型
+type TThostFtdcProdChangeFlagType byte
+
+const THOST_FTDC_PCF_None TThostFtdcProdChangeFlagType = '0' // 持仓量和冻结量均无变化
+
+const THOST_FTDC_PCF_OnlyFrozen TThostFtdcProdChangeFlagType = '1' // 持仓量无变化，冻结量有变化
+
+const THOST_FTDC_PCF_PositionChange TThostFtdcProdChangeFlagType = '2' // 持仓量有变化
+
+var mpTThostFtdcProdChangeFlagType = map[TThostFtdcProdChangeFlagType]string{'0': "THOST_FTDC_PCF_None", '1': "THOST_FTDC_PCF_OnlyFrozen", '2': "THOST_FTDC_PCF_PositionChange"}
+
+func (e TThostFtdcProdChangeFlagType) String() string {
+	if s, ok := mpTThostFtdcProdChangeFlagType[e]; ok {
+		return s[strings.LastIndex(s, "_")+1:]
+	}
+	return string(e) + "值未定义"
+}

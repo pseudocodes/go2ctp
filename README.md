@@ -1,17 +1,40 @@
 Go2ctp
 ==========================================
 ## Sample
-参考 sample 目录中的代码
-### market data sample
+
+### 静态依赖
 ```go
+
+package main
+
+import (
+	"log"
+	"os"
+	"time"
+
+	"github.com/pseudocodes/go2ctp/ctp"
+	"github.com/pseudocodes/go2ctp/thost"
+)
+
+func init() {
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
+}
+
 type baseSpi struct {
-	ctp_tts.BaseMdSpi
-	// ctp.BaseMdSpi
-	mdapi ctp_tts.MdApi
+	brokerID   string
+	investorID string
+	password   string
+
+	ctp.BaseMdSpi
+	mdapi thost.MdApi
 }
 
 func CreateBaseSpi() *baseSpi {
-	s := &baseSpi{}
+	s := &baseSpi{
+		brokerID:   "9999",
+		investorID: os.Getenv("SIMNOW_USER_ID"),       // <- 环境变量设置
+		password:   os.Getenv("SIMNOW_USER_PASSWORD"), // <- 环境变量设置
+	}
 	return s
 }
 
@@ -19,8 +42,8 @@ func (s *baseSpi) OnFrontConnected() {
 	log.Printf("OnFrontConnected\n")
 
 	loginR := &thost.CThostFtdcReqUserLoginField{}
-	copy(loginR.BrokerID[:], "9999")
-	copy(loginR.UserID[:], "2011")
+	copy(loginR.BrokerID[:], []byte(s.brokerID))
+	copy(loginR.UserID[:], []byte(s.investorID))
 
 	ret := s.mdapi.ReqUserLogin(loginR, 1)
 
@@ -37,36 +60,133 @@ func (s *baseSpi) OnFrontDisconnected(nReason int) {
 
 func (s *baseSpi) OnRspUserLogin(pRspUserLogin *thost.CThostFtdcRspUserLoginField, pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
 	log.Printf("RspUserLogin: %+v\nRspInfo: %+v\n", pRspUserLogin, nil)
-	s.mdapi.SubscribeMarketData("ag2310")
+	s.mdapi.SubscribeMarketData("ag2408")
 }
 
 func (s *baseSpi) OnRspSubMarketData(pSpecificInstrument *thost.CThostFtdcSpecificInstrumentField, pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
-
 	log.Printf("instrumentID: %+v\n  RspInfo: %+v\n", pSpecificInstrument, nil)
 }
 
 func (s *baseSpi) OnRtnDepthMarketData(pDepthMarketData *thost.CThostFtdcDepthMarketDataField) {
-	log.Printf("OnRtnDeptMarketData\n")
+	log.Printf("OnRtnDeptMarketData: %s\n", string(pDepthMarketData.InstrumentID[:7]))
 }
 
 func (s *baseSpi) OnRspError(pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
 	log.Printf("RspInfo: %+v\n", pRspInfo.ErrorID)
-
 }
 
 func main() {
-	var mdapi ctp_tts.MdApi
+	mdapi := ctp.CreateMdApi(ctp.MdFlowPath("./data/"), ctp.MdUsingUDP(false), ctp.MdMultiCast(false))
+	baseSpi := CreateBaseSpi()
+	baseSpi.mdapi = mdapi
+	mdapi.RegisterSpi(baseSpi)
+
+	mdapi.RegisterFront("tcp://180.168.146.187:10211")
+
+	mdapi.Init()
+
+	println(mdapi.GetApiVersion())
+	println(mdapi.GetTradingDay())
+	// mdapi.Join()
+	//
+	for {
+		time.Sleep(10 * time.Second)
+	}
+}
+
+```
+
+### 动态库
+```go
+package main
+
+import (
+	"log"
+	"os"
+	"time"
+
+	"github.com/pseudocodes/go2ctp/ctp"
+	"github.com/pseudocodes/go2ctp/thost"
+)
+
+func init() {
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
+}
+
+type baseSpi struct {
+	brokerID   string
+	investorID string
+	password   string
+
+	ctp.BaseMdSpi
+	mdapi thost.MdApi
+}
+
+func CreateBaseSpi() *baseSpi {
+	s := &baseSpi{
+		brokerID:   "9999",
+		investorID: os.Getenv("SIMNOW_USER_ID"),       // <- 环境变量设置
+		password:   os.Getenv("SIMNOW_USER_PASSWORD"), // <- 环境变量设置
+	}
+	return s
+}
+
+func (s *baseSpi) OnFrontConnected() {
+	log.Printf("OnFrontConnected\n")
+
+	loginR := &thost.CThostFtdcReqUserLoginField{}
+	copy(loginR.BrokerID[:], []byte(s.brokerID))
+	copy(loginR.UserID[:], []byte(s.investorID))
+
+	ret := s.mdapi.ReqUserLogin(loginR, 1)
+
+	log.Printf("user log: %v\n", ret)
+}
+
+func (s *baseSpi) OnHeartBeatWarning(timelapse int) {
+	log.Printf("OnHeartBeatWarning: %v\n", timelapse)
+}
+
+func (s *baseSpi) OnFrontDisconnected(nReason int) {
+	log.Printf("OnFrontDisconnected: %v\n", nReason)
+}
+
+func (s *baseSpi) OnRspUserLogin(pRspUserLogin *thost.CThostFtdcRspUserLoginField, pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
+	log.Printf("RspUserLogin: %+v\nRspInfo: %+v\n", pRspUserLogin, nil)
+	s.mdapi.SubscribeMarketData("ag2408")
+}
+
+func (s *baseSpi) OnRspSubMarketData(pSpecificInstrument *thost.CThostFtdcSpecificInstrumentField, pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
+	log.Printf("instrumentID: %+v\n  RspInfo: %+v\n", pSpecificInstrument, nil)
+}
+
+func (s *baseSpi) OnRtnDepthMarketData(pDepthMarketData *thost.CThostFtdcDepthMarketDataField) {
+	log.Printf("OnRtnDeptMarketData: %s\n", string(pDepthMarketData.InstrumentID[:7]))
+}
+
+func (s *baseSpi) OnRspError(pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
+	log.Printf("RspInfo: %+v\n", pRspInfo.ErrorID)
+}
+
+func main() {
+	var (
+		mdapi     thost.MdApi
+		frontAddr string
+	)
 	if runtime.GOOS == "darwin" {
-		mdapi = ctp_tts.CreateMdApi(ctp_tts.MdDynamicLibPath("../../ctp_tts/lib/v6.6.9_20220920/mac_arm64/libthostmduserapi_se.dylib"), ctp_tts.MdFlowPath("./data/"), ctp_tts.MdUsingUDP(false), ctp_tts.MdMultiCast(false))
+		mdapi = ctp_dyn.CreateMdApi(ctp_dyn.MdDynamicLibPath(CTPLibPathMacos), ctp_dyn.MdFlowPath("./data/"), ctp_dyn.MdUsingUDP(false), ctp_dyn.MdMultiCast(false))
+		frontAddr = SimnowFront
 	} else if runtime.GOOS == "linux" {
-		mdapi = ctp_tts.CreateMdApi(ctp_tts.MdDynamicLibPath("../../ctp_tts/lib/v6.6.9_20220920/lin64/thostmduserapi_se.so"), ctp_tts.MdFlowPath("./data/"), ctp_tts.MdUsingUDP(false), ctp_tts.MdMultiCast(false))
+		mdapi = ctp_dyn.CreateMdApi(ctp_dyn.MdDynamicLibPath(CTPLibPathLinux), ctp_dyn.MdFlowPath("./data/"), ctp_dyn.MdUsingUDP(false), ctp_dyn.MdMultiCast(false))
+		frontAddr = SimnowFront
 	}
 
 	baseSpi := CreateBaseSpi()
 	baseSpi.mdapi = mdapi
 	mdapi.RegisterSpi(baseSpi)
 
-	mdapi.RegisterFront("tcp://121.37.80.177:20004")
+	mdapi.RegisterFront(frontAddr)
+
 	mdapi.Init()
 
 	println(mdapi.GetApiVersion())
@@ -76,10 +196,10 @@ func main() {
 	for {
 		time.Sleep(10 * time.Second)
 	}
-
 }
-
 ```
+
+
 
 
 ## FAQ
@@ -121,24 +241,43 @@ func main() {
 
 **A.04**: 开发者没有 Windows 环境，不想装虚拟机，有兴趣的开发者可以提 PR
 
-**Q.05**: ctp 目录和 ctp_tts目录的封装有什么不同
+**Q.05**: ctp 目录和 ctp_dyn 目录的封装有什么不同
 
 **A.05**: 
 > * ctp 的封装来自 [*pseudocodes/goctp*](https://github.com/pseudocodes/goctp), 剔除了 *lite* 和 *convert* 相关代码，原则上只提供一层封装，直接桥接 cgo 空间回调过来的数据
-> * ctp 目录属于静态编译链接，其他项目采用该目录下的代码，依赖的动态库的路径会在编译构建期完成初始绑定，默认路径为 go2ctp 库的存放路径，只部署二进制程序在 Linux 环境需要设置 LD_LIBRARY_PATH 环境变量来提供依赖的 ctp 动态库路径，MacOS 环境同理
-> * ctp_tts 封装方式采用了读取动态库符号的方式，通过在运行时提供动态库的路径，完成 API 实例对象的生成和绑定，理论上 ctp_tts 的封装方式更灵活方便，可以通过配置的方式动态的替换 linux 下不同平台的库，包括官方生产和测评版本，rohan(融航)，openctp-tts 平台，无需再编译项目代码. ctp-tts 同时支持 openctp 的 MacOS 版本 dylib
-> * ctp_tts 使用需要用户明确提供动态库地址，部署时需要动态库与二进制程序一起部署
+> * ctp 目录属于静态编译链接，其他项目采用该目录下的代码，依赖的动态库的路径会在编译构建期完成初始绑定，默认路径为 go2ctp 库的存放路径，只部署二进制程序在 Linux 环境需要设置 LD_LIBRARY_PATH 环境变量来提供依赖的 ctp 动态库路径; MacOS 环境一般不用再独立设置 `@rpath`，推荐 MacOS 环境采用 ctp_dyn 依赖
+> * ctp_dyn 封装方式采用了读取动态库符号的方式，通过在运行时提供动态库的路径，完成 API 实例对象的生成和绑定，理论上 ctp_dyn 的封装方式更灵活方便，可以通过配置的方式动态的替换 linux 下不同平台的库，包括官方生产和测评版本，rohan(融航)，openctp-tts 平台，无需再编译项目代码. ctp_dyn 同时支持 openctp 的 MacOS 版本 dylib
+> * ctp_dyn 使用需要用户明确提供动态库地址，部署时需要动态库与二进制程序一起部署
 >
 
-**Q.06**: 是否支持 MacOS 6.7.0 及之后的版本
+**Q.06**: MacOS 环境下上期 CTP 编译运行问题
 
-**A.06**: 正在尝试，存在的问题有
+**A.06**: 相关信息如下
 > *	官方从 CTP 6.7.0 版本开始提供 `.framework` 的动态库，而不像 OpenCTP 那样采用 `.dylib` 来提供支持
-> *	官方打包发布的 `framework` 包有损坏，包中软连接变成文本文件，如果直接引入该 `framework` 至 `Xcode` 项目会造成无法编译
-> * `framework` 编译时就需要设定 `rpath` 路径，运行二进制文件时才能获得动态库的路径，在这种场景下，更合适的方式还是采用 动态库 `dlopen` 方式, 
-> * 命令行下可以直接编译源代码程序并链接 `framework`  ，但会因为无数字签名的原因无法运行程序，进行数字签名则需要较为复杂的构建过程，这个过程在 `Xcode` 项目中很容易构建，但在 go build 流程中无法简单实现
+> *	官方打包发布的 `framework` 包可能有设置问题，包中软连接变成文本文件，如果直接引入该 `framework` 至 `Xcode` 项目会造成无法编译
+> * `framework` 静态编译时就需要设定 `@rpath` 路径，运行二进制文件时才能获得动态库的路径，在这种场景下，更合适的方式还是采用动态库 `dlopen` 方式, 
+> * MacOS 命令行下可以直接编译源代码程序并链接 `framework`，首次运行启动之后请到`系统设置->隐私与安全性->安全性` 标签中对 `thostmduserapi_se` 以及 `thosttraderapi_se` 这两个文件进行信任允许操作
 
-综合以上问题，目前暂时无法支持 CTP MacOS 6.7.0 及以后版本，欢迎有 MacOS 相关开发经验的开发者提供解决方案
+**Q.06**: OPENCTP 与上期 CTP 在 MacOS 环境的区别
+
+**A.06**: 相关信息如下
+> * 上期 CTP MacOS 环境与 Linux 环境的区别主要在于 `CThostFtdcTraderApi` 中的 `ReqUserLogin` 接口参数不同, MacOS 对应接口比 Linux 多了两个穿透式信息的参数
+```cpp
+// Linux 接口
+virtual int ReqUserLogin(CThostFtdcReqUserLoginField* pReqUserLoginField, int nRequestID) = 0;
+
+// MacOS 接口
+virtual int ReqUserLogin(CThostFtdcReqUserLoginField* pReqUserLoginField, int nRequestID, TThostFtdcSystemInfoLenType length, TThostFtdcClientSystemInfoType systemInfo) = 0;
+```
+> * OpenCTP 提供的 MacOS 的头文件接口与 Linux 统一，即 `ReqUserLogin` 采用两参数接口，封装 `go2ctp` 过程中与 [@krenx](https://github.com/krenx1983) 沟通过这个问题，对方当时未有计划提供对标接口支持, 因此本项目在 MaxOS 环境下编译 OpenCTP 相关库时，请采用 ctp_dyn pacakge，编译指令如下 
+
+```shell
+?> cd sample/simple_trader && go build -tags openctp
+
+# 或者
+?> cd sample/simple_trader && go build -tags tts
+```
+
  
 ## 同类项目
 

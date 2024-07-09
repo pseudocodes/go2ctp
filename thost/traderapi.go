@@ -407,6 +407,78 @@ type TraderSpi interface {
 
 	///风险结算产品查询响应
 	OnRspQryRiskSettleProductStatus(pRiskSettleProductStatus *CThostFtdcRiskSettleProductStatusField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+
+	/// SPBM期货合约参数查询响应
+	OnRspQrySPBMFutureParameter(pSPBMFutureParameter *CThostFtdcSPBMFutureParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+
+	/// SPBM期权合约参数查询响应
+	OnRspQrySPBMOptionParameter(pSPBMOptionParameter *CThostFtdcSPBMOptionParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+
+	/// SPBM品种内对锁仓折扣参数查询响应
+	OnRspQrySPBMIntraParameter(pSPBMIntraParameter *CThostFtdcSPBMIntraParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+
+	/// SPBM跨品种抵扣参数查询响应
+	OnRspQrySPBMInterParameter(pSPBMInterParameter *CThostFtdcSPBMInterParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+
+	/// SPBM组合保证金套餐查询响应
+	OnRspQrySPBMPortfDefinition(pSPBMPortfDefinition *CThostFtdcSPBMPortfDefinitionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+
+	/// 投资者SPBM套餐选择查询响应
+	OnRspQrySPBMInvestorPortfDef(pSPBMInvestorPortfDef *CThostFtdcSPBMInvestorPortfDefField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+
+	/// 投资者新型组合保证金系数查询响应
+	OnRspQryInvestorPortfMarginRatio(pInvestorPortfMarginRatio *CThostFtdcInvestorPortfMarginRatioField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+
+	/// 投资者产品SPBM明细查询响应
+	OnRspQryInvestorProdSPBMDetail(pInvestorProdSPBMDetail *CThostFtdcInvestorProdSPBMDetailField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+
+	/// 投资者商品组SPMM记录查询响应
+	OnRspQryInvestorCommoditySPMMMargin(pInvestorCommoditySPMMMargin *CThostFtdcInvestorCommoditySPMMMarginField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+
+	/// 投资者商品群SPMM记录查询响应
+	OnRspQryInvestorCommodityGroupSPMMMargin(pInvestorCommodityGroupSPMMMargin *CThostFtdcInvestorCommodityGroupSPMMMarginField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+
+	/// SPMM合约参数查询响应
+	OnRspQrySPMMInstParam(pSPMMInstParam *CThostFtdcSPMMInstParamField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+
+	/// SPMM产品参数查询响应
+	OnRspQrySPMMProductParam(pSPMMProductParam *CThostFtdcSPMMProductParamField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+
+	/// SPBM附加跨品种抵扣参数查询响应
+	OnRspQrySPBMAddOnInterParameter(pSPBMAddOnInterParameter *CThostFtdcSPBMAddOnInterParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+
+	/// RCAMS产品组合信息查询响应
+	OnRspQryRCAMSCombProductInfo(pRCAMSCombProductInfo *CThostFtdcRCAMSCombProductInfoField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+
+	/// RCAMS同合约风险对冲参数查询响应
+	OnRspQryRCAMSInstrParameter(pRCAMSInstrParameter *CThostFtdcRCAMSInstrParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+
+	/// RCAMS品种内风险对冲参数查询响应
+	OnRspQryRCAMSIntraParameter(pRCAMSIntraParameter *CThostFtdcRCAMSIntraParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+
+	/// RCAMS跨品种风险折抵参数查询响应
+	OnRspQryRCAMSInterParameter(pRCAMSInterParameter *CThostFtdcRCAMSInterParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+
+	/// RCAMS空头期权风险调整参数查询响应
+	OnRspQryRCAMSShortOptAdjustParam(pRCAMSShortOptAdjustParam *CThostFtdcRCAMSShortOptAdjustParamField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+
+	/// RCAMS策略组合持仓查询响应
+	OnRspQryRCAMSInvestorCombPosition(pRCAMSInvestorCombPosition *CThostFtdcRCAMSInvestorCombPositionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+
+	/// 投资者品种RCAMS保证金查询响应
+	OnRspQryInvestorProdRCAMSMargin(pInvestorProdRCAMSMargin *CThostFtdcInvestorProdRCAMSMarginField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+
+	/// RULE合约保证金参数查询响应
+	OnRspQryRULEInstrParameter(pRULEInstrParameter *CThostFtdcRULEInstrParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+
+	/// RULE品种内对锁仓折扣参数查询响应
+	OnRspQryRULEIntraParameter(pRULEIntraParameter *CThostFtdcRULEIntraParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+
+	/// RULE跨品种抵扣参数查询响应
+	OnRspQryRULEInterParameter(pRULEInterParameter *CThostFtdcRULEInterParameterField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+
+	/// 投资者产品RULE保证金查询响应
+	OnRspQryInvestorProdRULEMargin(pInvestorProdRULEMargin *CThostFtdcInvestorProdRULEMarginField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
 }
 
 type TraderApi interface {
@@ -735,4 +807,76 @@ type TraderApi interface {
 
 	///风险结算产品查询
 	ReqQryRiskSettleProductStatus(pQryRiskSettleProductStatus *CThostFtdcQryRiskSettleProductStatusField, nRequestID int) int
+
+	/// SPBM期货合约参数查询
+	ReqQrySPBMFutureParameter(pQrySPBMFutureParameter *CThostFtdcQrySPBMFutureParameterField, nRequestID int) int
+
+	/// SPBM期权合约参数查询
+	ReqQrySPBMOptionParameter(pQrySPBMOptionParameter *CThostFtdcQrySPBMOptionParameterField, nRequestID int) int
+
+	/// SPBM品种内对锁仓折扣参数查询
+	ReqQrySPBMIntraParameter(pQrySPBMIntraParameter *CThostFtdcQrySPBMIntraParameterField, nRequestID int) int
+
+	/// SPBM跨品种抵扣参数查询
+	ReqQrySPBMInterParameter(pQrySPBMInterParameter *CThostFtdcQrySPBMInterParameterField, nRequestID int) int
+
+	/// SPBM组合保证金套餐查询
+	ReqQrySPBMPortfDefinition(pQrySPBMPortfDefinition *CThostFtdcQrySPBMPortfDefinitionField, nRequestID int) int
+
+	/// 投资者SPBM套餐选择查询
+	ReqQrySPBMInvestorPortfDef(pQrySPBMInvestorPortfDef *CThostFtdcQrySPBMInvestorPortfDefField, nRequestID int) int
+
+	/// 投资者新型组合保证金系数查询
+	ReqQryInvestorPortfMarginRatio(pQryInvestorPortfMarginRatio *CThostFtdcQryInvestorPortfMarginRatioField, nRequestID int) int
+
+	/// 投资者产品SPBM明细查询
+	ReqQryInvestorProdSPBMDetail(pQryInvestorProdSPBMDetail *CThostFtdcQryInvestorProdSPBMDetailField, nRequestID int) int
+
+	/// 投资者商品组SPMM记录查询
+	ReqQryInvestorCommoditySPMMMargin(pQryInvestorCommoditySPMMMargin *CThostFtdcQryInvestorCommoditySPMMMarginField, nRequestID int) int
+
+	/// 投资者商品群SPMM记录查询
+	ReqQryInvestorCommodityGroupSPMMMargin(pQryInvestorCommodityGroupSPMMMargin *CThostFtdcQryInvestorCommodityGroupSPMMMarginField, nRequestID int) int
+
+	/// SPMM合约参数查询
+	ReqQrySPMMInstParam(pQrySPMMInstParam *CThostFtdcQrySPMMInstParamField, nRequestID int) int
+
+	/// SPMM产品参数查询
+	ReqQrySPMMProductParam(pQrySPMMProductParam *CThostFtdcQrySPMMProductParamField, nRequestID int) int
+
+	/// SPBM附加跨品种抵扣参数查询
+	ReqQrySPBMAddOnInterParameter(pQrySPBMAddOnInterParameter *CThostFtdcQrySPBMAddOnInterParameterField, nRequestID int) int
+
+	/// RCAMS产品组合信息查询
+	ReqQryRCAMSCombProductInfo(pQryRCAMSCombProductInfo *CThostFtdcQryRCAMSCombProductInfoField, nRequestID int) int
+
+	/// RCAMS同合约风险对冲参数查询
+	ReqQryRCAMSInstrParameter(pQryRCAMSInstrParameter *CThostFtdcQryRCAMSInstrParameterField, nRequestID int) int
+
+	/// RCAMS品种内风险对冲参数查询
+	ReqQryRCAMSIntraParameter(pQryRCAMSIntraParameter *CThostFtdcQryRCAMSIntraParameterField, nRequestID int) int
+
+	/// RCAMS跨品种风险折抵参数查询
+	ReqQryRCAMSInterParameter(pQryRCAMSInterParameter *CThostFtdcQryRCAMSInterParameterField, nRequestID int) int
+
+	/// RCAMS空头期权风险调整参数查询
+	ReqQryRCAMSShortOptAdjustParam(pQryRCAMSShortOptAdjustParam *CThostFtdcQryRCAMSShortOptAdjustParamField, nRequestID int) int
+
+	/// RCAMS策略组合持仓查询
+	ReqQryRCAMSInvestorCombPosition(pQryRCAMSInvestorCombPosition *CThostFtdcQryRCAMSInvestorCombPositionField, nRequestID int) int
+
+	/// 投资者品种RCAMS保证金查询
+	ReqQryInvestorProdRCAMSMargin(pQryInvestorProdRCAMSMargin *CThostFtdcQryInvestorProdRCAMSMarginField, nRequestID int) int
+
+	/// RULE合约保证金参数查询
+	ReqQryRULEInstrParameter(pQryRULEInstrParameter *CThostFtdcQryRULEInstrParameterField, nRequestID int) int
+
+	/// RULE品种内对锁仓折扣参数查询
+	ReqQryRULEIntraParameter(pQryRULEIntraParameter *CThostFtdcQryRULEIntraParameterField, nRequestID int) int
+
+	/// RULE跨品种抵扣参数查询
+	ReqQryRULEInterParameter(pQryRULEInterParameter *CThostFtdcQryRULEInterParameterField, nRequestID int) int
+
+	/// 投资者产品RULE保证金查询
+	ReqQryInvestorProdRULEMargin(pQryInvestorProdRULEMargin *CThostFtdcQryInvestorProdRULEMarginField, nRequestID int) int
 }

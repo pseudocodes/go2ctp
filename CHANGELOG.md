@@ -1,5 +1,22 @@
 # Changelog
 
+## [Unreleased] - 2024-07-07
+
+### Changed
+
+- 更新分支 6.7.2 对应官方 CTP 版本
+- 删除 ctp_cp 评测 package 目录，评测接入采用 ctp_dyn
+- ctp_tts 更名为 ctp_dyn 
+- master 分支对应最新 CTP 版本
+- 更新 README 文档
+
+### comment
+- 为精简项目，除 CTP 头文件，非必要不再提供对应版本的库文件
+- openctp 以及 CTP_CP 评测库请自行下载
+- 推荐使用 ctp_dyn，不强制依赖库文件以及库文件路径，动态库可配置
+- openctp 编译需添加参数，详见 FAQ
+
+
 ## [Unreleased] - 2024-04-05
 
 ### Changed
@@ -7,7 +24,6 @@
 - Release 接口增加清空 RegisterSpi 操作
 - 更新 README 文档
 
-All notable changes to this project will be documented in this file.
 
 ## [Unreleased] - 2024-03-11
 

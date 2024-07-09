@@ -18,7 +18,7 @@ import (
 	"time"
 
 	"github.com/pseudocodes/go2ctp/ctp"
-	"github.com/pseudocodes/go2ctp/ctp_tts"
+	"github.com/pseudocodes/go2ctp/ctp_dyn"
 	"github.com/pseudocodes/go2ctp/thost"
 )
 
@@ -61,7 +61,7 @@ func init() {
 }
 
 type baseSpi struct {
-	ctp_tts.BaseMdSpi
+	ctp_dyn.BaseMdSpi
 	// ctp.BaseMdSpi
 	mdapi thost.MdApi
 }
@@ -76,7 +76,7 @@ func (s *baseSpi) OnFrontConnected() {
 
 	loginR := &thost.CThostFtdcReqUserLoginField{}
 	copy(loginR.BrokerID[:], "9999")
-	copy(loginR.UserID[:], "2011")
+	copy(loginR.UserID[:], "046056")
 
 	ret := s.mdapi.ReqUserLogin(loginR, 1)
 
@@ -93,7 +93,7 @@ func (s *baseSpi) OnFrontDisconnected(nReason int) {
 
 func (s *baseSpi) OnRspUserLogin(pRspUserLogin *thost.CThostFtdcRspUserLoginField, pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
 	log.Printf("RspUserLogin: %+v\nRspInfo: %+v\n", pRspUserLogin, nil)
-	s.mdapi.SubscribeMarketData("ag2406")
+	s.mdapi.SubscribeMarketData("ag2408")
 }
 
 func (s *baseSpi) OnRspSubMarketData(pSpecificInstrument *thost.CThostFtdcSpecificInstrumentField, pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
@@ -107,7 +107,6 @@ func (s *baseSpi) OnRtnDepthMarketData(pDepthMarketData *thost.CThostFtdcDepthMa
 
 func (s *baseSpi) OnRspError(pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
 	log.Printf("RspInfo: %+v\n", pRspInfo.ErrorID)
-
 }
 
 type baseSpi2 struct {
@@ -123,7 +122,7 @@ func CreateBaseSpi2() *baseSpi2 {
 
 		loginR := &thost.CThostFtdcReqUserLoginField{}
 		copy(loginR.BrokerID[:], "9999")
-		copy(loginR.UserID[:], "2011")
+		copy(loginR.UserID[:], "046056")
 
 		ret := s.mdapi.ReqUserLogin(loginR, 1)
 
@@ -134,7 +133,7 @@ func CreateBaseSpi2() *baseSpi2 {
 	}
 	s.OnRspUserLoginCallback = func(pRspUserLogin *thost.CThostFtdcRspUserLoginField, pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
 		log.Printf("RspUserLogin: %+v\nRspInfo: %+v\n", pRspUserLogin, nil)
-		s.mdapi.SubscribeMarketData("ag2406")
+		s.mdapi.SubscribeMarketData("ag2408")
 	}
 	s.OnRtnDepthMarketDataCallback = func(pDepthMarketData *thost.CThostFtdcDepthMarketDataField) {
 		// log.Printf("tick {%+v}\n", quote)
@@ -145,13 +144,10 @@ func CreateBaseSpi2() *baseSpi2 {
 }
 
 var (
-	TTSLibPathLinux  = "../../ctp_tts/lib/v6.6.9_20220920/lin64/thostmduserapi_se.so"
-	TTSLibPathDarwin = "../../ctp_tts/lib/v6.6.9_20220920/mac_arm64/libthostmduserapi_se.dylib"
-
-	CTPLibPathLinux = "../../ctp/lib/v6.7.0_20230209_api_traderapi_se_linux64/libthostmduserapi_se.so"
+	CTPLibPathLinux = "../../ctp/lib/v6.7.2_20230913_api_traderapi_se_linux64/thostmduserapi_se.so"
 
 	TTSFront    = "tcp://121.37.80.177:20004"
-	SimnowFront = SimnowEnv["md"]["7x24"]
+	SimnowFront = SimnowEnv["md"]["telesim1"]
 )
 
 func sample1() {
@@ -160,11 +156,15 @@ func sample1() {
 		frontAddr string
 	)
 	if runtime.GOOS == "darwin" {
-		mdapi = ctp_tts.CreateMdApi(ctp_tts.MdDynamicLibPath(TTSLibPathDarwin), ctp_tts.MdFlowPath("./data/"), ctp_tts.MdUsingUDP(false), ctp_tts.MdMultiCast(false))
-		frontAddr = TTSFront
+		fwlib := "../../ctp/lib/v6.7.2_MacOS_20231016/thostmduserapi_se.framework/Versions/A/thostmduserapi_se"
+		// mdapi = ctp_dyn.CreateMdApi(ctp_dyn.MdDynamicLibPath(TTSLibPathDarwin), ctp_dyn.MdFlowPath("./data/"), ctp_dyn.MdUsingUDP(false), ctp_dyn.MdMultiCast(false))
+		mdapi = ctp_dyn.CreateMdApi(ctp_dyn.MdDynamicLibPath(fwlib), ctp_dyn.MdFlowPath("./data/"), ctp_dyn.MdUsingUDP(false), ctp_dyn.MdMultiCast(false))
+
+		// frontAddr = TTSFront
+
 	} else if runtime.GOOS == "linux" {
-		// mdapi = ctp_tts.CreateMdApi(ctp_tts.MdDynamicLibPath(TTSLibPathLinux), ctp_tts.MdFlowPath("./data/"), ctp_tts.MdUsingUDP(false), ctp_tts.MdMultiCast(false))
-		mdapi = ctp_tts.CreateMdApi(ctp_tts.MdDynamicLibPath(CTPLibPathLinux), ctp_tts.MdFlowPath("./data/"), ctp_tts.MdUsingUDP(false), ctp_tts.MdMultiCast(false))
+		// mdapi = ctp_dyn.CreateMdApi(ctp_dyn.MdDynamicLibPath(TTSLibPathLinux), ctp_dyn.MdFlowPath("./data/"), ctp_dyn.MdUsingUDP(false), ctp_dyn.MdMultiCast(false))
+		mdapi = ctp_dyn.CreateMdApi(ctp_dyn.MdDynamicLibPath(CTPLibPathLinux), ctp_dyn.MdFlowPath("./data/"), ctp_dyn.MdUsingUDP(false), ctp_dyn.MdMultiCast(false))
 		frontAddr = SimnowFront
 	}
 
@@ -192,20 +192,23 @@ func sample2() {
 	baseSpi2.mdapi = mdapi
 	mdapi.RegisterSpi(baseSpi2)
 
-	mdapi.RegisterFront("tcp://140.206.244.33:11616")
+	// mdapi.RegisterFront("tcp://140.206.244.33:11616")
+	// mdapi.RegisterFront("tcp://180.168.146.187:10131")
+	mdapi.RegisterFront(SimnowEnv["md"]["telesim1"])
+
 	mdapi.Init()
 
 	println(mdapi.GetApiVersion())
 	println(mdapi.GetTradingDay())
 
-	// mdapi.Join()
-	for {
-		time.Sleep(10 * time.Second)
-	}
+	mdapi.Join()
+	// for {
+	// 	time.Sleep(10 * time.Second)
+	// }
 
 }
 
 func main() {
-	sample1()
-	// sample2()
+	// sample1()
+	sample2()
 }

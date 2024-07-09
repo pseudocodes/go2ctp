@@ -21,7 +21,8 @@ import (
 	"sync/atomic"
 
 	"github.com/gookit/goutil/dump"
-	"github.com/pseudocodes/go2ctp/ctp_tts"
+	"github.com/pseudocodes/go2ctp/ctp"
+	"github.com/pseudocodes/go2ctp/ctp_dyn"
 	"github.com/pseudocodes/go2ctp/thost"
 	"golang.org/x/text/encoding/simplifiedchinese"
 )
@@ -54,7 +55,7 @@ type baseSpi struct {
 
 	requestID atomic.Int32
 
-	ctp_tts.BaseTraderSpi
+	ctp_dyn.BaseTraderSpi
 	tdapi thost.TraderApi
 }
 
@@ -85,6 +86,8 @@ func (s *baseSpi) OnFrontConnected() {
 	req := &thost.CThostFtdcReqAuthenticateField{}
 	copy(req.BrokerID[:], []byte(s.brokerID))
 	copy(req.UserID[:], []byte(s.investorID))
+	copy(req.AppID[:], []byte(s.appid))
+	copy(req.AuthCode[:], []byte(s.authCode))
 	ret = s.tdapi.ReqAuthenticate(req, int(s.requestID.Add(1)))
 
 	log.Printf("user auth: %v\n", ret)
@@ -121,10 +124,10 @@ func (s *baseSpi) OnRspSettlementInfoConfirm(pSettlementInfoConfirm *thost.CThos
 	req := &thost.CThostFtdcQryTradingAccountField{}
 	copy(req.BrokerID[:], []byte(s.brokerID))
 	copy(req.InvestorID[:], []byte(s.investorID))
-	ret := s.tdapi.ReqQryTradingAccount(req, int(s.requestID.Add(1)))
-	if ret != 0 {
-		log.Printf("req_qry_trading_account failed %v\n", ret)
-	}
+	// ret := s.tdapi.ReqQryTradingAccount(req, int(s.requestID.Add(1)))
+	// if ret != 0 {
+	// 	log.Printf("req_qry_trading_account failed %v\n", ret)
+	// }
 
 }
 
@@ -140,7 +143,7 @@ func (s *baseSpi) OnRspQryTradingAccount(pTradingAccount *thost.CThostFtdcTradin
 
 		req := &thost.CThostFtdcQryInstrumentCommissionRateField{}
 		copy(req.BrokerID[:], "9999")
-		copy(req.InstrumentID[:], "ag2310")
+		copy(req.InstrumentID[:], "ag2410")
 
 		ret := s.tdapi.ReqQryInstrumentCommissionRate(req, int(s.requestID.Add(1)))
 		if ret != 0 {
@@ -162,7 +165,7 @@ func (s *baseSpi) OnRspQryInstrumentCommissionRate(pInstrumentCommissionRate *th
 			TradingType: thost.THOST_FTDC_TD_TRADE,
 			ClassType:   thost.THOST_FTDC_INS_FUTURE,
 		}
-		copy(req.InstrumentID[:], "ag2310")
+		copy(req.InstrumentID[:], "ag2410")
 
 		ret := s.tdapi.ReqQryClassifiedInstrument(req, int(s.requestID.Add(1)))
 		if ret != 0 {
@@ -252,18 +255,17 @@ func Bytes2StringGBK(t []byte) string {
 }
 
 var (
-	CTPLibPathLinux  = "../../ctp/lib/v6.6.7_20220613_api_tradeapi_linux64/libthosttraderapi_se.so"
-	CTPLibPathLinux1 = "../../ctp/lib/v6.6.9_20220914_api_tradeapi_se_linux64/libthosttraderapi_se.so"
-	CTPLibPathLinux2 = "../../ctp/lib/v6.7.0_20230209_api_traderapi_se_linux64/libthosttraderapi_se.so"
+	CTPLibPathLinux = "../../ctp/lib/v6.7.2_20230913_api_traderapi_se_linux64/thosttraderapi_se.so"
+	CTPLibPathMacos = "../../ctp/lib/v6.7.2_MacOS_20231016/thosttraderapi_se.framework/thosttraderapi_se"
 )
 
 func sample1() {
 	var tdapi thost.TraderApi
 	if runtime.GOOS == "darwin" {
-		tdapi = ctp_tts.CreateTraderApi(ctp_tts.TraderDynamicLibPath("../../ctp_tts/lib/v6.6.9_20220920/mac_arm64/thosttraderapi_se.dylib"), ctp_tts.TraderFlowPath("./data/"))
+		tdapi = ctp_dyn.CreateTraderApi(ctp_dyn.TraderDynamicLibPath(CTPLibPathMacos), ctp_dyn.TraderFlowPath("./data/"))
+
 	} else if runtime.GOOS == "linux" {
-		// tdapi = ctp_tts.CreateTraderApi(ctp_tts.TraderDynamicLibPath("../../ctp_tts/lib/v6.6.9_20220920/lin64/thosttraderapi_se.so"), ctp_tts.TraderFlowPath("./data/"))
-		tdapi = ctp_tts.CreateTraderApi(ctp_tts.TraderDynamicLibPath(CTPLibPathLinux2), ctp_tts.TraderFlowPath("./data/"))
+		tdapi = ctp_dyn.CreateTraderApi(ctp_dyn.TraderDynamicLibPath(CTPLibPathLinux), ctp_dyn.TraderFlowPath("./data/"))
 	}
 
 	baseSpi := CreateBaseSpi()
@@ -272,6 +274,7 @@ func sample1() {
 	tdapi.RegisterSpi(baseSpi)
 	// tdapi.RegisterFront("tcp://121.37.90.193:20002")
 	tdapi.RegisterFront(SimnowEnv["td"]["telesim1"])
+	// tdapi.RegisterFront(SimnowEnv["td"]["7x24"])
 
 	tdapi.Init()
 
@@ -282,6 +285,26 @@ func sample1() {
 	select {}
 }
 
+func sample2() {
+
+	tdapi := ctp.CreateTraderApi(ctp.TraderFlowPath("./data/"))
+	baseSpi := CreateBaseSpi()
+	baseSpi.tdapi = tdapi
+
+	tdapi.RegisterSpi(baseSpi)
+
+	tdapi.RegisterFront(SimnowEnv["td"]["7x24"])
+
+	tdapi.Init()
+
+	println(tdapi.GetTradingDay())
+	println(tdapi.GetApiVersion())
+
+	tdapi.Join()
+
+}
+
 func main() {
 	sample1()
+	// sample2()
 }
