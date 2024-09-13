@@ -27,14 +27,13 @@ typedef struct { void* array; int64_t len; int64_t cap; } _goslice_;
 extern uintptr_t _wrap_CThostFtdcMdApi_CreateFtdcMdApi();
 extern uintptr_t _wrap_CThostFtdcMdApi_CreateFtdcMdApi2(uintptr_t goUserApi, char*, _Bool, _Bool);
 
-
 extern const char * _wrap_CThostFtdcMdApi_GetApiVersion(uintptr_t);
 
 extern void _wrap_CThostFtdcMdApi_Release(uintptr_t);
 
 extern void _wrap_CThostFtdcMdApi_Init(uintptr_t);
 
-extern int64_t _wrap_CThostFtdcMdApi_Join(uintptr_t);
+extern int _wrap_CThostFtdcMdApi_Join(uintptr_t);
 
 extern const char * _wrap_CThostFtdcMdApi_GetTradingDay(uintptr_t);
 
@@ -46,19 +45,19 @@ extern void _wrap_CThostFtdcMdApi_RegisterFensUserInfo(uintptr_t, struct CThostF
 
 extern void _wrap_CThostFtdcMdApi_RegisterSpi(uintptr_t, uintptr_t);
 
-extern int64_t _wrap_CThostFtdcMdApi_SubscribeMarketData(uintptr_t, char **, int);
+extern int _wrap_CThostFtdcMdApi_SubscribeMarketData(uintptr_t, char **, int);
 
-extern int64_t _wrap_CThostFtdcMdApi_UnSubscribeMarketData(uintptr_t, char **, int);
+extern int _wrap_CThostFtdcMdApi_UnSubscribeMarketData(uintptr_t, char **, int);
 
-extern int64_t _wrap_CThostFtdcMdApi_SubscribeForQuoteRsp(uintptr_t, char **, int);
+extern int _wrap_CThostFtdcMdApi_SubscribeForQuoteRsp(uintptr_t, char **, int);
 
-extern int64_t _wrap_CThostFtdcMdApi_UnSubscribeForQuoteRsp(uintptr_t, char **, int);
+extern int _wrap_CThostFtdcMdApi_UnSubscribeForQuoteRsp(uintptr_t, char **, int);
 
-extern int64_t _wrap_CThostFtdcMdApi_ReqUserLogin(uintptr_t, struct CThostFtdcReqUserLoginField *, int);
+extern int _wrap_CThostFtdcMdApi_ReqUserLogin(uintptr_t, struct CThostFtdcReqUserLoginField *, int);
 
-extern int64_t _wrap_CThostFtdcMdApi_ReqUserLogout(uintptr_t, struct CThostFtdcUserLogoutField *, int);
+extern int _wrap_CThostFtdcMdApi_ReqUserLogout(uintptr_t, struct CThostFtdcUserLogoutField *, int);
 
-extern int64_t _wrap_CThostFtdcMdApi_ReqQryMulticastInstrument(uintptr_t, struct CThostFtdcQryMulticastInstrumentField *, int);
+extern int _wrap_CThostFtdcMdApi_ReqQryMulticastInstrument(uintptr_t, struct CThostFtdcQryMulticastInstrumentField *, int);
 
 */
 import "C"
@@ -77,6 +76,24 @@ const (
 )
 
 type MdOption func(api *MdApi)
+
+func MdFlowPath(path string) MdOption {
+	return func(api *MdApi) {
+		api.flowPath = path
+	}
+}
+
+func MdUsingUDP(usingudp bool) MdOption {
+	return func(api *MdApi) {
+		api.usingUDP = usingudp
+	}
+}
+
+func MdMultiCast(multicast bool) MdOption {
+	return func(api *MdApi) {
+		api.multicast = multicast
+	}
+}
 
 type MdApi struct {
 	apiPtr uintptr
@@ -112,67 +129,77 @@ func CreateMdApi(options ...MdOption) thost.MdApi {
 
 // /获取API的版本信息
 // /@retrun 获取到的版本号
-func (c *MdApi) GetApiVersion() string {
-	cString := C._wrap_CThostFtdcMdApi_GetApiVersion(C.uintptr_t(c.apiPtr))
-	return C.GoString(cString)
+func (s *MdApi) GetApiVersion() string {
+	cstr := C._wrap_CThostFtdcMdApi_GetApiVersion(C.uintptr_t(s.apiPtr))
+	return C.GoString(cstr)
 }
 
-// 删除接口对象本身
+// / 删除接口对象本身
 // /@remark 不再使用本接口对象时,调用该函数删除接口对象
-func (c *MdApi) Release() {
-	C._wrap_CThostFtdcMdApi_RegisterSpi(C.uintptr_t(c.apiPtr), C.uintptr_t(0))
-	C._wrap_CThostFtdcMdApi_Release(C.uintptr_t(c.apiPtr))
+func (s *MdApi) Release() {
+	C._wrap_CThostFtdcMdApi_RegisterSpi(C.uintptr_t(s.apiPtr), C.uintptr_t(0))
+	C._wrap_CThostFtdcMdApi_Release(C.uintptr_t(s.apiPtr))
+
 }
 
-// 初始化
+// / 初始化
 // /@remark 初始化运行环境,只有调用后,接口才开始工作
-func (c *MdApi) Init() {
-	C._wrap_CThostFtdcMdApi_Init(C.uintptr_t(c.apiPtr))
+func (s *MdApi) Init() {
+	C._wrap_CThostFtdcMdApi_Init(C.uintptr_t(s.apiPtr))
 }
 
-// 等待接口线程结束运行
+// / 等待接口线程结束运行
 // /@return 线程退出代码
-func (c *MdApi) Join() int {
-	return (int)(C._wrap_CThostFtdcMdApi_Join(C.uintptr_t(c.apiPtr)))
+func (s *MdApi) Join() int {
+	return (int)(C._wrap_CThostFtdcMdApi_Join(C.uintptr_t(s.apiPtr)))
 }
 
-// /获取当前交易日
+// / 获取当前交易日
 // /@retrun 获取到的交易日
 // /@remark 只有登录成功后,才能得到正确的交易日
-func (c *MdApi) GetTradingDay() string {
-	cString := C._wrap_CThostFtdcMdApi_GetTradingDay(C.uintptr_t(c.apiPtr))
-	return C.GoString(cString)
+func (s *MdApi) GetTradingDay() string {
+	cstr := C._wrap_CThostFtdcMdApi_GetTradingDay(C.uintptr_t(s.apiPtr))
+	return C.GoString(cstr)
 }
 
-func (c *MdApi) RegisterFront(frontAddress string) {
-	addr := C.CString(frontAddress)
+// / 注册前置机网络地址
+// /@param pszFrontAddress：前置机网络地址。
+// /@remark 网络地址的格式为：“protocol://ipaddress:port”，如：”tcp://127.0.0.1:17001”。
+// /@remark “tcp”代表传输协议，“127.0.0.1”代表服务器地址。”17001”代表服务器端口号。
+func (s *MdApi) RegisterFront(pszFrontAddress string) {
+	addr := C.CString(pszFrontAddress)
 	defer C.free(unsafe.Pointer(addr))
-	C._wrap_CThostFtdcMdApi_RegisterFront(C.uintptr_t(c.apiPtr), addr)
+	C._wrap_CThostFtdcMdApi_RegisterFront(C.uintptr_t(s.apiPtr), addr)
 }
 
-// 注册名字服务器用户信息
-func (c *MdApi) RegisterNameServer(nsAddress string) {
-	addr := C.CString(nsAddress)
+// / 注册名字服务器网络地址
+// /@param pszNsAddress：名字服务器网络地址。
+// /@remark 网络地址的格式为：“protocol://ipaddress:port”，如：”tcp://127.0.0.1:12001”。
+// /@remark “tcp”代表传输协议，“127.0.0.1”代表服务器地址。”12001”代表服务器端口号。
+// /@remark RegisterNameServer优先于RegisterFront
+func (s *MdApi) RegisterNameServer(pszNsAddress string) {
+	addr := C.CString(pszNsAddress)
 	defer C.free(unsafe.Pointer(addr))
-	C._wrap_CThostFtdcMdApi_RegisterNameServer(C.uintptr_t(c.apiPtr), addr)
+	C._wrap_CThostFtdcMdApi_RegisterNameServer(C.uintptr_t(s.apiPtr), addr)
 }
 
+// / 注册名字服务器用户信息
 // /@param pFensUserInfo：用户信息。
-func (c *MdApi) RegisterFensUserInfo(pFensUserInfo *thost.CThostFtdcFensUserInfoField) {
-	C._wrap_CThostFtdcMdApi_RegisterFensUserInfo(C.uintptr_t(c.apiPtr), (*C.struct_CThostFtdcFensUserInfoField)(unsafe.Pointer(pFensUserInfo)))
+func (s *MdApi) RegisterFensUserInfo(pFensUserInfo *thost.CThostFtdcFensUserInfoField) {
+	C._wrap_CThostFtdcMdApi_RegisterFensUserInfo(C.uintptr_t(s.apiPtr), (*C.struct_CThostFtdcFensUserInfoField)(unsafe.Pointer(pFensUserInfo)))
 }
 
-// 注册回调接口
+// / 注册回调接口
 // /@param pSpi 派生自回调接口类的实例
-func (c *MdApi) RegisterSpi(pSpi thost.MdSpi) {
-	c.spi = pSpi
+func (s *MdApi) RegisterSpi(pSpi thost.MdSpi) {
+	s.spi = pSpi
 }
 
-// /订阅行情。
+// / 订阅行情。
 // /@param ppInstrumentID 合约ID
 // /@param nCount 要订阅/退订行情的合约个数
 // /@remark
-func (c *MdApi) SubscribeMarketData(instrumentIDs ...string) int {
+func (s *MdApi) SubscribeMarketData(instrumentIDs ...string) int {
 	cinlist := []*C.char{}
 	for _, ins := range instrumentIDs {
 		cinlist = append(cinlist, C.CString(ins))
@@ -182,15 +209,14 @@ func (c *MdApi) SubscribeMarketData(instrumentIDs ...string) int {
 			C.free(unsafe.Pointer(cinlist[i]))
 		}
 	}()
-
-	return (int)(C._wrap_CThostFtdcMdApi_SubscribeMarketData(C.uintptr_t(c.apiPtr), (**C.char)(unsafe.Pointer(&cinlist[0])), C.int(len(cinlist))))
+	return (int)(C._wrap_CThostFtdcMdApi_SubscribeMarketData(C.uintptr_t(s.apiPtr), (**C.char)(unsafe.Pointer(&cinlist[0])), C.int(len(cinlist))))
 }
 
-// /退订行情。
+// / 退订行情。
 // /@param ppInstrumentID 合约ID
 // /@param nCount 要订阅/退订行情的合约个数
 // /@remark
-func (c *MdApi) UnSubscribeMarketData(instrumentIDs ...string) int {
+func (s *MdApi) UnSubscribeMarketData(instrumentIDs ...string) int {
 	cinlist := []*C.char{}
 	for _, ins := range instrumentIDs {
 		cinlist = append(cinlist, C.CString(ins))
@@ -200,15 +226,14 @@ func (c *MdApi) UnSubscribeMarketData(instrumentIDs ...string) int {
 			C.free(unsafe.Pointer(cinlist[i]))
 		}
 	}()
-
-	return (int)(C._wrap_CThostFtdcMdApi_UnSubscribeMarketData(C.uintptr_t(c.apiPtr), (**C.char)(unsafe.Pointer(&cinlist[0])), C.int(len(cinlist))))
+	return (int)(C._wrap_CThostFtdcMdApi_UnSubscribeMarketData(C.uintptr_t(s.apiPtr), (**C.char)(unsafe.Pointer(&cinlist[0])), C.int(len(cinlist))))
 }
 
-// /订阅询价。
+// / 订阅询价。
 // /@param ppInstrumentID 合约ID
 // /@param nCount 要订阅/退订行情的合约个数
 // /@remark
-func (c *MdApi) SubscribeForQuoteRsp(instrumentIDs ...string) int {
+func (s *MdApi) SubscribeForQuoteRsp(instrumentIDs ...string) int {
 	cinlist := []*C.char{}
 	for _, ins := range instrumentIDs {
 		cinlist = append(cinlist, C.CString(ins))
@@ -218,15 +243,14 @@ func (c *MdApi) SubscribeForQuoteRsp(instrumentIDs ...string) int {
 			C.free(unsafe.Pointer(cinlist[i]))
 		}
 	}()
-
-	return (int)(C._wrap_CThostFtdcMdApi_SubscribeForQuoteRsp(C.uintptr_t(c.apiPtr), (**C.char)(unsafe.Pointer(&cinlist[0])), C.int(len(cinlist))))
+	return (int)(C._wrap_CThostFtdcMdApi_SubscribeForQuoteRsp(C.uintptr_t(s.apiPtr), (**C.char)(unsafe.Pointer(&cinlist[0])), C.int(len(cinlist))))
 }
 
-// /退订询价。
+// / 退订询价。
 // /@param ppInstrumentID 合约ID
 // /@param nCount 要订阅/退订行情的合约个数
 // /@remark
-func (c *MdApi) UnSubscribeForQuoteRsp(instrumentIDs ...string) int {
+func (s *MdApi) UnSubscribeForQuoteRsp(instrumentIDs ...string) int {
 	cinlist := []*C.char{}
 	for _, ins := range instrumentIDs {
 		cinlist = append(cinlist, C.CString(ins))
@@ -236,23 +260,22 @@ func (c *MdApi) UnSubscribeForQuoteRsp(instrumentIDs ...string) int {
 			C.free(unsafe.Pointer(cinlist[i]))
 		}
 	}()
-
-	return (int)(C._wrap_CThostFtdcMdApi_UnSubscribeForQuoteRsp(C.uintptr_t(c.apiPtr), (**C.char)(unsafe.Pointer(&cinlist[0])), C.int(len(cinlist))))
+	return (int)(C._wrap_CThostFtdcMdApi_UnSubscribeForQuoteRsp(C.uintptr_t(s.apiPtr), (**C.char)(unsafe.Pointer(&cinlist[0])), C.int(len(cinlist))))
 }
 
-// 用户登录请求
-func (c *MdApi) ReqUserLogin(pReqUserLoginField *thost.CThostFtdcReqUserLoginField, nRequestID int) int {
-	return (int)(C._wrap_CThostFtdcMdApi_ReqUserLogin(C.uintptr_t(c.apiPtr), (*C.struct_CThostFtdcReqUserLoginField)(unsafe.Pointer(pReqUserLoginField)), C.int(nRequestID)))
+// / 用户登录请求
+func (s *MdApi) ReqUserLogin(pReqUserLoginField *thost.CThostFtdcReqUserLoginField, nRequestID int) int {
+	return (int)(C._wrap_CThostFtdcMdApi_ReqUserLogin(C.uintptr_t(s.apiPtr), (*C.struct_CThostFtdcReqUserLoginField)(unsafe.Pointer(pReqUserLoginField)), C.int(nRequestID)))
 }
 
-// 登出请求
-func (c *MdApi) ReqUserLogout(pUserLogout *thost.CThostFtdcUserLogoutField, nRequestID int) int {
-	return (int)(C._wrap_CThostFtdcMdApi_ReqUserLogout(C.uintptr_t(c.apiPtr), (*C.struct_CThostFtdcUserLogoutField)(unsafe.Pointer(pUserLogout)), C.int(nRequestID)))
+// / 登出请求
+func (s *MdApi) ReqUserLogout(pUserLogout *thost.CThostFtdcUserLogoutField, nRequestID int) int {
+	return (int)(C._wrap_CThostFtdcMdApi_ReqUserLogout(C.uintptr_t(s.apiPtr), (*C.struct_CThostFtdcUserLogoutField)(unsafe.Pointer(pUserLogout)), C.int(nRequestID)))
 }
 
-// 请求查询组播合约
-func (c *MdApi) ReqQryMulticastInstrument(pQryMulticastInstrument *thost.CThostFtdcQryMulticastInstrumentField, nRequestID int) int {
-	return (int)(C._wrap_CThostFtdcMdApi_ReqQryMulticastInstrument(C.uintptr_t(c.apiPtr), (*C.struct_CThostFtdcQryMulticastInstrumentField)(unsafe.Pointer(pQryMulticastInstrument)), C.int(nRequestID)))
+// / 请求查询组播合约
+func (s *MdApi) ReqQryMulticastInstrument(pQryMulticastInstrument *thost.CThostFtdcQryMulticastInstrumentField, nRequestID int) int {
+	return (int)(C._wrap_CThostFtdcMdApi_ReqQryMulticastInstrument(C.uintptr_t(s.apiPtr), (*C.struct_CThostFtdcQryMulticastInstrumentField)(unsafe.Pointer(pQryMulticastInstrument)), C.int(nRequestID)))
 }
 
 //export wrapMdOnFrontConnected
@@ -334,20 +357,3 @@ func wrapMdOnRtnForQuoteRsp(v uintptr, pForQuoteRsp *C.struct_CThostFtdcForQuote
 }
 
 // -----------------------------------------------------
-func MdFlowPath(path string) MdOption {
-	return func(api *MdApi) {
-		api.flowPath = path
-	}
-}
-
-func MdUsingUDP(usingudp bool) MdOption {
-	return func(api *MdApi) {
-		api.usingUDP = usingudp
-	}
-}
-
-func MdMultiCast(multicast bool) MdOption {
-	return func(api *MdApi) {
-		api.multicast = multicast
-	}
-}

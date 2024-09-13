@@ -19,6 +19,7 @@ import (
 	"runtime"
 	"strings"
 	"sync/atomic"
+	"time"
 
 	"github.com/gookit/goutil/dump"
 	"github.com/pseudocodes/go2ctp/ctp"
@@ -55,7 +56,7 @@ type baseSpi struct {
 
 	requestID atomic.Int32
 
-	ctp_dyn.BaseTraderSpi
+	ctp.BaseTraderSpi
 	tdapi thost.TraderApi
 }
 
@@ -104,7 +105,8 @@ func (s *baseSpi) OnRspAuthenticate(pRspAuthenticateField *thost.CThostFtdcRspAu
 }
 
 func (s *baseSpi) OnRspUserLogin(pRspUserLogin *thost.CThostFtdcRspUserLoginField, pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
-	log.Printf("OnRspUserLogin\n")
+	log.Printf("OnRspUserLogin[SysVersion: %v %v] \n", pRspUserLogin.SysVersion.String(), pRspUserLogin.BrokerID.String())
+	// dump.V(pRspUserLogin)
 	req := &thost.CThostFtdcSettlementInfoConfirmField{}
 	copy(req.BrokerID[:], []byte(s.brokerID))
 	copy(req.InvestorID[:], []byte(s.investorID))
@@ -143,7 +145,7 @@ func (s *baseSpi) OnRspQryTradingAccount(pTradingAccount *thost.CThostFtdcTradin
 
 		req := &thost.CThostFtdcQryInstrumentCommissionRateField{}
 		copy(req.BrokerID[:], "9999")
-		copy(req.InstrumentID[:], "ag2410")
+		copy(req.InstrumentID[:], "ag2412")
 
 		ret := s.tdapi.ReqQryInstrumentCommissionRate(req, int(s.requestID.Add(1)))
 		if ret != 0 {
@@ -165,7 +167,7 @@ func (s *baseSpi) OnRspQryInstrumentCommissionRate(pInstrumentCommissionRate *th
 			TradingType: thost.THOST_FTDC_TD_TRADE,
 			ClassType:   thost.THOST_FTDC_INS_FUTURE,
 		}
-		copy(req.InstrumentID[:], "ag2410")
+		copy(req.InstrumentID[:], "ag2412")
 
 		ret := s.tdapi.ReqQryClassifiedInstrument(req, int(s.requestID.Add(1)))
 		if ret != 0 {
@@ -255,8 +257,8 @@ func Bytes2StringGBK(t []byte) string {
 }
 
 var (
-	CTPLibPathLinux = "../../ctp/lib/v6.7.2_20230913_api_traderapi_se_linux64/thosttraderapi_se.so"
-	CTPLibPathMacos = "../../ctp/lib/v6.7.2_MacOS_20231016/thosttraderapi_se.framework/thosttraderapi_se"
+	CTPLibPathLinux = "../../ctp/lib/v6.7.7_20240607_api_traderapi_se_linux64/thosttraderapi_se.so"
+	CTPLibPathMacos = "../../ctp/lib/v6.7.7_MacOS_20240716/thosttraderapi_se.framework/thosttraderapi_se"
 )
 
 func sample1() {
@@ -273,8 +275,8 @@ func sample1() {
 
 	tdapi.RegisterSpi(baseSpi)
 	// tdapi.RegisterFront("tcp://121.37.90.193:20002")
-	tdapi.RegisterFront(SimnowEnv["td"]["telesim1"])
-	// tdapi.RegisterFront(SimnowEnv["td"]["7x24"])
+	// tdapi.RegisterFront(SimnowEnv["td"]["telesim1"])
+	tdapi.RegisterFront(SimnowEnv["td"]["7x24"])
 
 	tdapi.Init()
 
@@ -294,9 +296,15 @@ func sample2() {
 	tdapi.RegisterSpi(baseSpi)
 
 	tdapi.RegisterFront(SimnowEnv["td"]["7x24"])
+	// tdapi.RegisterFront(SimnowEnv["td"]["telesim1"])
 
 	tdapi.Init()
+	time.Sleep(time.Second)
+	frontInfo := &thost.CThostFtdcFrontInfoField{}
+	tdapi.GetFrontInfo(frontInfo)
 
+	dump.V(frontInfo.FrontAddr.String())
+	dump.V(frontInfo.QryFreq)
 	println(tdapi.GetTradingDay())
 	println(tdapi.GetApiVersion())
 
@@ -305,6 +313,6 @@ func sample2() {
 }
 
 func main() {
-	sample1()
-	// sample2()
+	// sample1()
+	sample2()
 }

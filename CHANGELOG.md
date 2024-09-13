@@ -1,5 +1,19 @@
 # Changelog
 
+## [Unreleased] - 2024-09-13
+
+### Changed
+
+- 更新分支 6.7.7 对应官方 CTP 库版本
+- 更新封装代码
+- master 分支对应最新 CTP 版本
+- 更新 README 文档
+
+### comment
+- 采用 libclang 重写了封装代码生成脚本
+- 取消 ctp-mini golang 封装计划
+
+
 ## [Unreleased] - 2024-07-07
 
 ### Changed

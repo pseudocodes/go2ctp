@@ -148,6 +148,9 @@ public:
     // 请求查询行情响应
     void OnRspQryDepthMarketData(CThostFtdcDepthMarketDataField* pDepthMarketData, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast);
 
+    /// 请求查询交易员报盘机响应
+    void OnRspQryTraderOffer(CThostFtdcTraderOfferField* pTraderOffer, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast);
+
     // 请求查询投资者结算结果响应
     void OnRspQrySettlementInfo(CThostFtdcSettlementInfoField* pSettlementInfo, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast);
 
@@ -487,6 +490,9 @@ public:
     // 投资者产品RULE保证金查询响应
     void OnRspQryInvestorProdRULEMargin(CThostFtdcInvestorProdRULEMarginField* pInvestorProdRULEMargin, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast);
 
+    /// 投资者投资者新组保设置查询响应
+    void OnRspQryInvestorPortfSetting(CThostFtdcInvestorPortfSettingField* pInvestorPortfSetting, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast);
+
     // 创建TraderApi
     ///@param pszFlowPath 存贮订阅信息文件的目录，默认为当前目录
     ///@return 创建出的UserApi
@@ -512,6 +518,12 @@ public:
     ///@retrun 获取到的交易日
     ///@remark 只有登录成功后,才能得到正确的交易日
     const char* GetTradingDay();
+
+    /// 获取已连接的前置的信息
+    ///  @param pFrontInfo：输入输出参数，用于存储获取到的前置信息，不能为空
+    ///  @remark 连接成功后，可获取正确的前置地址信息
+    ///  @remark 登录成功后，可获取正确的前置流控信息
+    void GetFrontInfo(CThostFtdcFrontInfoField* pFrontInfo);
 
     // 注册前置机网络地址
     ///@param pszFrontAddress：前置机网络地址。
@@ -681,6 +693,9 @@ public:
 
     // 请求查询行情
     int ReqQryDepthMarketData(CThostFtdcQryDepthMarketDataField* pQryDepthMarketData, int nRequestID);
+
+    /// 请求查询交易员报盘机
+    int ReqQryTraderOffer(CThostFtdcQryTraderOfferField* pQryTraderOffer, int nRequestID);
 
     // 请求查询投资者结算结果
     int ReqQrySettlementInfo(CThostFtdcQrySettlementInfoField* pQrySettlementInfo, int nRequestID);
@@ -891,6 +906,9 @@ public:
 
     // 投资者产品RULE保证金查询
     int ReqQryInvestorProdRULEMargin(CThostFtdcQryInvestorProdRULEMarginField* pQryInvestorProdRULEMargin, int nRequestID);
+
+    /// 投资者投资者新组保设置查询
+    int ReqQryInvestorPortfSetting(CThostFtdcQryInvestorPortfSettingField* pQryInvestorPortfSetting, int nRequestID);
 
 private:
     CThostFtdcTraderApi* pUserApi;

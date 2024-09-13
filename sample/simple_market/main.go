@@ -76,7 +76,7 @@ func (s *baseSpi) OnFrontConnected() {
 
 	loginR := &thost.CThostFtdcReqUserLoginField{}
 	copy(loginR.BrokerID[:], "9999")
-	copy(loginR.UserID[:], "046056")
+	copy(loginR.UserID[:], "046111")
 
 	ret := s.mdapi.ReqUserLogin(loginR, 1)
 
@@ -93,7 +93,7 @@ func (s *baseSpi) OnFrontDisconnected(nReason int) {
 
 func (s *baseSpi) OnRspUserLogin(pRspUserLogin *thost.CThostFtdcRspUserLoginField, pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
 	log.Printf("RspUserLogin: %+v\nRspInfo: %+v\n", pRspUserLogin, nil)
-	s.mdapi.SubscribeMarketData("ag2408")
+	s.mdapi.SubscribeMarketData("ag2412")
 }
 
 func (s *baseSpi) OnRspSubMarketData(pSpecificInstrument *thost.CThostFtdcSpecificInstrumentField, pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
@@ -122,7 +122,7 @@ func CreateBaseSpi2() *baseSpi2 {
 
 		loginR := &thost.CThostFtdcReqUserLoginField{}
 		copy(loginR.BrokerID[:], "9999")
-		copy(loginR.UserID[:], "046056")
+		copy(loginR.UserID[:], "046111")
 
 		ret := s.mdapi.ReqUserLogin(loginR, 1)
 
@@ -133,7 +133,7 @@ func CreateBaseSpi2() *baseSpi2 {
 	}
 	s.OnRspUserLoginCallback = func(pRspUserLogin *thost.CThostFtdcRspUserLoginField, pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
 		log.Printf("RspUserLogin: %+v\nRspInfo: %+v\n", pRspUserLogin, nil)
-		s.mdapi.SubscribeMarketData("ag2408")
+		s.mdapi.SubscribeMarketData("ag2412")
 	}
 	s.OnRtnDepthMarketDataCallback = func(pDepthMarketData *thost.CThostFtdcDepthMarketDataField) {
 		// log.Printf("tick {%+v}\n", quote)
@@ -144,10 +144,10 @@ func CreateBaseSpi2() *baseSpi2 {
 }
 
 var (
-	CTPLibPathLinux = "../../ctp/lib/v6.7.2_20230913_api_traderapi_se_linux64/thostmduserapi_se.so"
+	CTPLibPathLinux = "../../ctp/lib/v6.7.7_20240607_api_traderapi_se_linux64/thostmduserapi_se.so"
 
 	TTSFront    = "tcp://121.37.80.177:20004"
-	SimnowFront = SimnowEnv["md"]["telesim1"]
+	SimnowFront = SimnowEnv["md"]["7x24"]
 )
 
 func sample1() {
@@ -156,11 +156,12 @@ func sample1() {
 		frontAddr string
 	)
 	if runtime.GOOS == "darwin" {
-		fwlib := "../../ctp/lib/v6.7.2_MacOS_20231016/thostmduserapi_se.framework/Versions/A/thostmduserapi_se"
+		fwlib := "../../ctp/lib/v6.7.7_MacOS_20240716/thostmduserapi_se.framework/thostmduserapi_se"
 		// mdapi = ctp_dyn.CreateMdApi(ctp_dyn.MdDynamicLibPath(TTSLibPathDarwin), ctp_dyn.MdFlowPath("./data/"), ctp_dyn.MdUsingUDP(false), ctp_dyn.MdMultiCast(false))
 		mdapi = ctp_dyn.CreateMdApi(ctp_dyn.MdDynamicLibPath(fwlib), ctp_dyn.MdFlowPath("./data/"), ctp_dyn.MdUsingUDP(false), ctp_dyn.MdMultiCast(false))
 
 		// frontAddr = TTSFront
+		frontAddr = SimnowFront
 
 	} else if runtime.GOOS == "linux" {
 		// mdapi = ctp_dyn.CreateMdApi(ctp_dyn.MdDynamicLibPath(TTSLibPathLinux), ctp_dyn.MdFlowPath("./data/"), ctp_dyn.MdUsingUDP(false), ctp_dyn.MdMultiCast(false))
@@ -209,6 +210,6 @@ func sample2() {
 }
 
 func main() {
-	// sample1()
-	sample2()
+	sample1()
+	// sample2()
 }

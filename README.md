@@ -270,7 +270,7 @@ virtual int ReqUserLogin(CThostFtdcReqUserLoginField* pReqUserLoginField, int nR
 // MacOS 接口
 virtual int ReqUserLogin(CThostFtdcReqUserLoginField* pReqUserLoginField, int nRequestID, TThostFtdcSystemInfoLenType length, TThostFtdcClientSystemInfoType systemInfo) = 0;
 ```
-> * OpenCTP 提供的 MacOS 的头文件接口与 Linux 统一，即 `ReqUserLogin` 采用两参数接口，封装 `go2ctp` 过程中与 [@krenx](https://github.com/krenx1983) 沟通过这个问题，对方当时未有计划提供对标接口支持, 因此本项目在 MaxOS 环境下编译 OpenCTP 相关库时，请采用 ctp_dyn pacakge，编译指令如下 
+> * OpenCTP 提供的 MacOS 的头文件接口与 Linux 统一，即 `ReqUserLogin` 采用两参数接口，封装 `go2ctp` 过程中与 [@krenx](https://github.com/krenx1983) 沟通过这个问题，对方当时未有计划提供对标接口支持, 因此本项目在 MacOS 环境下编译 OpenCTP 相关库时，请采用 ctp_dyn pacakge，编译指令如下 
 
 ```shell
 ?> cd sample/simple_trader && go build -tags openctp
@@ -298,7 +298,6 @@ virtual int ReqUserLogin(CThostFtdcReqUserLoginField* pReqUserLoginField, int nR
 * alpha-trade-gateway (incoming)
 
 ## TODO
-* ctp-mini 支持
 * 更丰富的使用样例
 * 扩展封装，提供高阶功能
 * CTP 版本关联分支(Tag?)

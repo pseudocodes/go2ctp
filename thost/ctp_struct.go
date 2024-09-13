@@ -1354,7 +1354,7 @@ type CThostFtdcInputOrderField struct {
 	BusinessUnit TThostFtdcBusinessUnitType
 	//  请求编号
 	RequestID TThostFtdcRequestIDType
-	//  用户强评标志
+	//  用户强平标志
 	UserForceClose TThostFtdcBoolType
 	//  互换单标志
 	IsSwapOrder TThostFtdcBoolType
@@ -1376,6 +1376,10 @@ type CThostFtdcInputOrderField struct {
 	InstrumentID TThostFtdcInstrumentIDType
 	//  IP地址
 	IPAddress TThostFtdcIPAddressType
+	//  报单回显字段
+	OrderMemo TThostFtdcOrderMemoType
+	//  session上请求计数 api自动维护
+	SessionReqSeq TThostFtdcSequenceNo12Type
 }
 
 // 报单
@@ -1482,7 +1486,7 @@ type CThostFtdcOrderField struct {
 	UserProductInfo TThostFtdcProductInfoType
 	//  状态信息
 	StatusMsg TThostFtdcErrorMsgType
-	//  用户强评标志
+	//  用户强平标志
 	UserForceClose TThostFtdcBoolType
 	//  操作用户代码
 	ActiveUserID TThostFtdcUserIDType
@@ -1512,6 +1516,10 @@ type CThostFtdcOrderField struct {
 	ExchangeInstID TThostFtdcExchangeInstIDType
 	//  IP地址
 	IPAddress TThostFtdcIPAddressType
+	//  报单回显字段
+	OrderMemo TThostFtdcOrderMemoType
+	//  session上请求计数 api自动维护
+	SessionReqSeq TThostFtdcSequenceNo12Type
 }
 
 // 交易所报单
@@ -1670,6 +1678,10 @@ type CThostFtdcInputOrderActionField struct {
 	InstrumentID TThostFtdcInstrumentIDType
 	//  IP地址
 	IPAddress TThostFtdcIPAddressType
+	//  报单回显字段
+	OrderMemo TThostFtdcOrderMemoType
+	//  session上请求计数 api自动维护
+	SessionReqSeq TThostFtdcSequenceNo12Type
 }
 
 // 报单操作
@@ -1736,6 +1748,10 @@ type CThostFtdcOrderActionField struct {
 	InstrumentID TThostFtdcInstrumentIDType
 	//  IP地址
 	IPAddress TThostFtdcIPAddressType
+	//  报单回显字段
+	OrderMemo TThostFtdcOrderMemoType
+	//  session上请求计数 api自动维护
+	SessionReqSeq TThostFtdcSequenceNo12Type
 }
 
 // 交易所报单操作
@@ -2012,6 +2028,8 @@ type CThostFtdcSyncDepositField struct {
 	IsFromSopt TThostFtdcBoolType
 	//  资金密码
 	TradingPassword TThostFtdcPasswordType
+	//  是否二级代理商的内转
+	IsSecAgentTranfer TThostFtdcBoolType
 }
 
 // 货币质押同步
@@ -2656,6 +2674,8 @@ type CThostFtdcQryDepthMarketDataField struct {
 	ExchangeID TThostFtdcExchangeIDType
 	//  合约代码
 	InstrumentID TThostFtdcInstrumentIDType
+	//  产品类型
+	ProductClass TThostFtdcProductClassType
 }
 
 // 查询经纪公司用户
@@ -3712,6 +3732,10 @@ type CThostFtdcInputQuoteField struct {
 	ReplaceSysID TThostFtdcOrderSysIDType
 	//  有效期类型
 	TimeCondition TThostFtdcTimeConditionType
+	//  报单回显字段
+	OrderMemo TThostFtdcOrderMemoType
+	//  session上请求计数 api自动维护
+	SessionReqSeq TThostFtdcSequenceNo12Type
 }
 
 // 输入报价操作
@@ -3752,6 +3776,10 @@ type CThostFtdcInputQuoteActionField struct {
 	InstrumentID TThostFtdcInstrumentIDType
 	//  IP地址
 	IPAddress TThostFtdcIPAddressType
+	//  报单回显字段
+	OrderMemo TThostFtdcOrderMemoType
+	//  session上请求计数 api自动维护
+	SessionReqSeq TThostFtdcSequenceNo12Type
 }
 
 // 报价
@@ -3866,6 +3894,10 @@ type CThostFtdcQuoteField struct {
 	ReplaceSysID TThostFtdcOrderSysIDType
 	//  有效期类型
 	TimeCondition TThostFtdcTimeConditionType
+	//  报单回显字段
+	OrderMemo TThostFtdcOrderMemoType
+	//  session上请求计数 api自动维护
+	SessionReqSeq TThostFtdcSequenceNo12Type
 }
 
 // 报价操作
@@ -3928,6 +3960,10 @@ type CThostFtdcQuoteActionField struct {
 	InstrumentID TThostFtdcInstrumentIDType
 	//  IP地址
 	IPAddress TThostFtdcIPAddressType
+	//  报单回显字段
+	OrderMemo TThostFtdcOrderMemoType
+	//  session上请求计数 api自动维护
+	SessionReqSeq TThostFtdcSequenceNo12Type
 }
 
 // 报价查询
@@ -5978,7 +6014,7 @@ type CThostFtdcParkedOrderField struct {
 	BusinessUnit TThostFtdcBusinessUnitType
 	//  请求编号
 	RequestID TThostFtdcRequestIDType
-	//  用户强评标志
+	//  用户强平标志
 	UserForceClose TThostFtdcBoolType
 	//  交易所代码
 	ExchangeID TThostFtdcExchangeIDType
@@ -6288,7 +6324,7 @@ type CThostFtdcErrOrderField struct {
 	BusinessUnit TThostFtdcBusinessUnitType
 	//  请求编号
 	RequestID TThostFtdcRequestIDType
-	//  用户强评标志
+	//  用户强平标志
 	UserForceClose TThostFtdcBoolType
 	//  错误代码
 	ErrorID TThostFtdcErrorIDType
@@ -6314,6 +6350,10 @@ type CThostFtdcErrOrderField struct {
 	InstrumentID TThostFtdcInstrumentIDType
 	//  IP地址
 	IPAddress TThostFtdcIPAddressType
+	//  报单回显字段
+	OrderMemo TThostFtdcOrderMemoType
+	//  session上请求计数 api自动维护
+	SessionReqSeq TThostFtdcSequenceNo12Type
 }
 
 // 查询错误报单操作
@@ -6420,7 +6460,7 @@ type CThostFtdcErrorConditionalOrderField struct {
 	UserProductInfo TThostFtdcProductInfoType
 	//  状态信息
 	StatusMsg TThostFtdcErrorMsgType
-	//  用户强评标志
+	//  用户强平标志
 	UserForceClose TThostFtdcBoolType
 	//  操作用户代码
 	ActiveUserID TThostFtdcUserIDType
@@ -6532,6 +6572,10 @@ type CThostFtdcErrOrderActionField struct {
 	InstrumentID TThostFtdcInstrumentIDType
 	//  IP地址
 	IPAddress TThostFtdcIPAddressType
+	//  报单回显字段
+	OrderMemo TThostFtdcOrderMemoType
+	//  session上请求计数 api自动维护
+	SessionReqSeq TThostFtdcSequenceNo12Type
 }
 
 // 查询交易所状态
@@ -9604,6 +9648,8 @@ type CThostFtdcDepartmentUserField struct {
 type CThostFtdcQueryFreqField struct {
 	//  查询频率
 	QueryFreq TThostFtdcQueryFreqType
+	//  FTD频率
+	FTDPkgFreq TThostFtdcQueryFreqType
 }
 
 // 禁止认证IP
@@ -9717,7 +9763,7 @@ type CThostFtdcCombPromotionParamField struct {
 }
 
 // 国密用户登录请求
-type CThostFtdcReqUserLoginSCField struct {
+type CThostFtdcReqUserLoginSMField struct {
 	//  交易日
 	TradingDay TThostFtdcDateType
 	//  经纪公司代码
@@ -9736,16 +9782,22 @@ type CThostFtdcReqUserLoginSCField struct {
 	MacAddress TThostFtdcMacAddressType
 	//  动态密码
 	OneTimePassword TThostFtdcPasswordType
-	//  终端IP地址
-	ClientIPAddress TThostFtdcIPAddressType
+	//  保留的无效字段
+	Reserve1 TThostFtdcOldIPAddressType
 	//  登录备注
 	LoginRemark TThostFtdcLoginRemarkType
 	//  终端IP端口
 	ClientIPPort TThostFtdcIPPortType
+	//  终端IP地址
+	ClientIPAddress TThostFtdcIPAddressType
+	//  经纪公司名称
+	BrokerName TThostFtdcBrokerNameType
 	//  认证码
 	AuthCode TThostFtdcAuthCodeType
 	//  App代码
 	AppID TThostFtdcAppIDType
+	//  PIN码
+	PIN TThostFtdcPasswordType
 }
 
 // 投资者风险结算持仓查询
@@ -10680,6 +10732,8 @@ type CThostFtdcInvestorPortfMarginRatioField struct {
 	ExchangeID TThostFtdcExchangeIDType
 	//  会员对投资者收取的保证金和交易所对投资者收取的保证金的比例
 	MarginRatio TThostFtdcRatioType
+	//  产品群代码
+	ProductGroupID TThostFtdcProductIDType
 }
 
 // 组合保证金套餐查询
@@ -10710,6 +10764,8 @@ type CThostFtdcQryInvestorPortfMarginRatioField struct {
 	InvestorID TThostFtdcInvestorIDType
 	//  交易所代码
 	ExchangeID TThostFtdcExchangeIDType
+	//  产品群代码
+	ProductGroupID TThostFtdcProductIDType
 }
 
 // 投资者产品SPBM明细
@@ -11188,9 +11244,9 @@ type CThostFtdcInvestorProdRCAMSMarginField struct {
 	OptionRoyalty TThostFtdcMoneyType
 	//  大边组合平仓冻结保证金
 	MMSACloseFrozenMargin TThostFtdcMoneyType
-	//  平策略组合冻结保证金
+	//  策略组合平仓/行权冻结保证金
 	CloseCombFrozenMargin TThostFtdcMoneyType
-	//  平仓冻结保证金
+	//  平仓/行权冻结保证金
 	CloseFrozenMargin TThostFtdcMoneyType
 	//  大边组合开仓冻结保证金
 	MMSAOpenFrozenMargin TThostFtdcMoneyType
@@ -11896,4 +11952,54 @@ type CThostFtdcSyncDeltaRULEInterParameterField struct {
 	ActionDirection TThostFtdcActionDirectionType
 	//  追平序号
 	SyncDeltaSequenceNo TThostFtdcSequenceNoType
+}
+
+// 退出紧急状态参数
+type CThostFtdcExitEmergencyField struct {
+	//  经纪公司代码
+	BrokerID TThostFtdcBrokerIDType
+}
+
+// 新组保保证金系数投资者模板对应关系
+type CThostFtdcInvestorPortfMarginModelField struct {
+	//  经纪公司代码
+	BrokerID TThostFtdcBrokerIDType
+	//  投资者代码
+	InvestorID TThostFtdcInvestorIDType
+	//  保证金系数模板
+	MarginModelID TThostFtdcInvestorIDType
+}
+
+// 投资者新组保设置
+type CThostFtdcInvestorPortfSettingField struct {
+	//  交易所代码
+	ExchangeID TThostFtdcExchangeIDType
+	//  经纪公司代码
+	BrokerID TThostFtdcBrokerIDType
+	//  投资者编号
+	InvestorID TThostFtdcInvestorIDType
+	//  投机套保标志
+	HedgeFlag TThostFtdcHedgeFlagType
+	//  是否开启新组保
+	UsePortf TThostFtdcBoolType
+}
+
+// 投资者新组保设置查询
+type CThostFtdcQryInvestorPortfSettingField struct {
+	//  交易所代码
+	ExchangeID TThostFtdcExchangeIDType
+	//  经纪公司代码
+	BrokerID TThostFtdcBrokerIDType
+	//  投资者编号
+	InvestorID TThostFtdcInvestorIDType
+}
+
+// 前置信息
+type CThostFtdcFrontInfoField struct {
+	//  前置地址
+	FrontAddr TThostFtdcAddressType
+	//  查询频率
+	QryFreq TThostFtdcQueryFreqType
+	//  FTD频率
+	FTDPkgFreq TThostFtdcQueryFreqType
 }

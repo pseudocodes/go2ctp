@@ -116,6 +116,11 @@ const char* _wrap_tts_CThostFtdcTraderApi_GetTradingDay(TTSCTPTraderSpi* pTrader
     return pTraderApi->GetTradingDay();
 }
 
+void _wrap_tts_CThostFtdcTraderApi_GetFrontInfo(TTSCTPTraderSpi* ptr, CThostFtdcFrontInfoField* pFrontInfo)
+{
+    return ptr->GetFrontInfo(pFrontInfo);
+}
+
 // 注册前置机网络地址
 ///@param pszFrontAddress：前置机网络地址。
 ///@remark 网络地址的格式为：“protocol://ipaddress:port”，如：”tcp://127.0.0.1:17001”。
@@ -431,6 +436,11 @@ int _wrap_tts_CThostFtdcTraderApi_ReqQryInstrument(TTSCTPTraderSpi* pTraderApi, 
 int _wrap_tts_CThostFtdcTraderApi_ReqQryDepthMarketData(TTSCTPTraderSpi* pTraderApi, CThostFtdcQryDepthMarketDataField* pQryDepthMarketData, int nRequestID)
 {
     return pTraderApi->ReqQryDepthMarketData(pQryDepthMarketData, nRequestID);
+}
+
+int _wrap_tts_CThostFtdcTraderApi_ReqQryTraderOffer(TTSCTPTraderSpi* ptr, CThostFtdcQryTraderOfferField* pQryTraderOffer, int nRequestID)
+{
+    return ptr->ReqQryTraderOffer(pQryTraderOffer, nRequestID);
 }
 
 // 请求查询投资者结算结果
@@ -853,6 +863,11 @@ int _wrap_tts_CThostFtdcTraderApi_ReqQryRiskSettleProductStatus(TTSCTPTraderSpi*
     return pTraderApi->ReqQryRiskSettleProductStatus(pQryRiskSettleProductStatus, nRequestID);
 }
 
+int _wrap_tts_CThostFtdcTraderApi_ReqQryInvestorPortfSetting(TTSCTPTraderSpi* ptr, CThostFtdcQryInvestorPortfSettingField* pQryInvestorPortfSetting, int nRequestID)
+{
+    return ptr->ReqQryInvestorPortfSetting(pQryInvestorPortfSetting, nRequestID);
+}
+
 #ifdef __cplusplus
 }
 #endif
@@ -1142,6 +1157,12 @@ extern "C" void wrap_tts_TraderOnRspQryDepthMarketData(uintptr_t, CThostFtdcDept
 void TTSCTPTraderSpi::OnRspQryDepthMarketData(CThostFtdcDepthMarketDataField* pDepthMarketData, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
 {
     wrap_tts_TraderOnRspQryDepthMarketData(gUserApi, pDepthMarketData, pRspInfo, nRequestID, bIsLast);
+}
+
+extern "C" void wrap_tts_TraderOnRspQryTraderOffer(uintptr_t, CThostFtdcTraderOfferField*, CThostFtdcRspInfoField*, int, bool);
+void TTSCTPTraderSpi::OnRspQryTraderOffer(CThostFtdcTraderOfferField* pTraderOffer, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+{
+    wrap_tts_TraderOnRspQryTraderOffer(gUserApi, pTraderOffer, pRspInfo, nRequestID, bIsLast);
 }
 
 // 请求查询投资者结算结果响应
@@ -1935,6 +1956,12 @@ void TTSCTPTraderSpi::OnRspQryInvestorProdRULEMargin(CThostFtdcInvestorProdRULEM
     wrap_tts_TraderOnRspQryInvestorProdRULEMargin(gUserApi, pInvestorProdRULEMargin, pRspInfo, nRequestID, bIsLast);
 }
 
+extern "C" void wrap_tts_TraderOnRspQryInvestorPortfSetting(uintptr_t, CThostFtdcInvestorPortfSettingField*, CThostFtdcRspInfoField*, int, bool);
+void TTSCTPTraderSpi::OnRspQryInvestorPortfSetting(CThostFtdcInvestorPortfSettingField* pInvestorPortfSetting, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+{
+    wrap_tts_TraderOnRspQryInvestorPortfSetting(gUserApi, pInvestorPortfSetting, pRspInfo, nRequestID, bIsLast);
+}
+
 TTSCTPTraderSpi::TTSCTPTraderSpi(CThostFtdcTraderApi* pUserApi)
 {
     this->pUserApi = pUserApi;
@@ -2014,6 +2041,11 @@ int TTSCTPTraderSpi::Join()
 const char* TTSCTPTraderSpi::GetTradingDay()
 {
     return this->pUserApi->GetTradingDay();
+}
+
+void TTSCTPTraderSpi::GetFrontInfo(CThostFtdcFrontInfoField* pFrontInfo)
+{
+    return this->pUserApi->GetFrontInfo(pFrontInfo);
 }
 
 // 注册前置机网络地址
@@ -2349,6 +2381,11 @@ int TTSCTPTraderSpi::ReqQryInstrument(CThostFtdcQryInstrumentField* pQryInstrume
 int TTSCTPTraderSpi::ReqQryDepthMarketData(CThostFtdcQryDepthMarketDataField* pQryDepthMarketData, int nRequestID)
 {
     return this->pUserApi->ReqQryDepthMarketData(pQryDepthMarketData, nRequestID);
+}
+
+int TTSCTPTraderSpi::ReqQryTraderOffer(CThostFtdcQryTraderOfferField* pQryTraderOffer, int nRequestID)
+{
+    return this->pUserApi->ReqQryTraderOffer(pQryTraderOffer, nRequestID);
 }
 
 // 请求查询投资者结算结果
@@ -2769,4 +2806,9 @@ int TTSCTPTraderSpi::ReqQryRULEInterParameter(CThostFtdcQryRULEInterParameterFie
 int TTSCTPTraderSpi::ReqQryInvestorProdRULEMargin(CThostFtdcQryInvestorProdRULEMarginField* pQryInvestorProdRULEMargin, int nRequestID)
 {
     return this->pUserApi->ReqQryInvestorProdRULEMargin(pQryInvestorProdRULEMargin, nRequestID);
+}
+
+int TTSCTPTraderSpi::ReqQryInvestorPortfSetting(CThostFtdcQryInvestorPortfSettingField* pQryInvestorPortfSetting, int nRequestID)
+{
+    return this->pUserApi->ReqQryInvestorPortfSetting(pQryInvestorPortfSetting, nRequestID);
 }
