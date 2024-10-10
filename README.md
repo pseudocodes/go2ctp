@@ -1,5 +1,10 @@
-Go2ctp
-==========================================
+# Go2ctp
+
+上海期货信息技术 CTP 接口 go 语言原生封装，支持生产，测评，OpenCTP, LocalCTP 版本, 适配 Linux, MacOS
+
+对应 Rust 语言封装查看 **[ctp2rs](https://github.com/pseudocodes/ctp2rs/)** 项目
+
+
 ## Sample
 
 ### 静态依赖
@@ -173,6 +178,10 @@ func main() {
 	var (
 		mdapi     thost.MdApi
 		frontAddr string
+		
+		CTPLibPathMacos = "/the/user/path/to/thostmduserapi_se.framework/thostmduserapi_se"
+		CTPLibPathLinux = "/the/user/path/to/thostmduserapi_se.so"
+		TTSLibPathMacos = "/the/user/path/to/openctp/thostmduserapi_se.dylib"
 	)
 	if runtime.GOOS == "darwin" {
 		mdapi = ctp_dyn.CreateMdApi(ctp_dyn.MdDynamicLibPath(CTPLibPathMacos), ctp_dyn.MdFlowPath("./data/"), ctp_dyn.MdUsingUDP(false), ctp_dyn.MdMultiCast(false))
@@ -279,6 +288,17 @@ virtual int ReqUserLogin(CThostFtdcReqUserLoginField* pReqUserLoginField, int nR
 ?> cd sample/simple_trader && go build -tags tts
 ```
 
+**Q.08**: ctp_dyn 高版本的封装(6.7.7) 是否兼容低版本 (6.7.2) 的动态库
+
+**A.08**: 当前的封装方式不支持高版本封装加载低版本动态库，如 6.7.7 分支 `ctp_dyn` 不应加载 6.7.2 版本的 ctp/openctp 的动态库, 如果发生该种行为，程序编译运行之后会发生卡死或提示出错； 
+确实有能够强制加载低版本动态库函数的封装方案，但是考虑到生产环境下应不隐藏风险，尽早抛出错误的原则，未采用强制加载的封装方案.
+此外，请注意开发环境的区别，不要在 Macosx 环境下加载 so 动态库
+
+
+## 注意事项
+* 使用 ctp_dyn 时请对齐分支版本以及动态库版本
+* Macosx 环境下如出现编译后运行无响应，可以排查系统以及 Go 版本
+
  
 ## 同类项目
 
@@ -300,7 +320,7 @@ virtual int ReqUserLogin(CThostFtdcReqUserLoginField* pReqUserLoginField, int nR
 ## TODO
 * 更丰富的使用样例
 * 扩展封装，提供高阶功能
-* CTP 版本关联分支(Tag?)
+* CTP 版本与 GO 项目大版本同步 ？
 
 
 
