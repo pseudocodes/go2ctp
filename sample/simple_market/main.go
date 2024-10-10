@@ -145,6 +145,8 @@ func CreateBaseSpi2() *baseSpi2 {
 
 var (
 	CTPLibPathLinux = "../../ctp/lib/v6.7.7_20240607_api_traderapi_se_linux64/thostmduserapi_se.so"
+	CTPLibPathMacos = "../../ctp/lib/v6.7.7_MacOS_20240716/thostmduserapi_se.framework/Versions/A/thostmduserapi_se"
+	// TTSLibPathDarwin = "This/Is/Sample/PathToOpenCTP.dylib"
 
 	TTSFront    = "tcp://121.37.80.177:20004"
 	SimnowFront = SimnowEnv["md"]["7x24"]
@@ -156,9 +158,7 @@ func sample1() {
 		frontAddr string
 	)
 	if runtime.GOOS == "darwin" {
-		fwlib := "../../ctp/lib/v6.7.7_MacOS_20240716/thostmduserapi_se.framework/thostmduserapi_se"
-		// mdapi = ctp_dyn.CreateMdApi(ctp_dyn.MdDynamicLibPath(TTSLibPathDarwin), ctp_dyn.MdFlowPath("./data/"), ctp_dyn.MdUsingUDP(false), ctp_dyn.MdMultiCast(false))
-		mdapi = ctp_dyn.CreateMdApi(ctp_dyn.MdDynamicLibPath(fwlib), ctp_dyn.MdFlowPath("./data/"), ctp_dyn.MdUsingUDP(false), ctp_dyn.MdMultiCast(false))
+		mdapi = ctp_dyn.CreateMdApi(ctp_dyn.MdDynamicLibPath(CTPLibPathMacos), ctp_dyn.MdFlowPath("./data/"), ctp_dyn.MdUsingUDP(false), ctp_dyn.MdMultiCast(false))
 
 		// frontAddr = TTSFront
 		frontAddr = SimnowFront
