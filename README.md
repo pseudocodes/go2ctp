@@ -173,6 +173,10 @@ func main() {
 	var (
 		mdapi     thost.MdApi
 		frontAddr string
+		
+		CTPLibPathMacos = "/the/user/path/to/thostmduserapi_se.framework/thostmduserapi_se"
+		CTPLibPathLinux = "/the/user/path/to/thostmduserapi_se.so"
+		TTSLibPathMacos = "/the/user/path/to/openctp/thostmduserapi_se.dylib"
 	)
 	if runtime.GOOS == "darwin" {
 		mdapi = ctp_dyn.CreateMdApi(ctp_dyn.MdDynamicLibPath(CTPLibPathMacos), ctp_dyn.MdFlowPath("./data/"), ctp_dyn.MdUsingUDP(false), ctp_dyn.MdMultiCast(false))
