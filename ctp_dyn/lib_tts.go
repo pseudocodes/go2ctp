@@ -21,7 +21,7 @@ package ctp_dyn
 
 #cgo darwin LDFLAGS: -L. -ldl
 #cgo darwin CXXFLAGS: -std=c++11
-#cgo darwin CPPFLAGS: -I. -I${SRCDIR}/lib/v6.7.2/ -D__OPENCTP__
+#cgo darwin CPPFLAGS: -I. -I${SRCDIR}/../ctp/lib/v6.7.2_20230913_api_traderapi_se_linux64/ -D__OPENCTP__
 
 */
 import "C"
