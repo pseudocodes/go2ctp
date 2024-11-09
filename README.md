@@ -283,6 +283,10 @@ virtual int ReqUserLogin(CThostFtdcReqUserLoginField* pReqUserLoginField, int nR
 ?> cd sample/simple_trader && go build -tags tts
 ```
 
+## 注意事项
+* 使用 ctp_dyn 时请对齐分支版本以及动态库版本
+* Macosx 环境下如出现编译后运行无响应，可以排查系统以及 Go 版本
+
  
 ## 同类项目
 
@@ -304,7 +308,7 @@ virtual int ReqUserLogin(CThostFtdcReqUserLoginField* pReqUserLoginField, int nR
 ## TODO
 * 更丰富的使用样例
 * 扩展封装，提供高阶功能
-* CTP 版本关联分支(Tag?)
+* CTP 版本与 GO 项目大版本同步 ？
 
 
 
