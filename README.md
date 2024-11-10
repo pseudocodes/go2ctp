@@ -283,6 +283,13 @@ virtual int ReqUserLogin(CThostFtdcReqUserLoginField* pReqUserLoginField, int nR
 ?> cd sample/simple_trader && go build -tags tts
 ```
 
+**Q.08**: ctp_dyn 高版本的封装(6.7.7) 是否兼容低版本 (6.7.2) 的动态库
+
+**A.08**: 当前的封装方式不支持高版本封装加载低版本动态库，如 6.7.7 分支 `ctp_dyn` 不应加载 6.7.2 版本的 ctp/openctp 的动态库, 如果发生该种行为，程序编译运行之后会发生卡死或提示出错； 
+确实有能够强制加载低版本动态库函数的封装方案，但是考虑到生产环境下应不隐藏风险，尽早抛出错误的原则，未采用强制加载的封装方案.
+此外，请注意开发环境的区别，不要在 Macosx 环境下加载 so 动态库
+
+
 ## 注意事项
 * 使用 ctp_dyn 时请对齐分支版本以及动态库版本
 * Macosx 环境下如出现编译后运行无响应，可以排查系统以及 Go 版本
