@@ -21,9 +21,9 @@ import (
 	"sync/atomic"
 
 	"github.com/gookit/goutil/dump"
-	"github.com/pseudocodes/go2ctp/ctp"
-	"github.com/pseudocodes/go2ctp/ctp_dyn"
-	"github.com/pseudocodes/go2ctp/thost"
+	"github.com/pseudocodes/go2ctp/v6/ctp"
+	"github.com/pseudocodes/go2ctp/v6/ctp_dyn"
+	"github.com/pseudocodes/go2ctp/v6/thost"
 	"golang.org/x/text/encoding/simplifiedchinese"
 )
 
