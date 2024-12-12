@@ -16,8 +16,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/pseudocodes/go2ctp/ctp"
-	"github.com/pseudocodes/go2ctp/thost"
+	"github.com/pseudocodes/go2ctp/v6/ctp"
+	"github.com/pseudocodes/go2ctp/v6/thost"
 )
 
 func init() {
@@ -110,8 +110,8 @@ import (
 	"time"
 	"runtime"
 
-	"github.com/pseudocodes/go2ctp/ctp_dyn"
-	"github.com/pseudocodes/go2ctp/thost"
+	"github.com/pseudocodes/go2ctp/v6/ctp_dyn"
+	"github.com/pseudocodes/go2ctp/v6/thost"
 )
 
 func init() {

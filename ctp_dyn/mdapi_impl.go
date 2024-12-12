@@ -68,7 +68,7 @@ import (
 	"runtime/cgo"
 	"unsafe"
 
-	"github.com/pseudocodes/go2ctp/thost"
+	"github.com/pseudocodes/go2ctp/v6/thost"
 )
 
 const (
