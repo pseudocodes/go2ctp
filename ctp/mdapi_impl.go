@@ -63,7 +63,9 @@ extern int _wrap_CThostFtdcMdApi_ReqQryMulticastInstrument(uintptr_t, struct CTh
 import "C"
 import (
 	"os"
+	"path/filepath"
 	"runtime/cgo"
+	"strings"
 	"unsafe"
 
 	"github.com/pseudocodes/go2ctp/thost"
@@ -115,7 +117,14 @@ func CreateMdApi(options ...MdOption) thost.MdApi {
 		opt(api)
 	}
 	if api.flowPath != "" {
-		if err := os.MkdirAll(api.flowPath, os.ModePerm); err != nil && !os.IsExist(err) {
+		var err error
+		if strings.HasSuffix(api.flowPath, "/") {
+			err = os.MkdirAll(api.flowPath, os.ModePerm)
+		} else {
+			parentDir := filepath.Dir(api.flowPath)
+			err = os.MkdirAll(parentDir, os.ModePerm)
+		}
+		if err != nil && !os.IsExist(err) {
 			panic(err)
 		}
 	}
