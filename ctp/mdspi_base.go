@@ -13,7 +13,7 @@
 package ctp
 
 import (
-	"github.com/pseudocodes/go2ctp/v6/thost"
+	"github.com/pseudocodes/go2ctp/thost"
 )
 
 var _ thost.MdSpi = &BaseMdSpi{}

@@ -276,11 +276,13 @@ extern int _wrap_CThostFtdcTraderApi_ReqQryInvestorProdRULEMargin(uintptr_t, str
 import "C"
 import (
 	"os"
+	"path/filepath"
 	"runtime"
 	"runtime/cgo"
+	"strings"
 	"unsafe"
 
-	"github.com/pseudocodes/go2ctp/v6/thost"
+	"github.com/pseudocodes/go2ctp/thost"
 )
 
 type TraderOption func(api *TraderApi)
@@ -317,7 +319,14 @@ func CreateTraderApi(options ...TraderOption) thost.TraderApi {
 		opt(api)
 	}
 	if api.flowPath != "" {
-		if err := os.MkdirAll(api.flowPath, os.ModePerm); err != nil && !os.IsExist(err) {
+		var err error
+		if strings.HasSuffix(api.flowPath, "/") {
+			err = os.MkdirAll(api.flowPath, os.ModePerm)
+		} else {
+			parentDir := filepath.Dir(api.flowPath)
+			err = os.MkdirAll(parentDir, os.ModePerm)
+		}
+		if err != nil && !os.IsExist(err) {
 			panic(err)
 		}
 	}
