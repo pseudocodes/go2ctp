@@ -24,35 +24,35 @@ import (
 
 /*
 Simnow是上期技术提供的CTP程序测试、模拟、学习的模拟平台。
+2025.06.19 收盘后环境
+7x24环境：
+交易前置: tcp://182.254.243.31:40001
+行情前置: tcp://182.254.243.31:40011
 
-7x24环境-电信：
-交易前置: tcp://180.168.146.187:10130
-行情前置: tcp://180.168.146.187:10131
+仿真环境1：交易时段同实盘
+交易前置: tcp://182.254.243.31:30001
+行情前置: tcp://182.254.243.31:30011
 
-仿真环境1-电信：交易时段同实盘
-交易前置: tcp://180.168.146.187:10201
-行情前置: tcp://180.168.146.187:10211
+仿真环境2：交易时段同实盘
+交易前置: tcp://182.254.243.31:30002
+行情前置: tcp://182.254.243.31:30012
 
-仿真环境2-电信：交易时段同实盘
-交易前置: tcp://180.168.146.187:10202
-行情前置: tcp://180.168.146.187:10212
-
-仿真环境3-移动：交易时段同实盘
-交易前置: tcp://218.202.237.33:10203
-行情前置: tcp://218.202.237.33:10213
+仿真环境3：交易时段同实盘
+交易前置: tcp://182.254.243.31:30003
+行情前置: tcp://182.254.243.31:30013
 */
 var SimnowEnv map[string]map[string]string = map[string]map[string]string{
 	"td": {
-		"7x24":      "tcp://180.168.146.187:10130",
-		"telesim1":  "tcp://180.168.146.187:10201",
-		"telesim2":  "tcp://180.168.146.187:10202",
-		"moblesim3": "tcp://218.202.237.33:10203",
+		"7x24":      "tcp://182.254.243.31:40001",
+		"telesim1":  "tcp://182.254.243.31:30001",
+		"telesim2":  "tcp://182.254.243.31:30002",
+		"moblesim3": "tcp://182.254.243.31:30003",
 	},
 	"md": {
-		"7x24":      "tcp://180.168.146.187:10131",
-		"telesim1":  "tcp://180.168.146.187:10211",
-		"telesim2":  "tcp://180.168.146.187:10212",
-		"moblesim3": "tcp://218.202.237.33:10213",
+		"7x24":      "tcp://182.254.243.31:40011",
+		"telesim1":  "tcp://182.254.243.31:30011",
+		"telesim2":  "tcp://182.254.243.31:30012",
+		"moblesim3": "tcp://182.254.243.31:30013",
 	},
 }
 
@@ -93,7 +93,7 @@ func (s *baseSpi) OnFrontDisconnected(nReason int) {
 
 func (s *baseSpi) OnRspUserLogin(pRspUserLogin *thost.CThostFtdcRspUserLoginField, pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
 	log.Printf("RspUserLogin: %+v\nRspInfo: %+v\n", pRspUserLogin, nil)
-	s.mdapi.SubscribeMarketData("ag2408")
+	s.mdapi.SubscribeMarketData("ag2508")
 }
 
 func (s *baseSpi) OnRspSubMarketData(pSpecificInstrument *thost.CThostFtdcSpecificInstrumentField, pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
@@ -133,7 +133,7 @@ func CreateBaseSpi2() *baseSpi2 {
 	}
 	s.OnRspUserLoginCallback = func(pRspUserLogin *thost.CThostFtdcRspUserLoginField, pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
 		log.Printf("RspUserLogin: %+v\nRspInfo: %+v\n", pRspUserLogin, nil)
-		s.mdapi.SubscribeMarketData("ag2408")
+		s.mdapi.SubscribeMarketData("ag2508")
 	}
 	s.OnRtnDepthMarketDataCallback = func(pDepthMarketData *thost.CThostFtdcDepthMarketDataField) {
 		// log.Printf("tick {%+v}\n", quote)
@@ -160,7 +160,8 @@ func sample1() {
 		// mdapi = ctp_dyn.CreateMdApi(ctp_dyn.MdDynamicLibPath(TTSLibPathDarwin), ctp_dyn.MdFlowPath("./data/"), ctp_dyn.MdUsingUDP(false), ctp_dyn.MdMultiCast(false))
 		mdapi = ctp_dyn.CreateMdApi(ctp_dyn.MdDynamicLibPath(fwlib), ctp_dyn.MdFlowPath("./data/"), ctp_dyn.MdUsingUDP(false), ctp_dyn.MdMultiCast(false))
 
-		// frontAddr = TTSFront
+		frontAddr = SimnowEnv["md"]["7x24"]
+		frontAddr = SimnowEnv["md"]["telesim1"]
 
 	} else if runtime.GOOS == "linux" {
 		// mdapi = ctp_dyn.CreateMdApi(ctp_dyn.MdDynamicLibPath(TTSLibPathLinux), ctp_dyn.MdFlowPath("./data/"), ctp_dyn.MdUsingUDP(false), ctp_dyn.MdMultiCast(false))
@@ -173,6 +174,7 @@ func sample1() {
 	mdapi.RegisterSpi(baseSpi)
 
 	mdapi.RegisterFront(frontAddr)
+	// mdapi.RegisterFront(SimnowEnv["md"]["telesim1"])
 
 	mdapi.Init()
 
@@ -193,8 +195,8 @@ func sample2() {
 	mdapi.RegisterSpi(baseSpi2)
 
 	// mdapi.RegisterFront("tcp://140.206.244.33:11616")
-	// mdapi.RegisterFront("tcp://180.168.146.187:10131")
-	mdapi.RegisterFront(SimnowEnv["md"]["telesim1"])
+	// mdapi.RegisterFront("tcp://182.254.243.31:10131")
+	// mdapi.RegisterFront(SimnowEnv["md"]["telesim1"])
 
 	mdapi.Init()
 
@@ -209,6 +211,6 @@ func sample2() {
 }
 
 func main() {
-	// sample1()
-	sample2()
+	sample1()
+	// sample2()
 }
