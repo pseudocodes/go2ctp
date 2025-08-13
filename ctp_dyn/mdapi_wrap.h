@@ -17,7 +17,7 @@ class TTSCTPMdSpi : public CThostFtdcMdSpi {
 public:
     TTSCTPMdSpi(CThostFtdcMdApi* pUserApi);
     TTSCTPMdSpi(CThostFtdcMdApi* pUserApi, uintptr_t gUserApi);
-    TTSCTPMdSpi(uintptr_t gUserApi, const char* pszDLLPath, const char* pszFlowPath, const bool bIsUsingUdp, const bool bIsMulticast);
+    TTSCTPMdSpi(uintptr_t gUserApi, const char* pszDLLPath, const char* pszFlowPath, const bool bIsUsingUdp, const bool bIsMulticast, bool bIsProductionMode);
     TTSCTPMdSpi();
     virtual ~TTSCTPMdSpi();
 

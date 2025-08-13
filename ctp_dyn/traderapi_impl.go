@@ -21,7 +21,7 @@ package ctp_dyn
 
 extern uintptr_t _wrap_tts_CThostFtdcTraderApi_CreateFtdcTraderApi();
 extern uintptr_t _wrap_tts_CThostFtdcTraderApi_CreateFtdcTraderApi2(uintptr_t, char *);
-extern uintptr_t _wrap_tts_CThostFtdcTraderApi_CreateFtdcTraderApi3(uintptr_t, char*, char *);
+extern uintptr_t _wrap_tts_CThostFtdcTraderApi_CreateFtdcTraderApi3(uintptr_t, char*, char *, _Bool);
 
 // extern CThostFtdcTraderApi * _wrap_tts_CThostFtdcTraderApi_CreateFtdcTraderApi(uintptr_t, const char *);
 
@@ -54,6 +54,10 @@ extern int _wrap_tts_CThostFtdcTraderApi_ReqAuthenticate(uintptr_t, struct CThos
 extern int _wrap_tts_CThostFtdcTraderApi_RegisterUserSystemInfo(uintptr_t, struct CThostFtdcUserSystemInfoField *);
 
 extern int _wrap_tts_CThostFtdcTraderApi_SubmitUserSystemInfo(uintptr_t, struct CThostFtdcUserSystemInfoField *);
+
+extern int _wrap_tts_CThostFtdcTraderApi_RegisterWechatUserSystemInfo(uintptr_t, struct CThostFtdcWechatUserSystemInfoField *);
+
+extern int _wrap_tts_CThostFtdcTraderApi_SubmitWechatUserSystemInfo(uintptr_t, struct CThostFtdcWechatUserSystemInfoField *);
 
 extern int _wrap_tts_CThostFtdcTraderApi_ReqUserLogin(uintptr_t, struct CThostFtdcReqUserLoginField *, int);
 
@@ -126,6 +130,8 @@ extern int _wrap_tts_CThostFtdcTraderApi_ReqQryTradingCode(uintptr_t, struct CTh
 extern int _wrap_tts_CThostFtdcTraderApi_ReqQryInstrumentMarginRate(uintptr_t, struct CThostFtdcQryInstrumentMarginRateField *, int);
 
 extern int _wrap_tts_CThostFtdcTraderApi_ReqQryInstrumentCommissionRate(uintptr_t, struct CThostFtdcQryInstrumentCommissionRateField *, int);
+
+extern int _wrap_tts_CThostFtdcTraderApi_ReqQryUserSession(uintptr_t, struct CThostFtdcQryUserSessionField *, int);
 
 extern int _wrap_tts_CThostFtdcTraderApi_ReqQryExchange(uintptr_t, struct CThostFtdcQryExchangeField *, int);
 
@@ -279,6 +285,16 @@ extern int _wrap_tts_CThostFtdcTraderApi_ReqQryInvestorProdRULEMargin(uintptr_t,
 
 extern int _wrap_tts_CThostFtdcTraderApi_ReqQryInvestorPortfSetting(uintptr_t, struct CThostFtdcQryInvestorPortfSettingField *, int);
 
+extern int _wrap_tts_CThostFtdcTraderApi_ReqQryInvestorInfoCommRec(uintptr_t, struct CThostFtdcQryInvestorInfoCommRecField *, int);
+
+extern int _wrap_tts_CThostFtdcTraderApi_ReqQryCombLeg(uintptr_t, struct CThostFtdcQryCombLegField *, int);
+
+extern int _wrap_tts_CThostFtdcTraderApi_ReqOffsetSetting(uintptr_t, struct CThostFtdcInputOffsetSettingField *, int);
+
+extern int _wrap_tts_CThostFtdcTraderApi_ReqCancelOffsetSetting(uintptr_t, struct CThostFtdcInputOffsetSettingField *, int);
+
+extern int _wrap_tts_CThostFtdcTraderApi_ReqQryOffsetSetting(uintptr_t, struct CThostFtdcQryOffsetSettingField *, int);
+
 */
 import "C"
 import (
@@ -302,13 +318,20 @@ type TraderApi struct {
 	length     int
 	systemInfo [273]byte
 
-	flowPath string
-	dllPath  string
+	dllPath    string
+	flowPath   string
+	production bool
 }
 
 func TraderFlowPath(path string) TraderOption {
 	return func(api *TraderApi) {
 		api.flowPath = path
+	}
+}
+
+func TraderProductionMode(production bool) TraderOption {
+	return func(api *TraderApi) {
+		api.production = production
 	}
 }
 
@@ -339,7 +362,8 @@ func TraderSystemInfo(systemInfo []byte, length int) TraderOption {
 
 func CreateTraderApi(options ...TraderOption) thost.TraderApi {
 	api := &TraderApi{
-		flowPath: defaultFlowPath,
+		flowPath:   defaultFlowPath,
+		production: defaultIsProductionMode,
 	}
 	handle := cgo.NewHandle(api)
 	for _, opt := range options {
@@ -365,7 +389,7 @@ func CreateTraderApi(options ...TraderOption) thost.TraderApi {
 	defer C.free(unsafe.Pointer(cdllPath))
 
 	// api.apiPtr = uintptr(C._wrap_tts_CThostFtdcTraderApi_CreateFtdcTraderApi2(C.uintptr_t(handle), cflowPath))
-	api.apiPtr = uintptr(C._wrap_tts_CThostFtdcTraderApi_CreateFtdcTraderApi3(C.uintptr_t(handle), cdllPath, cflowPath))
+	api.apiPtr = uintptr(C._wrap_tts_CThostFtdcTraderApi_CreateFtdcTraderApi3(C.uintptr_t(handle), cdllPath, cflowPath, C._Bool(api.production)))
 
 	return api
 }
@@ -472,6 +496,16 @@ func (s *TraderApi) RegisterUserSystemInfo(pUserSystemInfo *thost.CThostFtdcUser
 // /操作员登录后，可以多次调用该接口上报客户信息
 func (s *TraderApi) SubmitUserSystemInfo(pUserSystemInfo *thost.CThostFtdcUserSystemInfoField) int {
 	return (int)(C._wrap_tts_CThostFtdcTraderApi_SubmitUserSystemInfo(C.uintptr_t(s.apiPtr), (*C.struct_CThostFtdcUserSystemInfoField)(unsafe.Pointer(pUserSystemInfo))))
+}
+
+// 注册用户终端信息，用于中继服务器多连接模式.用于微信小程序等应用上报信息.
+func (s *TraderApi) RegisterWechatUserSystemInfo(pUserSystemInfo *thost.CThostFtdcWechatUserSystemInfoField) int {
+	return (int)(C._wrap_tts_CThostFtdcTraderApi_RegisterWechatUserSystemInfo(C.uintptr_t(s.apiPtr), (*C.struct_CThostFtdcWechatUserSystemInfoField)(unsafe.Pointer(pUserSystemInfo))))
+}
+
+// 上报用户终端信息，用于中继服务器操作员登录模式.用于微信小程序等应用上报信息.
+func (s *TraderApi) SubmitWechatUserSystemInfo(pUserSystemInfo *thost.CThostFtdcWechatUserSystemInfoField) int {
+	return (int)(C._wrap_tts_CThostFtdcTraderApi_SubmitWechatUserSystemInfo(C.uintptr_t(s.apiPtr), (*C.struct_CThostFtdcWechatUserSystemInfoField)(unsafe.Pointer(pUserSystemInfo))))
 }
 
 // 用户登录请求
@@ -654,6 +688,11 @@ func (s *TraderApi) ReqQryInstrumentMarginRate(pQryInstrumentMarginRate *thost.C
 // 请求查询合约手续费率
 func (s *TraderApi) ReqQryInstrumentCommissionRate(pQryInstrumentCommissionRate *thost.CThostFtdcQryInstrumentCommissionRateField, nRequestID int) int {
 	return (int)(C._wrap_tts_CThostFtdcTraderApi_ReqQryInstrumentCommissionRate(C.uintptr_t(s.apiPtr), (*C.struct_CThostFtdcQryInstrumentCommissionRateField)(unsafe.Pointer(pQryInstrumentCommissionRate)), C.int(nRequestID)))
+}
+
+// 请求查询用户会话
+func (s *TraderApi) ReqQryUserSession(pQryUserSession *thost.CThostFtdcQryUserSessionField, nRequestID int) int {
+	return (int)(C._wrap_tts_CThostFtdcTraderApi_ReqQryUserSession(C.uintptr_t(s.apiPtr), (*C.struct_CThostFtdcQryUserSessionField)(unsafe.Pointer(pQryUserSession)), C.int(nRequestID)))
 }
 
 // 请求查询交易所
@@ -1031,9 +1070,34 @@ func (s *TraderApi) ReqQryInvestorProdRULEMargin(pQryInvestorProdRULEMargin *tho
 	return (int)(C._wrap_tts_CThostFtdcTraderApi_ReqQryInvestorProdRULEMargin(C.uintptr_t(s.apiPtr), (*C.struct_CThostFtdcQryInvestorProdRULEMarginField)(unsafe.Pointer(pQryInvestorProdRULEMargin)), C.int(nRequestID)))
 }
 
-// 投资者投资者新组保设置查询
+// 投资者新型组合保证金开关查询
 func (s *TraderApi) ReqQryInvestorPortfSetting(pQryInvestorPortfSetting *thost.CThostFtdcQryInvestorPortfSettingField, nRequestID int) int {
 	return (int)(C._wrap_tts_CThostFtdcTraderApi_ReqQryInvestorPortfSetting(C.uintptr_t(s.apiPtr), (*C.struct_CThostFtdcQryInvestorPortfSettingField)(unsafe.Pointer(pQryInvestorPortfSetting)), C.int(nRequestID)))
+}
+
+// 投资者申报费阶梯收取记录查询
+func (s *TraderApi) ReqQryInvestorInfoCommRec(pQryInvestorInfoCommRec *thost.CThostFtdcQryInvestorInfoCommRecField, nRequestID int) int {
+	return (int)(C._wrap_tts_CThostFtdcTraderApi_ReqQryInvestorInfoCommRec(C.uintptr_t(s.apiPtr), (*C.struct_CThostFtdcQryInvestorInfoCommRecField)(unsafe.Pointer(pQryInvestorInfoCommRec)), C.int(nRequestID)))
+}
+
+// 组合腿信息查询
+func (s *TraderApi) ReqQryCombLeg(pQryCombLeg *thost.CThostFtdcQryCombLegField, nRequestID int) int {
+	return (int)(C._wrap_tts_CThostFtdcTraderApi_ReqQryCombLeg(C.uintptr_t(s.apiPtr), (*C.struct_CThostFtdcQryCombLegField)(unsafe.Pointer(pQryCombLeg)), C.int(nRequestID)))
+}
+
+// 对冲设置请求
+func (s *TraderApi) ReqOffsetSetting(pInputOffsetSetting *thost.CThostFtdcInputOffsetSettingField, nRequestID int) int {
+	return (int)(C._wrap_tts_CThostFtdcTraderApi_ReqOffsetSetting(C.uintptr_t(s.apiPtr), (*C.struct_CThostFtdcInputOffsetSettingField)(unsafe.Pointer(pInputOffsetSetting)), C.int(nRequestID)))
+}
+
+// 对冲设置撤销请求
+func (s *TraderApi) ReqCancelOffsetSetting(pInputOffsetSetting *thost.CThostFtdcInputOffsetSettingField, nRequestID int) int {
+	return (int)(C._wrap_tts_CThostFtdcTraderApi_ReqCancelOffsetSetting(C.uintptr_t(s.apiPtr), (*C.struct_CThostFtdcInputOffsetSettingField)(unsafe.Pointer(pInputOffsetSetting)), C.int(nRequestID)))
+}
+
+// 投资者对冲设置查询
+func (s *TraderApi) ReqQryOffsetSetting(pQryOffsetSetting *thost.CThostFtdcQryOffsetSettingField, nRequestID int) int {
+	return (int)(C._wrap_tts_CThostFtdcTraderApi_ReqQryOffsetSetting(C.uintptr_t(s.apiPtr), (*C.struct_CThostFtdcQryOffsetSettingField)(unsafe.Pointer(pQryOffsetSetting)), C.int(nRequestID)))
 }
 
 //------------------------------------------------------------------------------------
@@ -1252,6 +1316,12 @@ func wrap_tts_TraderOnRspQryInstrumentMarginRate(v uintptr, pInstrumentMarginRat
 func wrap_tts_TraderOnRspQryInstrumentCommissionRate(v uintptr, pInstrumentCommissionRate *C.struct_CThostFtdcInstrumentCommissionRateField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) {
 	api := cgo.Handle(v).Value().(*TraderApi)
 	api.spi.OnRspQryInstrumentCommissionRate((*thost.CThostFtdcInstrumentCommissionRateField)(unsafe.Pointer(pInstrumentCommissionRate)), (*thost.CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
+}
+
+//export wrap_tts_TraderOnRspQryUserSession
+func wrap_tts_TraderOnRspQryUserSession(v uintptr, pUserSession *C.struct_CThostFtdcUserSessionField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) {
+	api := cgo.Handle(v).Value().(*TraderApi)
+	api.spi.OnRspQryUserSession((*thost.CThostFtdcUserSessionField)(unsafe.Pointer(pUserSession)), (*thost.CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
 }
 
 //export wrap_tts_TraderOnRspQryExchange
@@ -1966,4 +2036,52 @@ func wrap_tts_TraderOnRspQryInvestorProdRULEMargin(v uintptr, pInvestorProdRULEM
 func wrap_tts_TraderOnRspQryInvestorPortfSetting(v uintptr, pInvestorPortfSetting *C.struct_CThostFtdcInvestorPortfSettingField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) {
 	api := cgo.Handle(v).Value().(*TraderApi)
 	api.spi.OnRspQryInvestorPortfSetting((*thost.CThostFtdcInvestorPortfSettingField)(unsafe.Pointer(pInvestorPortfSetting)), (*thost.CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
+}
+
+//export wrap_tts_TraderOnRspQryInvestorInfoCommRec
+func wrap_tts_TraderOnRspQryInvestorInfoCommRec(v uintptr, pInvestorInfoCommRec *C.struct_CThostFtdcInvestorInfoCommRecField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) {
+	api := cgo.Handle(v).Value().(*TraderApi)
+	api.spi.OnRspQryInvestorInfoCommRec((*thost.CThostFtdcInvestorInfoCommRecField)(unsafe.Pointer(pInvestorInfoCommRec)), (*thost.CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
+}
+
+//export wrap_tts_TraderOnRspQryCombLeg
+func wrap_tts_TraderOnRspQryCombLeg(v uintptr, pCombLeg *C.struct_CThostFtdcCombLegField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) {
+	api := cgo.Handle(v).Value().(*TraderApi)
+	api.spi.OnRspQryCombLeg((*thost.CThostFtdcCombLegField)(unsafe.Pointer(pCombLeg)), (*thost.CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
+}
+
+//export wrap_tts_TraderOnRspOffsetSetting
+func wrap_tts_TraderOnRspOffsetSetting(v uintptr, pInputOffsetSetting *C.struct_CThostFtdcInputOffsetSettingField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) {
+	api := cgo.Handle(v).Value().(*TraderApi)
+	api.spi.OnRspOffsetSetting((*thost.CThostFtdcInputOffsetSettingField)(unsafe.Pointer(pInputOffsetSetting)), (*thost.CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
+}
+
+//export wrap_tts_TraderOnRspCancelOffsetSetting
+func wrap_tts_TraderOnRspCancelOffsetSetting(v uintptr, pInputOffsetSetting *C.struct_CThostFtdcInputOffsetSettingField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) {
+	api := cgo.Handle(v).Value().(*TraderApi)
+	api.spi.OnRspCancelOffsetSetting((*thost.CThostFtdcInputOffsetSettingField)(unsafe.Pointer(pInputOffsetSetting)), (*thost.CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
+}
+
+//export wrap_tts_TraderOnRtnOffsetSetting
+func wrap_tts_TraderOnRtnOffsetSetting(v uintptr, pOffsetSetting *C.struct_CThostFtdcOffsetSettingField) {
+	api := cgo.Handle(v).Value().(*TraderApi)
+	api.spi.OnRtnOffsetSetting((*thost.CThostFtdcOffsetSettingField)(unsafe.Pointer(pOffsetSetting)))
+}
+
+//export wrap_tts_TraderOnErrRtnOffsetSetting
+func wrap_tts_TraderOnErrRtnOffsetSetting(v uintptr, pInputOffsetSetting *C.struct_CThostFtdcInputOffsetSettingField, pRspInfo *C.struct_CThostFtdcRspInfoField) {
+	api := cgo.Handle(v).Value().(*TraderApi)
+	api.spi.OnErrRtnOffsetSetting((*thost.CThostFtdcInputOffsetSettingField)(unsafe.Pointer(pInputOffsetSetting)), (*thost.CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)))
+}
+
+//export wrap_tts_TraderOnErrRtnCancelOffsetSetting
+func wrap_tts_TraderOnErrRtnCancelOffsetSetting(v uintptr, pCancelOffsetSetting *C.struct_CThostFtdcCancelOffsetSettingField, pRspInfo *C.struct_CThostFtdcRspInfoField) {
+	api := cgo.Handle(v).Value().(*TraderApi)
+	api.spi.OnErrRtnCancelOffsetSetting((*thost.CThostFtdcCancelOffsetSettingField)(unsafe.Pointer(pCancelOffsetSetting)), (*thost.CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)))
+}
+
+//export wrap_tts_TraderOnRspQryOffsetSetting
+func wrap_tts_TraderOnRspQryOffsetSetting(v uintptr, pOffsetSetting *C.struct_CThostFtdcOffsetSettingField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) {
+	api := cgo.Handle(v).Value().(*TraderApi)
+	api.spi.OnRspQryOffsetSetting((*thost.CThostFtdcOffsetSettingField)(unsafe.Pointer(pOffsetSetting)), (*thost.CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
 }

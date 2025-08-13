@@ -44,16 +44,16 @@ Simnow是上期技术提供的CTP程序测试、模拟、学习的模拟平台�
 */
 var SimnowEnv map[string]map[string]string = map[string]map[string]string{
 	"td": {
-		"7x24":      "tcp://182.254.243.31:40001",
-		"telesim1":  "tcp://182.254.243.31:30001",
-		"telesim2":  "tcp://182.254.243.31:30002",
-		"moblesim3": "tcp://182.254.243.31:30003",
+		"7x24": "tcp://182.254.243.31:40001",
+		"sim1": "tcp://182.254.243.31:30001",
+		"sim2": "tcp://182.254.243.31:30002",
+		"sim3": "tcp://182.254.243.31:30003",
 	},
 	"md": {
-		"7x24":      "tcp://182.254.243.31:40011",
-		"telesim1":  "tcp://182.254.243.31:30011",
-		"telesim2":  "tcp://182.254.243.31:30012",
-		"moblesim3": "tcp://182.254.243.31:30013",
+		"7x24": "tcp://182.254.243.31:40011",
+		"sim1": "tcp://182.254.243.31:30011",
+		"sim2": "tcp://182.254.243.31:30012",
+		"sim3": "tcp://182.254.243.31:30013",
 	},
 }
 
@@ -94,7 +94,8 @@ func (s *baseSpi) OnFrontDisconnected(nReason int) {
 
 func (s *baseSpi) OnRspUserLogin(pRspUserLogin *thost.CThostFtdcRspUserLoginField, pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
 	log.Printf("RspUserLogin: %+v\nRspInfo: %+v\n", pRspUserLogin, nil)
-	s.mdapi.SubscribeMarketData("ag2412")
+	log.Println(s.mdapi.GetTradingDay())
+	s.mdapi.SubscribeMarketData("ag2512")
 }
 
 func (s *baseSpi) OnRspSubMarketData(pSpecificInstrument *thost.CThostFtdcSpecificInstrumentField, pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
@@ -134,7 +135,8 @@ func CreateBaseSpi2() *baseSpi2 {
 	}
 	s.OnRspUserLoginCallback = func(pRspUserLogin *thost.CThostFtdcRspUserLoginField, pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
 		log.Printf("RspUserLogin: %+v\nRspInfo: %+v\n", pRspUserLogin, nil)
-		s.mdapi.SubscribeMarketData("ag2412")
+		log.Println(s.mdapi.GetTradingDay())
+		s.mdapi.SubscribeMarketData("ag2512")
 	}
 	s.OnRtnDepthMarketDataCallback = func(pDepthMarketData *thost.CThostFtdcDepthMarketDataField) {
 		// log.Printf("tick {%+v}\n", quote)
@@ -145,12 +147,13 @@ func CreateBaseSpi2() *baseSpi2 {
 }
 
 var (
-	CTPLibPathLinux = "../../ctp/lib/v6.7.7_20240607_api_traderapi_se_linux64/thostmduserapi_se.so"
+	CTPLibPathLinux = "../../ctp/lib/v6.7.11_20250617_api_traderapi_se_linux64/thostmduserapi_se.so"
 	CTPLibPathMacos = "../../ctp/lib/v6.7.7_MacOS_20240716/thostmduserapi_se.framework/Versions/A/thostmduserapi_se"
 	// TTSLibPathDarwin = "This/Is/Sample/PathToOpenCTP.dylib"
 
-	TTSFront    = "tcp://121.37.80.177:20004"
-	SimnowFront = SimnowEnv["md"]["7x24"]
+	TTSFront = "tcp://121.37.80.177:20004"
+	// SimnowFront = SimnowEnv["md"]["7x24"]
+	SimnowFront = SimnowEnv["md"]["sim1"]
 )
 
 func sample1() {
@@ -158,6 +161,7 @@ func sample1() {
 		mdapi     thost.MdApi
 		frontAddr string
 	)
+
 	if runtime.GOOS == "darwin" {
 		mdapi = ctp_dyn.CreateMdApi(ctp_dyn.MdDynamicLibPath(CTPLibPathMacos), ctp_dyn.MdFlowPath("./data/"), ctp_dyn.MdUsingUDP(false), ctp_dyn.MdMultiCast(false))
 
@@ -168,7 +172,9 @@ func sample1() {
 		// mdapi = ctp_dyn.CreateMdApi(ctp_dyn.MdDynamicLibPath(TTSLibPathLinux), ctp_dyn.MdFlowPath("./data/"), ctp_dyn.MdUsingUDP(false), ctp_dyn.MdMultiCast(false))
 		mdapi = ctp_dyn.CreateMdApi(ctp_dyn.MdDynamicLibPath(CTPLibPathLinux), ctp_dyn.MdFlowPath("./data/"), ctp_dyn.MdUsingUDP(false), ctp_dyn.MdMultiCast(false))
 		frontAddr = SimnowFront
+
 	}
+	log.Printf("frontAddr: %s\n", frontAddr)
 
 	baseSpi := CreateBaseSpi()
 	baseSpi.mdapi = mdapi
@@ -179,7 +185,6 @@ func sample1() {
 	mdapi.Init()
 
 	println(mdapi.GetApiVersion())
-	println(mdapi.GetTradingDay())
 
 	// mdapi.Join()
 	for {
@@ -196,12 +201,12 @@ func sample2() {
 
 	// mdapi.RegisterFront("tcp://140.206.244.33:11616")
 	// mdapi.RegisterFront("tcp://182.254.243.31:40011")
-	mdapi.RegisterFront(SimnowEnv["md"]["telesim1"])
+	mdapi.RegisterFront(SimnowEnv["md"]["sim1"])
 
 	mdapi.Init()
 
-	println(mdapi.GetApiVersion())
 	println(mdapi.GetTradingDay())
+	println(mdapi.GetApiVersion())
 
 	mdapi.Join()
 	// for {

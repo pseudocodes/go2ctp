@@ -46,10 +46,10 @@ QCTPMdSpi* _wrap_CThostFtdcMdApi_CreateFtdcMdApi()
     return pUserSpi;
 }
 
-QCTPMdSpi* _wrap_CThostFtdcMdApi_CreateFtdcMdApi2(uintptr_t gUserApi, const char* pszFlowPath, const bool bIsUsingUdp, const bool bIsMulticast)
+QCTPMdSpi* _wrap_CThostFtdcMdApi_CreateFtdcMdApi2(uintptr_t gUserApi, const char* pszFlowPath, const bool bIsUsingUdp, const bool bIsMulticast, bool bIsProductionMode)
 {
     // printf("go_user_api %lu\n", gUserApi);
-    CThostFtdcMdApi* pUserApi = CThostFtdcMdApi::CreateFtdcMdApi(pszFlowPath, bIsUsingUdp, bIsMulticast);
+    CThostFtdcMdApi* pUserApi = CThostFtdcMdApi::CreateFtdcMdApi(pszFlowPath, bIsUsingUdp, bIsMulticast, bIsProductionMode);
     QCTPMdSpi* pUserSpi = new QCTPMdSpi(pUserApi, gUserApi);
     pUserSpi->RegisterSpi(pUserSpi);
     return pUserSpi;

@@ -35,10 +35,10 @@ QCTPTraderSpi* _wrap_CThostFtdcTraderApi_CreateFtdcTraderApi()
     return pUserSpi;
 }
 
-QCTPTraderSpi* _wrap_CThostFtdcTraderApi_CreateFtdcTraderApi2(uintptr_t gUserApi, const char* pszFlowPath)
+QCTPTraderSpi* _wrap_CThostFtdcTraderApi_CreateFtdcTraderApi2(uintptr_t gUserApi, const char* pszFlowPath, bool bIsProductionMode)
 {
     // printf("go_user_api %lu\n", gUserApi);
-    CThostFtdcTraderApi* pUserApi = CThostFtdcTraderApi::CreateFtdcTraderApi(pszFlowPath);
+    CThostFtdcTraderApi* pUserApi = CThostFtdcTraderApi::CreateFtdcTraderApi(pszFlowPath, bIsProductionMode);
     QCTPTraderSpi* pUserSpi = new QCTPTraderSpi(pUserApi, gUserApi);
     pUserSpi->RegisterSpi(pUserSpi);
     return pUserSpi;
@@ -131,6 +131,16 @@ int _wrap_CThostFtdcTraderApi_RegisterUserSystemInfo(QCTPTraderSpi* ptr, CThostF
 int _wrap_CThostFtdcTraderApi_SubmitUserSystemInfo(QCTPTraderSpi* ptr, CThostFtdcUserSystemInfoField* pUserSystemInfo)
 {
     return ptr->SubmitUserSystemInfo(pUserSystemInfo);
+}
+
+int _wrap_CThostFtdcTraderApi_RegisterWechatUserSystemInfo(QCTPTraderSpi* ptr, CThostFtdcWechatUserSystemInfoField* pUserSystemInfo)
+{
+    return ptr->RegisterWechatUserSystemInfo(pUserSystemInfo);
+}
+
+int _wrap_CThostFtdcTraderApi_SubmitWechatUserSystemInfo(QCTPTraderSpi* ptr, CThostFtdcWechatUserSystemInfoField* pUserSystemInfo)
+{
+    return ptr->SubmitWechatUserSystemInfo(pUserSystemInfo);
 }
 
 int _wrap_CThostFtdcTraderApi_ReqUserLogin(QCTPTraderSpi* ptr, CThostFtdcReqUserLoginField* pReqUserLoginField, int nRequestID)
@@ -312,6 +322,11 @@ int _wrap_CThostFtdcTraderApi_ReqQryInstrumentMarginRate(QCTPTraderSpi* ptr, CTh
 int _wrap_CThostFtdcTraderApi_ReqQryInstrumentCommissionRate(QCTPTraderSpi* ptr, CThostFtdcQryInstrumentCommissionRateField* pQryInstrumentCommissionRate, int nRequestID)
 {
     return ptr->ReqQryInstrumentCommissionRate(pQryInstrumentCommissionRate, nRequestID);
+}
+
+int _wrap_CThostFtdcTraderApi_ReqQryUserSession(QCTPTraderSpi* ptr, CThostFtdcQryUserSessionField* pQryUserSession, int nRequestID)
+{
+    return ptr->ReqQryUserSession(pQryUserSession, nRequestID);
 }
 
 int _wrap_CThostFtdcTraderApi_ReqQryExchange(QCTPTraderSpi* ptr, CThostFtdcQryExchangeField* pQryExchange, int nRequestID)
@@ -694,6 +709,31 @@ int _wrap_CThostFtdcTraderApi_ReqQryInvestorPortfSetting(QCTPTraderSpi* ptr, CTh
     return ptr->ReqQryInvestorPortfSetting(pQryInvestorPortfSetting, nRequestID);
 }
 
+int _wrap_CThostFtdcTraderApi_ReqQryInvestorInfoCommRec(QCTPTraderSpi* ptr, CThostFtdcQryInvestorInfoCommRecField* pQryInvestorInfoCommRec, int nRequestID)
+{
+    return ptr->ReqQryInvestorInfoCommRec(pQryInvestorInfoCommRec, nRequestID);
+}
+
+int _wrap_CThostFtdcTraderApi_ReqQryCombLeg(QCTPTraderSpi* ptr, CThostFtdcQryCombLegField* pQryCombLeg, int nRequestID)
+{
+    return ptr->ReqQryCombLeg(pQryCombLeg, nRequestID);
+}
+
+int _wrap_CThostFtdcTraderApi_ReqOffsetSetting(QCTPTraderSpi* ptr, CThostFtdcInputOffsetSettingField* pInputOffsetSetting, int nRequestID)
+{
+    return ptr->ReqOffsetSetting(pInputOffsetSetting, nRequestID);
+}
+
+int _wrap_CThostFtdcTraderApi_ReqCancelOffsetSetting(QCTPTraderSpi* ptr, CThostFtdcInputOffsetSettingField* pInputOffsetSetting, int nRequestID)
+{
+    return ptr->ReqCancelOffsetSetting(pInputOffsetSetting, nRequestID);
+}
+
+int _wrap_CThostFtdcTraderApi_ReqQryOffsetSetting(QCTPTraderSpi* ptr, CThostFtdcQryOffsetSettingField* pQryOffsetSetting, int nRequestID)
+{
+    return ptr->ReqQryOffsetSetting(pQryOffsetSetting, nRequestID);
+}
+
 #ifdef __cplusplus
 }
 #endif
@@ -912,6 +952,12 @@ extern "C" void wrapTraderOnRspQryInstrumentCommissionRate(uintptr_t, CThostFtdc
 void QCTPTraderSpi::OnRspQryInstrumentCommissionRate(CThostFtdcInstrumentCommissionRateField* pInstrumentCommissionRate, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
 {
     wrapTraderOnRspQryInstrumentCommissionRate(gUserApi, pInstrumentCommissionRate, pRspInfo, nRequestID, bIsLast);
+}
+
+extern "C" void wrapTraderOnRspQryUserSession(uintptr_t, CThostFtdcUserSessionField*, CThostFtdcRspInfoField*, int, bool);
+void QCTPTraderSpi::OnRspQryUserSession(CThostFtdcUserSessionField* pUserSession, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+{
+    wrapTraderOnRspQryUserSession(gUserApi, pUserSession, pRspInfo, nRequestID, bIsLast);
 }
 
 extern "C" void wrapTraderOnRspQryExchange(uintptr_t, CThostFtdcExchangeField*, CThostFtdcRspInfoField*, int, bool);
@@ -1628,6 +1674,54 @@ void QCTPTraderSpi::OnRspQryInvestorPortfSetting(CThostFtdcInvestorPortfSettingF
     wrapTraderOnRspQryInvestorPortfSetting(gUserApi, pInvestorPortfSetting, pRspInfo, nRequestID, bIsLast);
 }
 
+extern "C" void wrapTraderOnRspQryInvestorInfoCommRec(uintptr_t, CThostFtdcInvestorInfoCommRecField*, CThostFtdcRspInfoField*, int, bool);
+void QCTPTraderSpi::OnRspQryInvestorInfoCommRec(CThostFtdcInvestorInfoCommRecField* pInvestorInfoCommRec, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+{
+    wrapTraderOnRspQryInvestorInfoCommRec(gUserApi, pInvestorInfoCommRec, pRspInfo, nRequestID, bIsLast);
+}
+
+extern "C" void wrapTraderOnRspQryCombLeg(uintptr_t, CThostFtdcCombLegField*, CThostFtdcRspInfoField*, int, bool);
+void QCTPTraderSpi::OnRspQryCombLeg(CThostFtdcCombLegField* pCombLeg, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+{
+    wrapTraderOnRspQryCombLeg(gUserApi, pCombLeg, pRspInfo, nRequestID, bIsLast);
+}
+
+extern "C" void wrapTraderOnRspOffsetSetting(uintptr_t, CThostFtdcInputOffsetSettingField*, CThostFtdcRspInfoField*, int, bool);
+void QCTPTraderSpi::OnRspOffsetSetting(CThostFtdcInputOffsetSettingField* pInputOffsetSetting, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+{
+    wrapTraderOnRspOffsetSetting(gUserApi, pInputOffsetSetting, pRspInfo, nRequestID, bIsLast);
+}
+
+extern "C" void wrapTraderOnRspCancelOffsetSetting(uintptr_t, CThostFtdcInputOffsetSettingField*, CThostFtdcRspInfoField*, int, bool);
+void QCTPTraderSpi::OnRspCancelOffsetSetting(CThostFtdcInputOffsetSettingField* pInputOffsetSetting, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+{
+    wrapTraderOnRspCancelOffsetSetting(gUserApi, pInputOffsetSetting, pRspInfo, nRequestID, bIsLast);
+}
+
+extern "C" void wrapTraderOnRtnOffsetSetting(uintptr_t, CThostFtdcOffsetSettingField*);
+void QCTPTraderSpi::OnRtnOffsetSetting(CThostFtdcOffsetSettingField* pOffsetSetting)
+{
+    wrapTraderOnRtnOffsetSetting(gUserApi, pOffsetSetting);
+}
+
+extern "C" void wrapTraderOnErrRtnOffsetSetting(uintptr_t, CThostFtdcInputOffsetSettingField*, CThostFtdcRspInfoField*);
+void QCTPTraderSpi::OnErrRtnOffsetSetting(CThostFtdcInputOffsetSettingField* pInputOffsetSetting, CThostFtdcRspInfoField* pRspInfo)
+{
+    wrapTraderOnErrRtnOffsetSetting(gUserApi, pInputOffsetSetting, pRspInfo);
+}
+
+extern "C" void wrapTraderOnErrRtnCancelOffsetSetting(uintptr_t, CThostFtdcCancelOffsetSettingField*, CThostFtdcRspInfoField*);
+void QCTPTraderSpi::OnErrRtnCancelOffsetSetting(CThostFtdcCancelOffsetSettingField* pCancelOffsetSetting, CThostFtdcRspInfoField* pRspInfo)
+{
+    wrapTraderOnErrRtnCancelOffsetSetting(gUserApi, pCancelOffsetSetting, pRspInfo);
+}
+
+extern "C" void wrapTraderOnRspQryOffsetSetting(uintptr_t, CThostFtdcOffsetSettingField*, CThostFtdcRspInfoField*, int, bool);
+void QCTPTraderSpi::OnRspQryOffsetSetting(CThostFtdcOffsetSettingField* pOffsetSetting, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+{
+    wrapTraderOnRspQryOffsetSetting(gUserApi, pOffsetSetting, pRspInfo, nRequestID, bIsLast);
+}
+
 QCTPTraderSpi::QCTPTraderSpi(CThostFtdcTraderApi* pUserApi)
 {
     this->pUserApi = pUserApi;
@@ -1713,6 +1807,17 @@ int QCTPTraderSpi::SubmitUserSystemInfo(CThostFtdcUserSystemInfoField* pUserSyst
 {
     return this->pUserApi->SubmitUserSystemInfo(pUserSystemInfo);
 }
+
+int QCTPTraderSpi::RegisterWechatUserSystemInfo(CThostFtdcWechatUserSystemInfoField* pUserSystemInfo)
+{
+    return this->pUserApi->RegisterWechatUserSystemInfo(pUserSystemInfo);
+}
+
+int QCTPTraderSpi::SubmitWechatUserSystemInfo(CThostFtdcWechatUserSystemInfoField* pUserSystemInfo)
+{
+    return this->pUserApi->SubmitWechatUserSystemInfo(pUserSystemInfo);
+}
+
 // 用户登录请求
 int QCTPTraderSpi::ReqUserLogin(CThostFtdcReqUserLoginField* pReqUserLoginField, int nRequestID)
 {
@@ -1902,6 +2007,11 @@ int QCTPTraderSpi::ReqQryInstrumentMarginRate(CThostFtdcQryInstrumentMarginRateF
 int QCTPTraderSpi::ReqQryInstrumentCommissionRate(CThostFtdcQryInstrumentCommissionRateField* pQryInstrumentCommissionRate, int nRequestID)
 {
     return this->pUserApi->ReqQryInstrumentCommissionRate(pQryInstrumentCommissionRate, nRequestID);
+}
+
+int QCTPTraderSpi::ReqQryUserSession(CThostFtdcQryUserSessionField* pQryUserSession, int nRequestID)
+{
+    return this->pUserApi->ReqQryUserSession(pQryUserSession, nRequestID);
 }
 
 int QCTPTraderSpi::ReqQryExchange(CThostFtdcQryExchangeField* pQryExchange, int nRequestID)
@@ -2282,4 +2392,29 @@ int QCTPTraderSpi::ReqQryInvestorProdRULEMargin(CThostFtdcQryInvestorProdRULEMar
 int QCTPTraderSpi::ReqQryInvestorPortfSetting(CThostFtdcQryInvestorPortfSettingField* pQryInvestorPortfSetting, int nRequestID)
 {
     return this->pUserApi->ReqQryInvestorPortfSetting(pQryInvestorPortfSetting, nRequestID);
+}
+
+int QCTPTraderSpi::ReqQryInvestorInfoCommRec(CThostFtdcQryInvestorInfoCommRecField* pQryInvestorInfoCommRec, int nRequestID)
+{
+    return this->pUserApi->ReqQryInvestorInfoCommRec(pQryInvestorInfoCommRec, nRequestID);
+}
+
+int QCTPTraderSpi::ReqQryCombLeg(CThostFtdcQryCombLegField* pQryCombLeg, int nRequestID)
+{
+    return this->pUserApi->ReqQryCombLeg(pQryCombLeg, nRequestID);
+}
+
+int QCTPTraderSpi::ReqOffsetSetting(CThostFtdcInputOffsetSettingField* pInputOffsetSetting, int nRequestID)
+{
+    return this->pUserApi->ReqOffsetSetting(pInputOffsetSetting, nRequestID);
+}
+
+int QCTPTraderSpi::ReqCancelOffsetSetting(CThostFtdcInputOffsetSettingField* pInputOffsetSetting, int nRequestID)
+{
+    return this->pUserApi->ReqCancelOffsetSetting(pInputOffsetSetting, nRequestID);
+}
+
+int QCTPTraderSpi::ReqQryOffsetSetting(CThostFtdcQryOffsetSettingField* pQryOffsetSetting, int nRequestID)
+{
+    return this->pUserApi->ReqQryOffsetSetting(pQryOffsetSetting, nRequestID);
 }

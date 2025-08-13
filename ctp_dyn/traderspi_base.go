@@ -134,6 +134,9 @@ type BaseTraderSpi struct {
 	/// 请求查询合约手续费率响应
 	OnRspQryInstrumentCommissionRateCallback func(*thost.CThostFtdcInstrumentCommissionRateField, *thost.CThostFtdcRspInfoField, int, bool)
 
+	/// 请求查询用户会话响应
+	OnRspQryUserSessionCallback func(*thost.CThostFtdcUserSessionField, *thost.CThostFtdcRspInfoField, int, bool)
+
 	/// 请求查询交易所响应
 	OnRspQryExchangeCallback func(*thost.CThostFtdcExchangeField, *thost.CThostFtdcRspInfoField, int, bool)
 
@@ -488,8 +491,32 @@ type BaseTraderSpi struct {
 	/// 投资者产品RULE保证金查询响应
 	OnRspQryInvestorProdRULEMarginCallback func(*thost.CThostFtdcInvestorProdRULEMarginField, *thost.CThostFtdcRspInfoField, int, bool)
 
-	/// 投资者投资者新组保设置查询响应
+	/// 投资者新型组合保证金开关查询响应
 	OnRspQryInvestorPortfSettingCallback func(*thost.CThostFtdcInvestorPortfSettingField, *thost.CThostFtdcRspInfoField, int, bool)
+
+	/// 投资者申报费阶梯收取记录查询响应
+	OnRspQryInvestorInfoCommRecCallback func(*thost.CThostFtdcInvestorInfoCommRecField, *thost.CThostFtdcRspInfoField, int, bool)
+
+	/// 组合腿信息查询响应
+	OnRspQryCombLegCallback func(*thost.CThostFtdcCombLegField, *thost.CThostFtdcRspInfoField, int, bool)
+
+	/// 对冲设置请求响应
+	OnRspOffsetSettingCallback func(*thost.CThostFtdcInputOffsetSettingField, *thost.CThostFtdcRspInfoField, int, bool)
+
+	/// 对冲设置撤销请求响应
+	OnRspCancelOffsetSettingCallback func(*thost.CThostFtdcInputOffsetSettingField, *thost.CThostFtdcRspInfoField, int, bool)
+
+	/// 对冲设置通知
+	OnRtnOffsetSettingCallback func(*thost.CThostFtdcOffsetSettingField)
+
+	/// 对冲设置错误回报
+	OnErrRtnOffsetSettingCallback func(*thost.CThostFtdcInputOffsetSettingField, *thost.CThostFtdcRspInfoField)
+
+	/// 对冲设置撤销错误回报
+	OnErrRtnCancelOffsetSettingCallback func(*thost.CThostFtdcCancelOffsetSettingField, *thost.CThostFtdcRspInfoField)
+
+	/// 投资者对冲设置查询响应
+	OnRspQryOffsetSettingCallback func(*thost.CThostFtdcOffsetSettingField, *thost.CThostFtdcRspInfoField, int, bool)
 }
 
 // / 当客户端与交易后台建立起通信连接时（还未登录前），该方法被调用。
@@ -748,6 +775,13 @@ func (s *BaseTraderSpi) OnRspQryInstrumentMarginRate(pInstrumentMarginRate *thos
 func (s *BaseTraderSpi) OnRspQryInstrumentCommissionRate(pInstrumentCommissionRate *thost.CThostFtdcInstrumentCommissionRateField, pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
 	if s.OnRspQryInstrumentCommissionRateCallback != nil {
 		s.OnRspQryInstrumentCommissionRateCallback(pInstrumentCommissionRate, pRspInfo, nRequestID, bIsLast)
+	}
+}
+
+// / 请求查询用户会话响应
+func (s *BaseTraderSpi) OnRspQryUserSession(pUserSession *thost.CThostFtdcUserSessionField, pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
+	if s.OnRspQryUserSessionCallback != nil {
+		s.OnRspQryUserSessionCallback(pUserSession, pRspInfo, nRequestID, bIsLast)
 	}
 }
 
@@ -1577,9 +1611,65 @@ func (s *BaseTraderSpi) OnRspQryInvestorProdRULEMargin(pInvestorProdRULEMargin *
 	}
 }
 
-// / 投资者投资者新组保设置查询响应
+// / 投资者新型组合保证金开关查询响应
 func (s *BaseTraderSpi) OnRspQryInvestorPortfSetting(pInvestorPortfSetting *thost.CThostFtdcInvestorPortfSettingField, pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
 	if s.OnRspQryInvestorPortfSettingCallback != nil {
 		s.OnRspQryInvestorPortfSettingCallback(pInvestorPortfSetting, pRspInfo, nRequestID, bIsLast)
+	}
+}
+
+// / 投资者申报费阶梯收取记录查询响应
+func (s *BaseTraderSpi) OnRspQryInvestorInfoCommRec(pInvestorInfoCommRec *thost.CThostFtdcInvestorInfoCommRecField, pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
+	if s.OnRspQryInvestorInfoCommRecCallback != nil {
+		s.OnRspQryInvestorInfoCommRecCallback(pInvestorInfoCommRec, pRspInfo, nRequestID, bIsLast)
+	}
+}
+
+// / 组合腿信息查询响应
+func (s *BaseTraderSpi) OnRspQryCombLeg(pCombLeg *thost.CThostFtdcCombLegField, pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
+	if s.OnRspQryCombLegCallback != nil {
+		s.OnRspQryCombLegCallback(pCombLeg, pRspInfo, nRequestID, bIsLast)
+	}
+}
+
+// / 对冲设置请求响应
+func (s *BaseTraderSpi) OnRspOffsetSetting(pInputOffsetSetting *thost.CThostFtdcInputOffsetSettingField, pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
+	if s.OnRspOffsetSettingCallback != nil {
+		s.OnRspOffsetSettingCallback(pInputOffsetSetting, pRspInfo, nRequestID, bIsLast)
+	}
+}
+
+// / 对冲设置撤销请求响应
+func (s *BaseTraderSpi) OnRspCancelOffsetSetting(pInputOffsetSetting *thost.CThostFtdcInputOffsetSettingField, pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
+	if s.OnRspCancelOffsetSettingCallback != nil {
+		s.OnRspCancelOffsetSettingCallback(pInputOffsetSetting, pRspInfo, nRequestID, bIsLast)
+	}
+}
+
+// / 对冲设置通知
+func (s *BaseTraderSpi) OnRtnOffsetSetting(pOffsetSetting *thost.CThostFtdcOffsetSettingField) {
+	if s.OnRtnOffsetSettingCallback != nil {
+		s.OnRtnOffsetSettingCallback(pOffsetSetting)
+	}
+}
+
+// / 对冲设置错误回报
+func (s *BaseTraderSpi) OnErrRtnOffsetSetting(pInputOffsetSetting *thost.CThostFtdcInputOffsetSettingField, pRspInfo *thost.CThostFtdcRspInfoField) {
+	if s.OnErrRtnOffsetSettingCallback != nil {
+		s.OnErrRtnOffsetSettingCallback(pInputOffsetSetting, pRspInfo)
+	}
+}
+
+// / 对冲设置撤销错误回报
+func (s *BaseTraderSpi) OnErrRtnCancelOffsetSetting(pCancelOffsetSetting *thost.CThostFtdcCancelOffsetSettingField, pRspInfo *thost.CThostFtdcRspInfoField) {
+	if s.OnErrRtnCancelOffsetSettingCallback != nil {
+		s.OnErrRtnCancelOffsetSettingCallback(pCancelOffsetSetting, pRspInfo)
+	}
+}
+
+// / 投资者对冲设置查询响应
+func (s *BaseTraderSpi) OnRspQryOffsetSetting(pOffsetSetting *thost.CThostFtdcOffsetSettingField, pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
+	if s.OnRspQryOffsetSettingCallback != nil {
+		s.OnRspQryOffsetSettingCallback(pOffsetSetting, pRspInfo, nRequestID, bIsLast)
 	}
 }
