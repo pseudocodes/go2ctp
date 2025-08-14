@@ -129,6 +129,9 @@ type TraderSpi interface {
 	/// 请求查询合约手续费率响应
 	OnRspQryInstrumentCommissionRate(pInstrumentCommissionRate *CThostFtdcInstrumentCommissionRateField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
 
+	/// 请求查询用户会话响应
+	OnRspQryUserSession(pUserSession *CThostFtdcUserSessionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+
 	/// 请求查询交易所响应
 	OnRspQryExchange(pExchange *CThostFtdcExchangeField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
 
@@ -483,8 +486,32 @@ type TraderSpi interface {
 	/// 投资者产品RULE保证金查询响应
 	OnRspQryInvestorProdRULEMargin(pInvestorProdRULEMargin *CThostFtdcInvestorProdRULEMarginField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
 
-	/// 投资者投资者新组保设置查询响应
+	/// 投资者新型组合保证金开关查询响应
 	OnRspQryInvestorPortfSetting(pInvestorPortfSetting *CThostFtdcInvestorPortfSettingField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+
+	/// 投资者申报费阶梯收取记录查询响应
+	OnRspQryInvestorInfoCommRec(pInvestorInfoCommRec *CThostFtdcInvestorInfoCommRecField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+
+	/// 组合腿信息查询响应
+	OnRspQryCombLeg(pCombLeg *CThostFtdcCombLegField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+
+	/// 对冲设置请求响应
+	OnRspOffsetSetting(pInputOffsetSetting *CThostFtdcInputOffsetSettingField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+
+	/// 对冲设置撤销请求响应
+	OnRspCancelOffsetSetting(pInputOffsetSetting *CThostFtdcInputOffsetSettingField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+
+	/// 对冲设置通知
+	OnRtnOffsetSetting(pOffsetSetting *CThostFtdcOffsetSettingField)
+
+	/// 对冲设置错误回报
+	OnErrRtnOffsetSetting(pInputOffsetSetting *CThostFtdcInputOffsetSettingField, pRspInfo *CThostFtdcRspInfoField)
+
+	/// 对冲设置撤销错误回报
+	OnErrRtnCancelOffsetSetting(pCancelOffsetSetting *CThostFtdcCancelOffsetSettingField, pRspInfo *CThostFtdcRspInfoField)
+
+	/// 投资者对冲设置查询响应
+	OnRspQryOffsetSetting(pOffsetSetting *CThostFtdcOffsetSettingField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
 }
 
 type TraderApi interface {
@@ -564,6 +591,12 @@ type TraderApi interface {
 	/// 上报用户终端信息，用于中继服务器操作员登录模式
 	/// 操作员登录后，可以多次调用该接口上报客户信息
 	SubmitUserSystemInfo(pUserSystemInfo *CThostFtdcUserSystemInfoField) int
+
+	/// 注册用户终端信息，用于中继服务器多连接模式.用于微信小程序等应用上报信息.
+	RegisterWechatUserSystemInfo(pUserSystemInfo *CThostFtdcWechatUserSystemInfoField) int
+
+	/// 上报用户终端信息，用于中继服务器操作员登录模式.用于微信小程序等应用上报信息.
+	SubmitWechatUserSystemInfo(pUserSystemInfo *CThostFtdcWechatUserSystemInfoField) int
 
 	/// 用户登录请求
 	ReqUserLogin(pReqUserLoginField *CThostFtdcReqUserLoginField, nRequestID int) int
@@ -669,6 +702,9 @@ type TraderApi interface {
 
 	/// 请求查询合约手续费率
 	ReqQryInstrumentCommissionRate(pQryInstrumentCommissionRate *CThostFtdcQryInstrumentCommissionRateField, nRequestID int) int
+
+	/// 请求查询用户会话
+	ReqQryUserSession(pQryUserSession *CThostFtdcQryUserSessionField, nRequestID int) int
 
 	/// 请求查询交易所
 	ReqQryExchange(pQryExchange *CThostFtdcQryExchangeField, nRequestID int) int
@@ -895,6 +931,21 @@ type TraderApi interface {
 	/// 投资者产品RULE保证金查询
 	ReqQryInvestorProdRULEMargin(pQryInvestorProdRULEMargin *CThostFtdcQryInvestorProdRULEMarginField, nRequestID int) int
 
-	/// 投资者投资者新组保设置查询
+	/// 投资者新型组合保证金开关查询
 	ReqQryInvestorPortfSetting(pQryInvestorPortfSetting *CThostFtdcQryInvestorPortfSettingField, nRequestID int) int
+
+	/// 投资者申报费阶梯收取记录查询
+	ReqQryInvestorInfoCommRec(pQryInvestorInfoCommRec *CThostFtdcQryInvestorInfoCommRecField, nRequestID int) int
+
+	/// 组合腿信息查询
+	ReqQryCombLeg(pQryCombLeg *CThostFtdcQryCombLegField, nRequestID int) int
+
+	/// 对冲设置请求
+	ReqOffsetSetting(pInputOffsetSetting *CThostFtdcInputOffsetSettingField, nRequestID int) int
+
+	/// 对冲设置撤销请求
+	ReqCancelOffsetSetting(pInputOffsetSetting *CThostFtdcInputOffsetSettingField, nRequestID int) int
+
+	/// 投资者对冲设置查询
+	ReqQryOffsetSetting(pQryOffsetSetting *CThostFtdcQryOffsetSettingField, nRequestID int) int
 }

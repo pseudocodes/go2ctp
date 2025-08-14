@@ -26,7 +26,7 @@ typedef struct { void* array; int64_t len; int64_t cap; } _goslice_;
 
 extern uintptr_t _wrap_tts_CThostFtdcMdApi_CreateFtdcMdApi();
 extern uintptr_t _wrap_tts_CThostFtdcMdApi_CreateFtdcMdApi2(uintptr_t goUserApi, char*, _Bool, _Bool);
-extern uintptr_t _wrap_tts_CThostFtdcMdApi_CreateFtdcMdApi3(uintptr_t goUserApi, char*, char*, _Bool, _Bool);
+extern uintptr_t _wrap_tts_CThostFtdcMdApi_CreateFtdcMdApi3(uintptr_t goUserApi, char*, char*, _Bool, _Bool, _Bool);
 
 
 extern const char * _wrap_tts_CThostFtdcMdApi_GetApiVersion(uintptr_t);
@@ -74,9 +74,10 @@ import (
 )
 
 const (
-	defaultFlowPath    = ""
-	defaultIsUsingUdp  = false
-	defaultIsMulticast = false
+	defaultFlowPath         = ""
+	defaultIsUsingUdp       = false
+	defaultIsMulticast      = false
+	defaultIsProductionMode = true
 )
 
 type MdOption func(api *MdApi)
@@ -85,17 +86,19 @@ type MdApi struct {
 	apiPtr uintptr
 	spi    thost.MdSpi
 
-	dllPath   string
-	flowPath  string
-	usingUDP  bool
-	multicast bool
+	dllPath    string
+	flowPath   string
+	usingUDP   bool
+	multicast  bool
+	production bool
 }
 
 func CreateMdApi(options ...MdOption) thost.MdApi {
 	api := &MdApi{
-		flowPath:  defaultFlowPath,
-		usingUDP:  defaultIsUsingUdp,
-		multicast: defaultIsMulticast,
+		flowPath:   defaultFlowPath,
+		usingUDP:   defaultIsUsingUdp,
+		multicast:  defaultIsMulticast,
+		production: defaultIsProductionMode,
 	}
 	handle := cgo.NewHandle(api)
 	for _, opt := range options {
@@ -120,7 +123,7 @@ func CreateMdApi(options ...MdOption) thost.MdApi {
 	cdllPath := C.CString(api.dllPath)
 	defer C.free(unsafe.Pointer(cdllPath))
 
-	api.apiPtr = uintptr(C._wrap_tts_CThostFtdcMdApi_CreateFtdcMdApi3(C.uintptr_t(handle), cdllPath, cflowPath, C._Bool(api.usingUDP), C._Bool(api.multicast)))
+	api.apiPtr = uintptr(C._wrap_tts_CThostFtdcMdApi_CreateFtdcMdApi3(C.uintptr_t(handle), cdllPath, cflowPath, C._Bool(api.usingUDP), C._Bool(api.multicast), C._Bool(api.production)))
 
 	return api
 }
@@ -370,5 +373,11 @@ func MdMultiCast(multicast bool) MdOption {
 func MdDynamicLibPath(path string) MdOption {
 	return func(api *MdApi) {
 		api.dllPath = path
+	}
+}
+
+func MdProductionMode(production bool) MdOption {
+	return func(api *MdApi) {
+		api.production = production
 	}
 }

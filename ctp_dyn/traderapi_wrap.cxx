@@ -30,7 +30,7 @@
 
 typedef long long intgo;
 
-const char* TraderApiCreateSymbol = "_ZN19CThostFtdcTraderApi19CreateFtdcTraderApiEPKc";
+const char* TraderApiCreateSymbol = "_ZN19CThostFtdcTraderApi19CreateFtdcTraderApiEPKcb";
 const char* TraderApiVersionSymbol = "_ZN19CThostFtdcTraderApi13GetApiVersionEv";
 
 #ifdef __cplusplus
@@ -57,10 +57,10 @@ TTSCTPTraderSpi* _wrap_tts_CThostFtdcTraderApi_CreateFtdcTraderApi2(uintptr_t gU
     return nullptr;
 }
 
-TTSCTPTraderSpi* _wrap_tts_CThostFtdcTraderApi_CreateFtdcTraderApi3(uintptr_t gUserApi, const char* dllpath, const char* pszFlowPath)
+TTSCTPTraderSpi* _wrap_tts_CThostFtdcTraderApi_CreateFtdcTraderApi3(uintptr_t gUserApi, const char* dllpath, const char* pszFlowPath, bool bIsProductionMode)
 {
     // printf("go_user_api %lu\n", gUserApi);
-    TTSCTPTraderSpi* pUserSpi = new TTSCTPTraderSpi(gUserApi, dllpath, pszFlowPath);
+    TTSCTPTraderSpi* pUserSpi = new TTSCTPTraderSpi(gUserApi, dllpath, pszFlowPath, bIsProductionMode);
     pUserSpi->RegisterSpi(pUserSpi);
     return pUserSpi;
 }
@@ -195,6 +195,16 @@ int _wrap_tts_CThostFtdcTraderApi_RegisterUserSystemInfo(TTSCTPTraderSpi* pTrade
 int _wrap_tts_CThostFtdcTraderApi_SubmitUserSystemInfo(TTSCTPTraderSpi* pTraderApi, CThostFtdcUserSystemInfoField* pUserSystemInfo)
 {
     return pTraderApi->SubmitUserSystemInfo(pUserSystemInfo);
+}
+
+int _wrap_tts_CThostFtdcTraderApi_RegisterWechatUserSystemInfo(TTSCTPTraderSpi* ptr, CThostFtdcWechatUserSystemInfoField* pUserSystemInfo)
+{
+    return ptr->RegisterWechatUserSystemInfo(pUserSystemInfo);
+}
+
+int _wrap_tts_CThostFtdcTraderApi_SubmitWechatUserSystemInfo(TTSCTPTraderSpi* ptr, CThostFtdcWechatUserSystemInfoField* pUserSystemInfo)
+{
+    return ptr->SubmitWechatUserSystemInfo(pUserSystemInfo);
 }
 
 // 用户登录请求
@@ -412,6 +422,11 @@ int _wrap_tts_CThostFtdcTraderApi_ReqQryInstrumentMarginRate(TTSCTPTraderSpi* pT
 int _wrap_tts_CThostFtdcTraderApi_ReqQryInstrumentCommissionRate(TTSCTPTraderSpi* pTraderApi, CThostFtdcQryInstrumentCommissionRateField* pQryInstrumentCommissionRate, int nRequestID)
 {
     return pTraderApi->ReqQryInstrumentCommissionRate(pQryInstrumentCommissionRate, nRequestID);
+}
+
+int _wrap_tts_CThostFtdcTraderApi_ReqQryUserSession(TTSCTPTraderSpi* pTraderApi, CThostFtdcQryUserSessionField* pQryUserSession, int nRequestID)
+{
+    return pTraderApi->ReqQryUserSession(pQryUserSession, nRequestID);
 }
 
 // 请求查询交易所
@@ -868,6 +883,31 @@ int _wrap_tts_CThostFtdcTraderApi_ReqQryInvestorPortfSetting(TTSCTPTraderSpi* pt
     return ptr->ReqQryInvestorPortfSetting(pQryInvestorPortfSetting, nRequestID);
 }
 
+int _wrap_tts_CThostFtdcTraderApi_ReqQryInvestorInfoCommRec(TTSCTPTraderSpi* ptr, CThostFtdcQryInvestorInfoCommRecField* pQryInvestorInfoCommRec, int nRequestID)
+{
+    return ptr->ReqQryInvestorInfoCommRec(pQryInvestorInfoCommRec, nRequestID);
+}
+
+int _wrap_tts_CThostFtdcTraderApi_ReqQryCombLeg(TTSCTPTraderSpi* ptr, CThostFtdcQryCombLegField* pQryCombLeg, int nRequestID)
+{
+    return ptr->ReqQryCombLeg(pQryCombLeg, nRequestID);
+}
+
+int _wrap_tts_CThostFtdcTraderApi_ReqOffsetSetting(TTSCTPTraderSpi* ptr, CThostFtdcInputOffsetSettingField* pInputOffsetSetting, int nRequestID)
+{
+    return ptr->ReqOffsetSetting(pInputOffsetSetting, nRequestID);
+}
+
+int _wrap_tts_CThostFtdcTraderApi_ReqCancelOffsetSetting(TTSCTPTraderSpi* ptr, CThostFtdcInputOffsetSettingField* pInputOffsetSetting, int nRequestID)
+{
+    return ptr->ReqCancelOffsetSetting(pInputOffsetSetting, nRequestID);
+}
+
+int _wrap_tts_CThostFtdcTraderApi_ReqQryOffsetSetting(TTSCTPTraderSpi* ptr, CThostFtdcQryOffsetSettingField* pQryOffsetSetting, int nRequestID)
+{
+    return ptr->ReqQryOffsetSetting(pQryOffsetSetting, nRequestID);
+}
+
 #ifdef __cplusplus
 }
 #endif
@@ -1129,6 +1169,12 @@ extern "C" void wrap_tts_TraderOnRspQryInstrumentCommissionRate(uintptr_t, CThos
 void TTSCTPTraderSpi::OnRspQryInstrumentCommissionRate(CThostFtdcInstrumentCommissionRateField* pInstrumentCommissionRate, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
 {
     wrap_tts_TraderOnRspQryInstrumentCommissionRate(gUserApi, pInstrumentCommissionRate, pRspInfo, nRequestID, bIsLast);
+}
+
+extern "C" void wrap_tts_TraderOnRspQryUserSession(uintptr_t, CThostFtdcUserSessionField*, CThostFtdcRspInfoField*, int, bool);
+void TTSCTPTraderSpi::OnRspQryUserSession(CThostFtdcUserSessionField* pUserSession, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+{
+    wrap_tts_TraderOnRspQryUserSession(gUserApi, pUserSession, pRspInfo, nRequestID, bIsLast);
 }
 
 // 请求查询交易所响应
@@ -1962,6 +2008,54 @@ void TTSCTPTraderSpi::OnRspQryInvestorPortfSetting(CThostFtdcInvestorPortfSettin
     wrap_tts_TraderOnRspQryInvestorPortfSetting(gUserApi, pInvestorPortfSetting, pRspInfo, nRequestID, bIsLast);
 }
 
+extern "C" void wrap_tts_TraderOnRspQryInvestorInfoCommRec(uintptr_t, CThostFtdcInvestorInfoCommRecField*, CThostFtdcRspInfoField*, int, bool);
+void TTSCTPTraderSpi::OnRspQryInvestorInfoCommRec(CThostFtdcInvestorInfoCommRecField* pInvestorInfoCommRec, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+{
+    wrap_tts_TraderOnRspQryInvestorInfoCommRec(gUserApi, pInvestorInfoCommRec, pRspInfo, nRequestID, bIsLast);
+}
+
+extern "C" void wrap_tts_TraderOnRspQryCombLeg(uintptr_t, CThostFtdcCombLegField*, CThostFtdcRspInfoField*, int, bool);
+void TTSCTPTraderSpi::OnRspQryCombLeg(CThostFtdcCombLegField* pCombLeg, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+{
+    wrap_tts_TraderOnRspQryCombLeg(gUserApi, pCombLeg, pRspInfo, nRequestID, bIsLast);
+}
+
+extern "C" void wrap_tts_TraderOnRspOffsetSetting(uintptr_t, CThostFtdcInputOffsetSettingField*, CThostFtdcRspInfoField*, int, bool);
+void TTSCTPTraderSpi::OnRspOffsetSetting(CThostFtdcInputOffsetSettingField* pInputOffsetSetting, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+{
+    wrap_tts_TraderOnRspOffsetSetting(gUserApi, pInputOffsetSetting, pRspInfo, nRequestID, bIsLast);
+}
+
+extern "C" void wrap_tts_TraderOnRspCancelOffsetSetting(uintptr_t, CThostFtdcInputOffsetSettingField*, CThostFtdcRspInfoField*, int, bool);
+void TTSCTPTraderSpi::OnRspCancelOffsetSetting(CThostFtdcInputOffsetSettingField* pInputOffsetSetting, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+{
+    wrap_tts_TraderOnRspCancelOffsetSetting(gUserApi, pInputOffsetSetting, pRspInfo, nRequestID, bIsLast);
+}
+
+extern "C" void wrap_tts_TraderOnRtnOffsetSetting(uintptr_t, CThostFtdcOffsetSettingField*);
+void TTSCTPTraderSpi::OnRtnOffsetSetting(CThostFtdcOffsetSettingField* pOffsetSetting)
+{
+    wrap_tts_TraderOnRtnOffsetSetting(gUserApi, pOffsetSetting);
+}
+
+extern "C" void wrap_tts_TraderOnErrRtnOffsetSetting(uintptr_t, CThostFtdcInputOffsetSettingField*, CThostFtdcRspInfoField*);
+void TTSCTPTraderSpi::OnErrRtnOffsetSetting(CThostFtdcInputOffsetSettingField* pInputOffsetSetting, CThostFtdcRspInfoField* pRspInfo)
+{
+    wrap_tts_TraderOnErrRtnOffsetSetting(gUserApi, pInputOffsetSetting, pRspInfo);
+}
+
+extern "C" void wrap_tts_TraderOnErrRtnCancelOffsetSetting(uintptr_t, CThostFtdcCancelOffsetSettingField*, CThostFtdcRspInfoField*);
+void TTSCTPTraderSpi::OnErrRtnCancelOffsetSetting(CThostFtdcCancelOffsetSettingField* pCancelOffsetSetting, CThostFtdcRspInfoField* pRspInfo)
+{
+    wrap_tts_TraderOnErrRtnCancelOffsetSetting(gUserApi, pCancelOffsetSetting, pRspInfo);
+}
+
+extern "C" void wrap_tts_TraderOnRspQryOffsetSetting(uintptr_t, CThostFtdcOffsetSettingField*, CThostFtdcRspInfoField*, int, bool);
+void TTSCTPTraderSpi::OnRspQryOffsetSetting(CThostFtdcOffsetSettingField* pOffsetSetting, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+{
+    wrap_tts_TraderOnRspQryOffsetSetting(gUserApi, pOffsetSetting, pRspInfo, nRequestID, bIsLast);
+}
+
 TTSCTPTraderSpi::TTSCTPTraderSpi(CThostFtdcTraderApi* pUserApi)
 {
     this->pUserApi = pUserApi;
@@ -1973,9 +2067,9 @@ TTSCTPTraderSpi::TTSCTPTraderSpi(CThostFtdcTraderApi* pUserApi, uintptr_t gUserA
     this->gUserApi = gUserApi;
 }
 
-TTSCTPTraderSpi::TTSCTPTraderSpi(uintptr_t gUserApi, const char* pszDLLPath, const char* pszFlowPath)
+TTSCTPTraderSpi::TTSCTPTraderSpi(uintptr_t gUserApi, const char* pszDLLPath, const char* pszFlowPath, bool bIsProductionMode)
 {
-    typedef CThostFtdcTraderApi* (*TdApiCreator)(const char*);
+    typedef CThostFtdcTraderApi* (*TdApiCreator)(const char*, bool);
 
     dllHandle = dlopen(pszDLLPath, RTLD_NOW);
     if (dllHandle == nullptr) {
@@ -1987,7 +2081,7 @@ TTSCTPTraderSpi::TTSCTPTraderSpi(uintptr_t gUserApi, const char* pszDLLPath, con
         fprintf(stderr, "[%s] dlsym error: %s\n", pszDLLPath, dlerror());
         exit(-1);
     }
-    this->pUserApi = tdcreator(pszFlowPath);
+    this->pUserApi = tdcreator(pszFlowPath, bIsProductionMode);
     // this->pUserApi = pUserApi;
 
     this->gUserApi = gUserApi;
@@ -2122,6 +2216,16 @@ int TTSCTPTraderSpi::RegisterUserSystemInfo(CThostFtdcUserSystemInfoField* pUser
 int TTSCTPTraderSpi::SubmitUserSystemInfo(CThostFtdcUserSystemInfoField* pUserSystemInfo)
 {
     return this->pUserApi->SubmitUserSystemInfo(pUserSystemInfo);
+}
+
+int TTSCTPTraderSpi::RegisterWechatUserSystemInfo(CThostFtdcWechatUserSystemInfoField* pUserSystemInfo)
+{
+    return this->pUserApi->RegisterWechatUserSystemInfo(pUserSystemInfo);
+}
+
+int TTSCTPTraderSpi::SubmitWechatUserSystemInfo(CThostFtdcWechatUserSystemInfoField* pUserSystemInfo)
+{
+    return this->pUserApi->SubmitWechatUserSystemInfo(pUserSystemInfo);
 }
 
 // 用户登录请求
@@ -2357,6 +2461,11 @@ int TTSCTPTraderSpi::ReqQryInstrumentMarginRate(CThostFtdcQryInstrumentMarginRat
 int TTSCTPTraderSpi::ReqQryInstrumentCommissionRate(CThostFtdcQryInstrumentCommissionRateField* pQryInstrumentCommissionRate, int nRequestID)
 {
     return this->pUserApi->ReqQryInstrumentCommissionRate(pQryInstrumentCommissionRate, nRequestID);
+}
+
+int TTSCTPTraderSpi::ReqQryUserSession(CThostFtdcQryUserSessionField* pQryUserSession, int nRequestID)
+{
+    return this->pUserApi->ReqQryUserSession(pQryUserSession, nRequestID);
 }
 
 // 请求查询交易所
@@ -2811,4 +2920,29 @@ int TTSCTPTraderSpi::ReqQryInvestorProdRULEMargin(CThostFtdcQryInvestorProdRULEM
 int TTSCTPTraderSpi::ReqQryInvestorPortfSetting(CThostFtdcQryInvestorPortfSettingField* pQryInvestorPortfSetting, int nRequestID)
 {
     return this->pUserApi->ReqQryInvestorPortfSetting(pQryInvestorPortfSetting, nRequestID);
+}
+
+int TTSCTPTraderSpi::ReqQryInvestorInfoCommRec(CThostFtdcQryInvestorInfoCommRecField* pQryInvestorInfoCommRec, int nRequestID)
+{
+    return this->pUserApi->ReqQryInvestorInfoCommRec(pQryInvestorInfoCommRec, nRequestID);
+}
+
+int TTSCTPTraderSpi::ReqQryCombLeg(CThostFtdcQryCombLegField* pQryCombLeg, int nRequestID)
+{
+    return this->pUserApi->ReqQryCombLeg(pQryCombLeg, nRequestID);
+}
+
+int TTSCTPTraderSpi::ReqOffsetSetting(CThostFtdcInputOffsetSettingField* pInputOffsetSetting, int nRequestID)
+{
+    return this->pUserApi->ReqOffsetSetting(pInputOffsetSetting, nRequestID);
+}
+
+int TTSCTPTraderSpi::ReqCancelOffsetSetting(CThostFtdcInputOffsetSettingField* pInputOffsetSetting, int nRequestID)
+{
+    return this->pUserApi->ReqCancelOffsetSetting(pInputOffsetSetting, nRequestID);
+}
+
+int TTSCTPTraderSpi::ReqQryOffsetSetting(CThostFtdcQryOffsetSettingField* pQryOffsetSetting, int nRequestID)
+{
+    return this->pUserApi->ReqQryOffsetSetting(pQryOffsetSetting, nRequestID);
 }

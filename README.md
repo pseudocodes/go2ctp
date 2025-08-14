@@ -4,6 +4,8 @@
 
 对应 Rust 语言封装查看 **[Ctp2rs](https://github.com/pseudocodes/ctp2rs/)** 项目
 
+当前主分支对应 CTP 版本为 `v6.7.11`
+
 ## Sample
 
 ### 静态依赖

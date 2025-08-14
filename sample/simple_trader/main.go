@@ -30,16 +30,16 @@ import (
 
 var SimnowEnv map[string]map[string]string = map[string]map[string]string{
 	"td": {
-		"7x24":      "tcp://182.254.243.31:40001",
-		"telesim1":  "tcp://182.254.243.31:30001",
-		"telesim2":  "tcp://182.254.243.31:30002",
-		"moblesim3": "tcp://182.254.243.31:30003",
+		"7x24": "tcp://182.254.243.31:40001",
+		"sim1": "tcp://182.254.243.31:30001",
+		"sim2": "tcp://182.254.243.31:30002",
+		"sim3": "tcp://182.254.243.31:30003",
 	},
 	"md": {
-		"7x24":      "tcp://182.254.243.31:40011",
-		"telesim1":  "tcp://182.254.243.31:30011",
-		"telesim2":  "tcp://182.254.243.31:30012",
-		"moblesim3": "tcp://182.254.243.31:30013",
+		"7x24": "tcp://182.254.243.31:40011",
+		"sim1": "tcp://182.254.243.31:30011",
+		"sim2": "tcp://182.254.243.31:30012",
+		"sim3": "tcp://182.254.243.31:30013",
 	},
 }
 
@@ -61,6 +61,7 @@ type baseSpi struct {
 }
 
 func CreateBaseSpi() *baseSpi {
+
 	s := &baseSpi{
 		// tdapi: tdapi,
 		brokerID:   "9999",
@@ -69,6 +70,10 @@ func CreateBaseSpi() *baseSpi {
 
 		appid:    "simnow_client_test",
 		authCode: "0000000000000000",
+	}
+
+	if len(s.investorID) == 0 || len(s.password) == 0 {
+		panic("investorID or password is empty")
 	}
 	return s
 }
@@ -105,8 +110,10 @@ func (s *baseSpi) OnRspAuthenticate(pRspAuthenticateField *thost.CThostFtdcRspAu
 }
 
 func (s *baseSpi) OnRspUserLogin(pRspUserLogin *thost.CThostFtdcRspUserLoginField, pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
-	log.Printf("OnRspUserLogin[SysVersion: %v %v] \n", pRspUserLogin.SysVersion.String(), pRspUserLogin.BrokerID.String())
-	// dump.V(pRspUserLogin)
+	if s.isErrorRspInfo(pRspInfo) {
+		return
+	}
+
 	req := &thost.CThostFtdcSettlementInfoConfirmField{}
 	copy(req.BrokerID[:], []byte(s.brokerID))
 	copy(req.InvestorID[:], []byte(s.investorID))
@@ -119,17 +126,15 @@ func (s *baseSpi) OnRspUserLogin(pRspUserLogin *thost.CThostFtdcRspUserLoginFiel
 // OnRspSettlementInfoConfirm 发送投资者结算单确认响应
 func (s *baseSpi) OnRspSettlementInfoConfirm(pSettlementInfoConfirm *thost.CThostFtdcSettlementInfoConfirmField, pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
 
-	// req := &goctp.QryInstrumentField{}
-	// ret := s.tdapi.ReqQryInstrument(req, 3)
-	// log.Printf("user qry ins: %v\n", ret)
-
-	req := &thost.CThostFtdcQryTradingAccountField{}
-	copy(req.BrokerID[:], []byte(s.brokerID))
-	copy(req.InvestorID[:], []byte(s.investorID))
-	// ret := s.tdapi.ReqQryTradingAccount(req, int(s.requestID.Add(1)))
-	// if ret != 0 {
-	// 	log.Printf("req_qry_trading_account failed %v\n", ret)
-	// }
+	if bIsLast && !s.isErrorRspInfo(pRspInfo) {
+		req := &thost.CThostFtdcQryTradingAccountField{}
+		copy(req.BrokerID[:], []byte(s.brokerID))
+		copy(req.InvestorID[:], []byte(s.investorID))
+		ret := s.tdapi.ReqQryTradingAccount(req, int(s.requestID.Add(1)))
+		if ret != 0 {
+			log.Printf("req_qry_trading_account failed %v\n", ret)
+		}
+	}
 
 }
 
@@ -145,7 +150,7 @@ func (s *baseSpi) OnRspQryTradingAccount(pTradingAccount *thost.CThostFtdcTradin
 
 		req := &thost.CThostFtdcQryInstrumentCommissionRateField{}
 		copy(req.BrokerID[:], "9999")
-		copy(req.InstrumentID[:], "ag2412")
+		copy(req.InstrumentID[:], "ag2512")
 
 		ret := s.tdapi.ReqQryInstrumentCommissionRate(req, int(s.requestID.Add(1)))
 		if ret != 0 {
@@ -167,7 +172,7 @@ func (s *baseSpi) OnRspQryInstrumentCommissionRate(pInstrumentCommissionRate *th
 			TradingType: thost.THOST_FTDC_TD_TRADE,
 			ClassType:   thost.THOST_FTDC_INS_FUTURE,
 		}
-		copy(req.InstrumentID[:], "ag2412")
+		copy(req.InstrumentID[:], "ag2512")
 
 		ret := s.tdapi.ReqQryClassifiedInstrument(req, int(s.requestID.Add(1)))
 		if ret != 0 {
@@ -257,7 +262,7 @@ func Bytes2StringGBK(t []byte) string {
 }
 
 var (
-	CTPLibPathLinux = "../../ctp/lib/v6.7.7_20240607_api_traderapi_se_linux64/thosttraderapi_se.so"
+	CTPLibPathLinux = "../../ctp/lib/v6.7.11_20250617_api_traderapi_se_linux64/thosttraderapi_se.so"
 	CTPLibPathMacos = "../../ctp/lib/v6.7.7_MacOS_20240716/thosttraderapi_se.framework/Versions/A/thosttraderapi_se"
 )
 
@@ -275,12 +280,11 @@ func sample1() {
 
 	tdapi.RegisterSpi(baseSpi)
 	// tdapi.RegisterFront("tcp://121.37.90.193:20002")
-	// tdapi.RegisterFront(SimnowEnv["td"]["telesim1"])
-	tdapi.RegisterFront(SimnowEnv["td"]["7x24"])
+	tdapi.RegisterFront(SimnowEnv["td"]["sim1"])
+	// tdapi.RegisterFront(SimnowEnv["td"]["7x24"])
 
 	tdapi.Init()
 
-	println(tdapi.GetTradingDay())
 	println(tdapi.GetApiVersion())
 
 	tdapi.Join()
@@ -289,22 +293,22 @@ func sample1() {
 
 func sample2() {
 
-	tdapi := ctp.CreateTraderApi(ctp.TraderFlowPath("./data/"))
+	tdapi := ctp.CreateTraderApi(ctp.TraderFlowPath("./data/td_"))
 	baseSpi := CreateBaseSpi()
 	baseSpi.tdapi = tdapi
 
 	tdapi.RegisterSpi(baseSpi)
 
-	tdapi.RegisterFront(SimnowEnv["td"]["7x24"])
-	// tdapi.RegisterFront(SimnowEnv["td"]["telesim1"])
+	// tdapi.RegisterFront(SimnowEnv["td"]["7x24"])
+	tdapi.RegisterFront(SimnowEnv["td"]["sim1"])
 
 	tdapi.Init()
 	time.Sleep(time.Second)
-	frontInfo := &thost.CThostFtdcFrontInfoField{}
-	tdapi.GetFrontInfo(frontInfo)
+	// frontInfo := &thost.CThostFtdcFrontInfoField{}
+	// tdapi.GetFrontInfo(frontInfo)
 
-	dump.V(frontInfo.FrontAddr.String())
-	dump.V(frontInfo.QryFreq)
+	// dump.V(frontInfo.FrontAddr.String())
+	// dump.V(frontInfo.QryFreq)
 	println(tdapi.GetTradingDay())
 	println(tdapi.GetApiVersion())
 
@@ -313,6 +317,6 @@ func sample2() {
 }
 
 func main() {
-	// sample1()
-	sample2()
+	sample1()
+	// sample2()
 }

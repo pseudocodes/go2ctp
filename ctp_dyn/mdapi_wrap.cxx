@@ -28,7 +28,7 @@
 
 #include "mdapi_wrap.h"
 
-const char* MdApiCreateSymbol = "_ZN15CThostFtdcMdApi15CreateFtdcMdApiEPKcbb";
+const char* MdApiCreateSymbol = "_ZN15CThostFtdcMdApi15CreateFtdcMdApiEPKcbbb";
 const char* MdApiVersionSymbol = "_ZN15CThostFtdcMdApi13GetApiVersionEv";
 
 typedef long long intgo;
@@ -67,12 +67,12 @@ TTSCTPMdSpi* _wrap_tts_CThostFtdcMdApi_CreateFtdcMdApi2(uintptr_t gUserApi, cons
     return nullptr;
 }
 
-TTSCTPMdSpi* _wrap_tts_CThostFtdcMdApi_CreateFtdcMdApi3(uintptr_t gUserApi, const char* pszDLLPath, const char* pszFlowPath, const bool bIsUsingUdp, const bool bIsMulticast)
+TTSCTPMdSpi* _wrap_tts_CThostFtdcMdApi_CreateFtdcMdApi3(uintptr_t gUserApi, const char* pszDLLPath, const char* pszFlowPath, const bool bIsUsingUdp, const bool bIsMulticast, bool bIsProductionMode)
 {
     // printf("go_user_api %lu\n", gUserApi);
     // CThostFtdcMdApi* pUserApi = CThostFtdcMdApi::CreateFtdcMdApi(pszFlowPath, bIsUsingUdp, bIsMulticast);
     // TTSCTPMdSpi* pUserSpi = new TTSCTPMdSpi(pUserApi, gUserApi);
-    TTSCTPMdSpi* pUserSpi = new TTSCTPMdSpi(gUserApi, pszDLLPath, pszFlowPath, bIsUsingUdp, bIsMulticast);
+    TTSCTPMdSpi* pUserSpi = new TTSCTPMdSpi(gUserApi, pszDLLPath, pszFlowPath, bIsUsingUdp, bIsMulticast, bIsProductionMode);
     pUserSpi->RegisterSpi(pUserSpi);
     return pUserSpi;
 }
@@ -315,9 +315,9 @@ TTSCTPMdSpi::TTSCTPMdSpi(CThostFtdcMdApi* pUserApi, uintptr_t gUserApi)
     this->gUserApi = gUserApi;
 }
 
-TTSCTPMdSpi::TTSCTPMdSpi(uintptr_t gUserApi, const char* pszDLLPath, const char* pszFlowPath, const bool bIsUsingUdp, const bool bIsMulticast)
+TTSCTPMdSpi::TTSCTPMdSpi(uintptr_t gUserApi, const char* pszDLLPath, const char* pszFlowPath, const bool bIsUsingUdp, const bool bIsMulticast, bool bIsProductionMode)
 {
-    typedef CThostFtdcMdApi* (*MdApiCreator)(const char*, const bool, const bool);
+    typedef CThostFtdcMdApi* (*MdApiCreator)(const char*, const bool, const bool, bool);
     dllHandle = dlopen(pszDLLPath, RTLD_NOW);
     if (dllHandle == nullptr) {
         fprintf(stderr, "[%s] dlopen error: %s\n", pszDLLPath, dlerror());
@@ -328,7 +328,8 @@ TTSCTPMdSpi::TTSCTPMdSpi(uintptr_t gUserApi, const char* pszDLLPath, const char*
         fprintf(stderr, "[%s] dlsym error: %s\n", pszDLLPath, dlerror());
         exit(-1);
     }
-    this->pUserApi = mdcreator(pszFlowPath, bIsUsingUdp, bIsMulticast);
+    printf("bIsUsingUdp: %d, bIsMulticast: %d, bIsProductionMode: %d\n", bIsUsingUdp, bIsMulticast, bIsProductionMode);
+    this->pUserApi = mdcreator(pszFlowPath, bIsUsingUdp, bIsMulticast, bIsProductionMode);
     this->gUserApi = gUserApi;
 }
 

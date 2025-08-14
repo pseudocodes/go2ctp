@@ -2,7 +2,7 @@
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//	http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -138,6 +138,9 @@ public:
 
     /// 请求查询合约手续费率响应
     void OnRspQryInstrumentCommissionRate(CThostFtdcInstrumentCommissionRateField* pInstrumentCommissionRate, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast);
+
+    /// 请求查询用户会话响应
+    void OnRspQryUserSession(CThostFtdcUserSessionField* pUserSession, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast);
 
     /// 请求查询交易所响应
     void OnRspQryExchange(CThostFtdcExchangeField* pExchange, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast);
@@ -493,8 +496,32 @@ public:
     /// 投资者产品RULE保证金查询响应
     void OnRspQryInvestorProdRULEMargin(CThostFtdcInvestorProdRULEMarginField* pInvestorProdRULEMargin, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast);
 
-    /// 投资者投资者新组保设置查询响应
+    /// 投资者新型组合保证金开关查询响应
     void OnRspQryInvestorPortfSetting(CThostFtdcInvestorPortfSettingField* pInvestorPortfSetting, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast);
+
+    /// 投资者申报费阶梯收取记录查询响应
+    void OnRspQryInvestorInfoCommRec(CThostFtdcInvestorInfoCommRecField* pInvestorInfoCommRec, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast);
+
+    /// 组合腿信息查询响应
+    void OnRspQryCombLeg(CThostFtdcCombLegField* pCombLeg, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast);
+
+    /// 对冲设置请求响应
+    void OnRspOffsetSetting(CThostFtdcInputOffsetSettingField* pInputOffsetSetting, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast);
+
+    /// 对冲设置撤销请求响应
+    void OnRspCancelOffsetSetting(CThostFtdcInputOffsetSettingField* pInputOffsetSetting, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast);
+
+    /// 对冲设置通知
+    void OnRtnOffsetSetting(CThostFtdcOffsetSettingField* pOffsetSetting);
+
+    /// 对冲设置错误回报
+    void OnErrRtnOffsetSetting(CThostFtdcInputOffsetSettingField* pInputOffsetSetting, CThostFtdcRspInfoField* pRspInfo);
+
+    /// 对冲设置撤销错误回报
+    void OnErrRtnCancelOffsetSetting(CThostFtdcCancelOffsetSettingField* pCancelOffsetSetting, CThostFtdcRspInfoField* pRspInfo);
+
+    /// 投资者对冲设置查询响应
+    void OnRspQryOffsetSetting(CThostFtdcOffsetSettingField* pOffsetSetting, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast);
 
     /// 获取API的版本信息
     ///@retrun 获取到的版本号
@@ -572,9 +599,14 @@ public:
     /// 操作员登录后，可以多次调用该接口上报客户信息
     int SubmitUserSystemInfo(CThostFtdcUserSystemInfoField* pUserSystemInfo);
 
+    /// 注册用户终端信息，用于中继服务器多连接模式.用于微信小程序等应用上报信息.
+    int RegisterWechatUserSystemInfo(CThostFtdcWechatUserSystemInfoField* pUserSystemInfo);
+
+    /// 上报用户终端信息，用于中继服务器操作员登录模式.用于微信小程序等应用上报信息.
+    int SubmitWechatUserSystemInfo(CThostFtdcWechatUserSystemInfoField* pUserSystemInfo);
+
     /// 用户登录请求
     int ReqUserLogin(CThostFtdcReqUserLoginField* pReqUserLoginField, int nRequestID);
-
     // 用户登录请求
     int ReqUserLogin(CThostFtdcReqUserLoginField* pReqUserLoginField, int nRequestID, TThostFtdcSystemInfoLenType length, TThostFtdcClientSystemInfoType systemInfo);
 
@@ -679,6 +711,9 @@ public:
 
     /// 请求查询合约手续费率
     int ReqQryInstrumentCommissionRate(CThostFtdcQryInstrumentCommissionRateField* pQryInstrumentCommissionRate, int nRequestID);
+
+    /// 请求查询用户会话
+    int ReqQryUserSession(CThostFtdcQryUserSessionField* pQryUserSession, int nRequestID);
 
     /// 请求查询交易所
     int ReqQryExchange(CThostFtdcQryExchangeField* pQryExchange, int nRequestID);
@@ -905,8 +940,23 @@ public:
     /// 投资者产品RULE保证金查询
     int ReqQryInvestorProdRULEMargin(CThostFtdcQryInvestorProdRULEMarginField* pQryInvestorProdRULEMargin, int nRequestID);
 
-    /// 投资者投资者新组保设置查询
+    /// 投资者新型组合保证金开关查询
     int ReqQryInvestorPortfSetting(CThostFtdcQryInvestorPortfSettingField* pQryInvestorPortfSetting, int nRequestID);
+
+    /// 投资者申报费阶梯收取记录查询
+    int ReqQryInvestorInfoCommRec(CThostFtdcQryInvestorInfoCommRecField* pQryInvestorInfoCommRec, int nRequestID);
+
+    /// 组合腿信息查询
+    int ReqQryCombLeg(CThostFtdcQryCombLegField* pQryCombLeg, int nRequestID);
+
+    /// 对冲设置请求
+    int ReqOffsetSetting(CThostFtdcInputOffsetSettingField* pInputOffsetSetting, int nRequestID);
+
+    /// 对冲设置撤销请求
+    int ReqCancelOffsetSetting(CThostFtdcInputOffsetSettingField* pInputOffsetSetting, int nRequestID);
+
+    /// 投资者对冲设置查询
+    int ReqQryOffsetSetting(CThostFtdcQryOffsetSettingField* pQryOffsetSetting, int nRequestID);
 
 private:
     CThostFtdcTraderApi* pUserApi;

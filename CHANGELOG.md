@@ -1,4 +1,10 @@
 # Changelog
+## [Unreleased] - 2025-08-13
+- 更新分支 6.7.11 对应官方 CTP 库版本
+- 更新封装代码
+- master 分支对应最新 CTP 版本
+- 更新 README 文档
+
 
 ## [Unreleased] - 2024-09-13
 

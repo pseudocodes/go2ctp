@@ -17,11 +17,11 @@ package ctp_dyn
 /*
 #cgo linux LDFLAGS: -fPIC -ldl
 #cgo linux CXXFLAGS: -std=c++11
-#cgo linux CPPFLAGS: -fPIC -I. -I${SRCDIR}/../ctp/lib/v6.7.7_20240607_api_traderapi_se_linux64/
+#cgo linux CPPFLAGS: -fPIC -I. -I${SRCDIR}/../ctp/lib/v6.7.11_20250617_api_traderapi_se_linux64
 
-#cgo darwin LDFLAGS: -L. -ldl
-#cgo darwin CXXFLAGS: -std=c++11
-#cgo darwin CPPFLAGS: -I. -I${SRCDIR}/../ctp/lib/v6.7.7_20240607_api_traderapi_se_linux64/ -D__OPENCTP__
+// #cgo darwin LDFLAGS: -L. -ldl
+// #cgo darwin CXXFLAGS: -std=c++11
+// #cgo darwin CPPFLAGS: -I. -I${SRCDIR}/../ctp/lib/v6.7.7_20240607_api_traderapi_se_linux64/ -D__OPENCTP__
 
 */
 import "C"
