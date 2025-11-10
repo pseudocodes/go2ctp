@@ -104,7 +104,7 @@ func (s *baseSpi) OnRspSubMarketData(pSpecificInstrument *thost.CThostFtdcSpecif
 }
 
 func (s *baseSpi) OnRtnDepthMarketData(pDepthMarketData *thost.CThostFtdcDepthMarketDataField) {
-	log.Printf("OnRtnDeptMarketData: %s\n", string(pDepthMarketData.InstrumentID[:7]))
+	log.Printf("OnRtnDeptMarketData: %s UpdateTime: %s, UpdateMillisec: %d\n", string(pDepthMarketData.InstrumentID[:7]), pDepthMarketData.UpdateTime.String(), pDepthMarketData.UpdateMillisec)
 }
 
 func (s *baseSpi) OnRspError(pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
@@ -149,11 +149,13 @@ func CreateBaseSpi2() *baseSpi2 {
 var (
 	CTPLibPathLinux = "../../ctp/lib/v6.7.11_20250617_api_traderapi_se_linux64/thostmduserapi_se.so"
 	CTPLibPathMacos = "../../ctp/lib/v6.7.7_MacOS_20240716/thostmduserapi_se.framework/Versions/A/thostmduserapi_se"
-	// TTSLibPathDarwin = "This/Is/Sample/PathToOpenCTP.dylib"
 
-	TTSFront = "tcp://121.37.80.177:20004"
-	// SimnowFront = SimnowEnv["md"]["7x24"]
-	SimnowFront = SimnowEnv["md"]["sim1"]
+	// TTSLibPathDarwin = "This/Is/Sample/PathToOpenCTP.dylib"
+	// TTSLibPathLinux  = "This/Is/Sample/PathToOpenCTP.so"
+
+	TTSFront    = "tcp://trading.openctp.cn:30011"
+	SimnowFront = SimnowEnv["md"]["7x24"]
+	// SimnowFront = SimnowEnv["md"]["sim1"]
 )
 
 func sample1() {
@@ -171,6 +173,7 @@ func sample1() {
 	} else if runtime.GOOS == "linux" {
 		// mdapi = ctp_dyn.CreateMdApi(ctp_dyn.MdDynamicLibPath(TTSLibPathLinux), ctp_dyn.MdFlowPath("./data/"), ctp_dyn.MdUsingUDP(false), ctp_dyn.MdMultiCast(false))
 		mdapi = ctp_dyn.CreateMdApi(ctp_dyn.MdDynamicLibPath(CTPLibPathLinux), ctp_dyn.MdFlowPath("./data/"), ctp_dyn.MdUsingUDP(false), ctp_dyn.MdMultiCast(false))
+		// frontAddr = TTSFront
 		frontAddr = SimnowFront
 
 	}
