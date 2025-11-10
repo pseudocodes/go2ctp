@@ -294,7 +294,8 @@ virtual int ReqUserLogin(CThostFtdcReqUserLoginField* pReqUserLoginField, int nR
 **A.08**: 相关信息 
 * CTP `v6.7.7` 版本在 `RegisterFront` 增加了新方法，破坏了 `v6.7.2` 版本之前的类方法的内存布局排序, 因此 `v6.7.7` 的封装不兼容 `v6.7.2`
 * 实测 linux 环境中 `v6.7.2` 封装文件能支持 CTP 动态库版本到 `v6.5.1`, 高版本的 API 无法在低版本动态库调用时使用
-*  `6.7.7` 分支 `ctp_dyn` 不应加载 `6.7.2` 版本的 ctp/openctp 的动态库, 如果发生该种行为，程序编译运行之后会发生卡死或提示出错； 
+*  `6.7.7` 分支 `ctp_dyn` 不兼容 `6.7.2` 版本的 ctp/openctp 的动态库, 如果高版本封装加载了低版本动态库，程序编译运行之后会发生卡死或提示出错； 
+* `6.7.11` 分支 `ctp_dyn` 不兼容之前任何版本；
 * 存在能够强制加载低版本动态库函数的封装方案，但是考虑到生产环境下应不隐藏风险，尽早抛出错误的原则，未采用强制加载的封装方案.
 * 此外，请注意开发环境的区别，不要在 Macosx 环境下加载 so 动态库
 
@@ -321,6 +322,8 @@ virtual int ReqUserLogin(CThostFtdcReqUserLoginField* pReqUserLoginField, int nR
 * https://github.com/pseudocodes/goctp_l3_estimate
   *  订单簿可视化展示
 * https://github.com/pseudocodes/light-trader
+* https://github.com/pseudocodes/open-md-gateway-go
+	*	高性能期货行情数据网关，兼容 [`DIFF`](https://doc.shinnytech.com/diff/latest/general.html) 协议 
 * alpha-trade-gateway (incoming)
 
 ## TODO
