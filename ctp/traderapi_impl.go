@@ -275,6 +275,7 @@ extern int _wrap_CThostFtdcTraderApi_ReqQryInvestorProdRULEMargin(uintptr_t, str
 */
 import "C"
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -434,15 +435,40 @@ func (c *TraderApi) SubmitUserSystemInfo(pUserSystemInfo *thost.CThostFtdcUserSy
 }
 
 // 用户登录请求
-func (c *TraderApi) ReqUserLogin(pReqUserLoginField *thost.CThostFtdcReqUserLoginField, nRequestID int) int {
+func (c *TraderApi) ReqUserLogin(pReqUserLoginField *thost.CThostFtdcReqUserLoginField, nRequestID int, params ...any) int {
 	if runtime.GOOS != "darwin" {
 		return (int)(C._wrap_CThostFtdcTraderApi_ReqUserLogin(C.uintptr_t(c.apiPtr), (*C.struct_CThostFtdcReqUserLoginField)(unsafe.Pointer(pReqUserLoginField)), C.int(nRequestID)))
 	}
-	if c.length == 0 {
-		return (int)(C._wrap_CThostFtdcTraderApi_ReqUserLoginMac(C.uintptr_t(c.apiPtr), (*C.struct_CThostFtdcReqUserLoginField)(unsafe.Pointer(pReqUserLoginField)), C.int(nRequestID), C.int(0), (*C.char)(nil)))
+
+	var length int
+	var sysInfoPtr *C.char
+
+	switch len(params) {
+	case 0:
+		// 使用 TraderApi 中已保存的数据
+		length = c.length
+		if length > 0 {
+			sysInfoPtr = (*C.char)(unsafe.Pointer(&c.systemInfo[0]))
+		}
+	case 2:
+		// 使用传入的 params
+		var ok bool
+		length, ok = params[0].(int)
+		if !ok {
+			panic(fmt.Sprintf("invalid param type: %T, expect type: int", params[0]))
+		}
+		systemInfo, ok := params[1].([]byte)
+		if !ok {
+			panic(fmt.Sprintf("invalid param type: %T, expect type: []byte", params[1]))
+		}
+		if len(systemInfo) > 0 {
+			sysInfoPtr = (*C.char)(unsafe.Pointer(&systemInfo[0]))
+		}
+	default:
+		panic(fmt.Sprintf("invalid param number: %d, expect number: 0 or 2", len(params)))
 	}
-	out := (*C.char)(unsafe.Pointer(&c.systemInfo[0]))
-	return (int)(C._wrap_CThostFtdcTraderApi_ReqUserLoginMac(C.uintptr_t(c.apiPtr), (*C.struct_CThostFtdcReqUserLoginField)(unsafe.Pointer(pReqUserLoginField)), C.int(nRequestID), C.int(c.length), out))
+
+	return (int)(C._wrap_CThostFtdcTraderApi_ReqUserLoginMac(C.uintptr_t(c.apiPtr), (*C.struct_CThostFtdcReqUserLoginField)(unsafe.Pointer(pReqUserLoginField)), C.int(nRequestID), C.int(length), sysInfoPtr))
 }
 
 // 登出请求
