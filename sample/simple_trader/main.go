@@ -114,6 +114,9 @@ func (s *baseSpi) OnFrontConnected() {
 }
 
 func (s *baseSpi) OnRspAuthenticate(pRspAuthenticateField *thost.CThostFtdcRspAuthenticateField, pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
+	if s.isErrorRspInfo(pRspInfo) {
+		return
+	}
 	req := &thost.CThostFtdcReqUserLoginField{}
 	copy(req.BrokerID[:], []byte(s.brokerID))
 	copy(req.UserID[:], []byte(s.investorID))
@@ -124,6 +127,9 @@ func (s *baseSpi) OnRspAuthenticate(pRspAuthenticateField *thost.CThostFtdcRspAu
 }
 
 func (s *baseSpi) OnRspUserLogin(pRspUserLogin *thost.CThostFtdcRspUserLoginField, pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
+	if s.isErrorRspInfo(pRspInfo) {
+		return
+	}
 	log.Printf("OnRspUserLogin[SysVersion: %v %v] \n", pRspUserLogin.SysVersion.String(), pRspUserLogin.BrokerID.String())
 	// dump.V(pRspUserLogin)
 	req := &thost.CThostFtdcSettlementInfoConfirmField{}

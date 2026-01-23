@@ -25,3 +25,5 @@ package ctp_dyn
 
 */
 import "C"
+
+const IsOpenCTP = false
