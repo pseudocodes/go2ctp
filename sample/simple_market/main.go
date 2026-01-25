@@ -95,7 +95,7 @@ func (s *baseSpi) OnFrontDisconnected(nReason int) {
 func (s *baseSpi) OnRspUserLogin(pRspUserLogin *thost.CThostFtdcRspUserLoginField, pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
 	log.Printf("RspUserLogin: %+v\nRspInfo: %+v\n", pRspUserLogin, nil)
 	log.Println(s.mdapi.GetTradingDay())
-	s.mdapi.SubscribeMarketData("ag2512")
+	s.mdapi.SubscribeMarketData("ag2604")
 }
 
 func (s *baseSpi) OnRspSubMarketData(pSpecificInstrument *thost.CThostFtdcSpecificInstrumentField, pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
@@ -136,7 +136,7 @@ func CreateBaseSpi2() *baseSpi2 {
 	s.OnRspUserLoginCallback = func(pRspUserLogin *thost.CThostFtdcRspUserLoginField, pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
 		log.Printf("RspUserLogin: %+v\nRspInfo: %+v\n", pRspUserLogin, nil)
 		log.Println(s.mdapi.GetTradingDay())
-		s.mdapi.SubscribeMarketData("ag2512")
+		s.mdapi.SubscribeMarketData("ag2604")
 	}
 	s.OnRtnDepthMarketDataCallback = func(pDepthMarketData *thost.CThostFtdcDepthMarketDataField) {
 		// log.Printf("tick {%+v}\n", quote)
@@ -203,8 +203,8 @@ func sample2() {
 	mdapi.RegisterSpi(baseSpi2)
 
 	// mdapi.RegisterFront("tcp://140.206.244.33:11616")
-	// mdapi.RegisterFront("tcp://182.254.243.31:40011")
-	mdapi.RegisterFront(SimnowEnv["md"]["sim1"])
+	mdapi.RegisterFront("tcp://182.254.243.31:40011")
+	// mdapi.RegisterFront(SimnowEnv["md"]["sim1"])
 
 	mdapi.Init()
 
@@ -219,6 +219,6 @@ func sample2() {
 }
 
 func main() {
-	sample1()
-	// sample2()
+	// sample1()
+	sample2()
 }

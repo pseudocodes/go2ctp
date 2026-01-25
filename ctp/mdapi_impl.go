@@ -78,7 +78,7 @@ func CreateMdApi(options ...MdOption) thost.MdApi {
 		multicast:  defaultIsMulticast,
 		production: defaultIsProductionMode,
 	}
-	handle := cgo.NewHandle(api)
+	api.handle = cgo.NewHandle(api)
 	for _, opt := range options {
 		opt(api)
 	}
@@ -97,7 +97,7 @@ func CreateMdApi(options ...MdOption) thost.MdApi {
 	cflowPath := C.CString(api.flowPath)
 	defer C.free(unsafe.Pointer(cflowPath))
 
-	api.apiPtr = uintptr(C._wrap_CThostFtdcMdApi_CreateFtdcMdApi2(C.uintptr_t(handle), cflowPath, C._Bool(api.usingUDP), C._Bool(api.multicast), C._Bool(api.production)))
+	api.apiPtr = uintptr(C._wrap_CThostFtdcMdApi_CreateFtdcMdApi2(C.uintptr_t(api.handle), cflowPath, C._Bool(api.usingUDP), C._Bool(api.multicast), C._Bool(api.production)))
 
 	return api
 }
@@ -114,7 +114,10 @@ func (s *MdApi) GetApiVersion() string {
 func (s *MdApi) Release() {
 	C._wrap_CThostFtdcMdApi_RegisterSpi(C.uintptr_t(s.apiPtr), C.uintptr_t(0))
 	C._wrap_CThostFtdcMdApi_Release(C.uintptr_t(s.apiPtr))
-
+	if s.handle != 0 {
+		s.handle.Delete()
+		s.handle = 0
+	}
 }
 
 // 初始化

@@ -310,7 +310,7 @@ func CreateTraderApi(options ...TraderOption) thost.TraderApi {
 		flowPath:   defaultFlowPath,
 		production: defaultIsProductionMode,
 	}
-	handle := cgo.NewHandle(api)
+	api.handle = cgo.NewHandle(api)
 	for _, opt := range options {
 		opt(api)
 	}
@@ -329,7 +329,7 @@ func CreateTraderApi(options ...TraderOption) thost.TraderApi {
 	cflowPath := C.CString(api.flowPath)
 	defer C.free(unsafe.Pointer(cflowPath))
 
-	api.apiPtr = uintptr(C._wrap_CThostFtdcTraderApi_CreateFtdcTraderApi2(C.uintptr_t(handle), cflowPath, C._Bool(api.production)))
+	api.apiPtr = uintptr(C._wrap_CThostFtdcTraderApi_CreateFtdcTraderApi2(C.uintptr_t(api.handle), cflowPath, C._Bool(api.production)))
 	return api
 }
 
@@ -345,7 +345,10 @@ func (s *TraderApi) GetApiVersion() string {
 func (s *TraderApi) Release() {
 	C._wrap_CThostFtdcTraderApi_RegisterSpi(C.uintptr_t(s.apiPtr), C.uintptr_t(0))
 	C._wrap_CThostFtdcTraderApi_Release(C.uintptr_t(s.apiPtr))
-
+	if s.handle != 0 {
+		s.handle.Delete()
+		s.handle = 0
+	}
 }
 
 // 初始化
@@ -458,7 +461,7 @@ func (s *TraderApi) SubmitWechatUserSystemInfo(pUserSystemInfo *thost.CThostFtdc
 }
 
 // 用户登录请求
-func (s *TraderApi) ReqUserLogin(pReqUserLoginField *thost.CThostFtdcReqUserLoginField, nRequestID int) int {
+func (s *TraderApi) ReqUserLogin(pReqUserLoginField *thost.CThostFtdcReqUserLoginField, nRequestID int, params ...any) int {
 	if runtime.GOOS != "darwin" {
 		return (int)(C._wrap_CThostFtdcTraderApi_ReqUserLogin(C.uintptr_t(s.apiPtr), (*C.struct_CThostFtdcReqUserLoginField)(unsafe.Pointer(pReqUserLoginField)), C.int(nRequestID)))
 	}

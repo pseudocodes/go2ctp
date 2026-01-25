@@ -85,6 +85,7 @@ type MdOption func(api *MdApi)
 type MdApi struct {
 	apiPtr uintptr
 	spi    thost.MdSpi
+	handle cgo.Handle
 
 	dllPath    string
 	flowPath   string
@@ -100,7 +101,7 @@ func CreateMdApi(options ...MdOption) thost.MdApi {
 		multicast:  defaultIsMulticast,
 		production: defaultIsProductionMode,
 	}
-	handle := cgo.NewHandle(api)
+	api.handle = cgo.NewHandle(api)
 	for _, opt := range options {
 		opt(api)
 	}
@@ -123,7 +124,7 @@ func CreateMdApi(options ...MdOption) thost.MdApi {
 	cdllPath := C.CString(api.dllPath)
 	defer C.free(unsafe.Pointer(cdllPath))
 
-	api.apiPtr = uintptr(C._wrap_tts_CThostFtdcMdApi_CreateFtdcMdApi3(C.uintptr_t(handle), cdllPath, cflowPath, C._Bool(api.usingUDP), C._Bool(api.multicast), C._Bool(api.production)))
+	api.apiPtr = uintptr(C._wrap_tts_CThostFtdcMdApi_CreateFtdcMdApi3(C.uintptr_t(api.handle), cdllPath, cflowPath, C._Bool(api.usingUDP), C._Bool(api.multicast), C._Bool(api.production)))
 
 	return api
 }
@@ -140,6 +141,10 @@ func (c *MdApi) GetApiVersion() string {
 func (c *MdApi) Release() {
 	C._wrap_tts_CThostFtdcMdApi_RegisterSpi(C.uintptr_t(c.apiPtr), C.uintptr_t(0))
 	C._wrap_tts_CThostFtdcMdApi_Release(C.uintptr_t(c.apiPtr))
+	if c.handle != 0 {
+		c.handle.Delete()
+		c.handle = 0
+	}
 }
 
 // 初始化
