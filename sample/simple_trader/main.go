@@ -150,7 +150,7 @@ func (s *baseSpi) OnRspQryTradingAccount(pTradingAccount *thost.CThostFtdcTradin
 
 		req := &thost.CThostFtdcQryInstrumentCommissionRateField{}
 		copy(req.BrokerID[:], "9999")
-		copy(req.InstrumentID[:], "ag2512")
+		copy(req.InstrumentID[:], "ag2612")
 
 		ret := s.tdapi.ReqQryInstrumentCommissionRate(req, int(s.requestID.Add(1)))
 		if ret != 0 {
@@ -172,7 +172,7 @@ func (s *baseSpi) OnRspQryInstrumentCommissionRate(pInstrumentCommissionRate *th
 			TradingType: thost.THOST_FTDC_TD_TRADE,
 			ClassType:   thost.THOST_FTDC_INS_FUTURE,
 		}
-		copy(req.InstrumentID[:], "ag2512")
+		copy(req.InstrumentID[:], "ag2612")
 
 		ret := s.tdapi.ReqQryClassifiedInstrument(req, int(s.requestID.Add(1)))
 		if ret != 0 {
@@ -299,8 +299,8 @@ func sample2() {
 
 	tdapi.RegisterSpi(baseSpi)
 
-	// tdapi.RegisterFront(SimnowEnv["td"]["7x24"])
-	tdapi.RegisterFront(SimnowEnv["td"]["sim1"])
+	tdapi.RegisterFront(SimnowEnv["td"]["7x24"])
+	// tdapi.RegisterFront(SimnowEnv["td"]["sim1"])
 
 	tdapi.Init()
 	time.Sleep(time.Second)
@@ -317,6 +317,6 @@ func sample2() {
 }
 
 func main() {
-	sample1()
-	// sample2()
+	// sample1()
+	sample2()
 }

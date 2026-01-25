@@ -19,6 +19,8 @@ package ctp
 */
 import "C"
 import (
+	"runtime/cgo"
+
 	"github.com/pseudocodes/go2ctp/thost"
 )
 
@@ -58,6 +60,7 @@ func MdProductionMode(production bool) MdOption {
 type MdApi struct {
 	apiPtr uintptr
 	spi    thost.MdSpi
+	handle cgo.Handle
 
 	flowPath   string
 	usingUDP   bool
@@ -89,6 +92,7 @@ func TraderProductionMode(production bool) TraderOption {
 type TraderApi struct {
 	apiPtr uintptr
 	spi    thost.TraderSpi
+	handle cgo.Handle
 
 	length     int
 	systemInfo [273]byte

@@ -297,12 +297,12 @@ virtual int ReqUserLogin(CThostFtdcReqUserLoginField* pReqUserLoginField, int nR
 *  `6.7.7` 分支 `ctp_dyn` 不兼容 `6.7.2` 版本的 ctp/openctp 的动态库, 如果高版本封装加载了低版本动态库，程序编译运行之后会发生卡死或提示出错； 
 * `6.7.11` 分支 `ctp_dyn` 不兼容之前任何版本；
 * 存在能够强制加载低版本动态库函数的封装方案，但是考虑到生产环境下应不隐藏风险，尽早抛出错误的原则，未采用强制加载的封装方案.
-* 此外，请注意开发环境的区别，不要在 Macosx 环境下加载 so 动态库
+* 此外，请注意开发环境的区别，不要在 MacOS 环境下加载 so 动态库
 
 
 ## 注意事项
 * 使用 ctp_dyn 时请对齐分支版本以及动态库版本
-* Macosx 环境下如出现编译后运行无响应，可以排查系统以及 Go 版本
+* MacOS 环境下如出现编译后运行无响应，可以排查系统以及 Go 版本
 
  
 ## 同类项目
@@ -316,6 +316,7 @@ virtual int ReqUserLogin(CThostFtdcReqUserLoginField* pReqUserLoginField, int nR
 | https://github.com/mayiweb/goctp | 源自 https://github.com/hankchan/goctp | ★★★☆☆ |
 | https://github.com/kkqy/ctp-go | a. 对 CTP 的版本处理与 `A.01` 中的描述相同，不同版本放置于不同分支下 <br> b. 该项目将 Swig 编译后展开的代码直接放置于项目中，有 FAQ 中 `A.02` 中描述的问题，该项目文档也说明了编译速度慢的问题 <br> c. CTP 结构体创建在 c 内存空间侧，需要手动自行回收  |★★☆☆☆|
 | https://github.com/ztrade/ctp| a. 项目整体布局类似 https://github.com/pseudocodes/goctp, 细节在于 wrapper 代码中将 Api 和 Spi 的 C++ 类分别进行了独立封装，与 SWIG 的展开代码类似 <br> b. 调用 Api 接口时 C 内存空间侧申请一次内存并拷贝结构体数据，Spi 回调侧 go 内存空间侧申请一次内存并拷贝结构体，相较本项目整体多了两次内存申请以及数据深拷贝 | ★★★★☆ |
+|https://github.com/etveritas/ctp-wrapper/| a. 采用了与 [ftdc2_ctp](https://github.com/shawn666liu/ftdc2c_ctp) 类似的方案，先用一层封装代码将 C++ 接口暴露为纯 C 接口，然后基于 C 接口的封装库实现 Go/Python 的进一步 FFI 封装;<br> b. go FFI 封装思路类似 `go2ctp/ctp_dyn` 但未采用 cgo 进行代码桥接，而是采用了 `purego` 库将 API 以及 SPI 回调函数与 c 库符号一一注册绑定的形式来实现虚表映射，将 cgo 封装代码的工作推到了 c 库构建的代码中, <br> c. 项目适合开发者 DIY 构建其他语言的 CTP FFI 项目, 项目布局不适合作为 go 的稳定库引用 | ★★★★☆|
 
 
 ## Base on `go2ctp`
@@ -323,14 +324,15 @@ virtual int ReqUserLogin(CThostFtdcReqUserLoginField* pReqUserLoginField, int nR
   *  订单簿可视化展示
 * https://github.com/pseudocodes/light-trader
 * https://github.com/pseudocodes/open-md-gateway-go
-	*	高性能期货行情数据网关，兼容 [`DIFF`](https://doc.shinnytech.com/diff/latest/general.html) 协议 
+	* 高性能期货行情数据网关，兼容 [`DIFF`](https://doc.shinnytech.com/diff/latest/general.html) 协议 
+* https://github.com/pseudocodes/datacollect
+    * CTP 客户端系统信息采集库封装 
 * alpha-trade-gateway (incoming)
+
 
 ## TODO
 * 更丰富的使用样例
 * 扩展封装，提供高阶功能
-* CTP 版本与 GO 项目大版本同步 ？
-
 
 
 ## Reference
