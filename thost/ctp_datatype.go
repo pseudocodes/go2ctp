@@ -11,10 +11,11 @@ import (
 type THOST_TE_RESUME_TYPE int32
 
 const (
-	THOST_TERT_RESTART THOST_TE_RESUME_TYPE = 0
-	THOST_TERT_RESUME  THOST_TE_RESUME_TYPE = 1
-	THOST_TERT_QUICK   THOST_TE_RESUME_TYPE = 2
-	THOST_TERT_NONE    THOST_TE_RESUME_TYPE = 3
+	THOST_TERT_RESTART          THOST_TE_RESUME_TYPE = 0
+	THOST_TERT_RESUME           THOST_TE_RESUME_TYPE = 1
+	THOST_TERT_QUICK            THOST_TE_RESUME_TYPE = 2
+	THOST_TERT_NONE             THOST_TE_RESUME_TYPE = 3
+	THOST_TERT_RESUME_FROM_SEQ_NO THOST_TE_RESUME_TYPE = 4
 )
 
 func BytesToGBK(bs []byte) string {
@@ -133,6 +134,16 @@ func (s TThostFtdcPasswordType) String() string {
 }
 
 func (s TThostFtdcPasswordType) GBString() string {
+	return BytesToGBK(s[:])
+}
+
+// 设备标识类型
+type TThostFtdcDeviceTagType [41]byte
+func (s TThostFtdcDeviceTagType) String() string {
+	return BytesToString(s[:])
+}
+
+func (s TThostFtdcDeviceTagType) GBString() string {
 	return BytesToGBK(s[:])
 }
 
@@ -11062,6 +11073,91 @@ func (s TThostFtdcReserveInfoType) String() string {
 }
 
 func (s TThostFtdcReserveInfoType) GBString() string {
+	return BytesToGBK(s[:])
+}
+
+
+// 套利套保申请状态类型
+type TThostFtdcApplyStatusType byte
+const THOST_FTDC_AS2_Unknown TThostFtdcApplyStatusType  = 'a' // 未知
+	
+const THOST_FTDC_AS2_Canceled TThostFtdcApplyStatusType  = '0' // 已撤销
+	
+const THOST_FTDC_AS2_Suspended TThostFtdcApplyStatusType  = '1' // 已挂起
+	
+const THOST_FTDC_AS2_Accepted TThostFtdcApplyStatusType  = '3' // 申请成功
+	
+var mpTThostFtdcApplyStatusType = map[TThostFtdcApplyStatusType]string{'a': "THOST_FTDC_AS2_Unknown", '0': "THOST_FTDC_AS2_Canceled", '1': "THOST_FTDC_AS2_Suspended", '3': "THOST_FTDC_AS2_Accepted"}
+	
+func (e TThostFtdcApplyStatusType) String() string {
+	if s, ok := mpTThostFtdcApplyStatusType[e];ok{
+		return s[strings.LastIndex(s, "_")+1:]
+	}
+	return string(e) + "值未定义"
+}
+
+
+// 组合定单类型
+type TThostFtdcCmbTypeType byte
+const THOST_FTDC_ZCECT_SPZ TThostFtdcCmbTypeType  = '0' // SPZ
+	
+const THOST_FTDC_ZCECT_SPD TThostFtdcCmbTypeType  = '1' // SPD
+	
+const THOST_FTDC_ZCECT_IPS TThostFtdcCmbTypeType  = '2' // IPS
+	
+const THOST_FTDC_ZCECT_BUL TThostFtdcCmbTypeType  = '3' // BUL
+	
+const THOST_FTDC_ZCECT_BER TThostFtdcCmbTypeType  = '4' // BER
+	
+const THOST_FTDC_ZCECT_BLT TThostFtdcCmbTypeType  = '5' // BLT
+	
+const THOST_FTDC_ZCECT_BRT TThostFtdcCmbTypeType  = '6' // BRT
+	
+const THOST_FTDC_ZCECT_STD TThostFtdcCmbTypeType  = '7' // STD
+	
+const THOST_FTDC_ZCECT_STG TThostFtdcCmbTypeType  = '8' // STG
+	
+const THOST_FTDC_ZCECT_PRT TThostFtdcCmbTypeType  = '9' // PRT
+	
+var mpTThostFtdcCmbTypeType = map[TThostFtdcCmbTypeType]string{'0': "THOST_FTDC_ZCECT_SPZ", '1': "THOST_FTDC_ZCECT_SPD", '2': "THOST_FTDC_ZCECT_IPS", '3': "THOST_FTDC_ZCECT_BUL", '4': "THOST_FTDC_ZCECT_BER", '5': "THOST_FTDC_ZCECT_BLT", '6': "THOST_FTDC_ZCECT_BRT", '7': "THOST_FTDC_ZCECT_STD", '8': "THOST_FTDC_ZCECT_STG", '9': "THOST_FTDC_ZCECT_PRT"}
+	
+func (e TThostFtdcCmbTypeType) String() string {
+	if s, ok := mpTThostFtdcCmbTypeType[e];ok{
+		return s[strings.LastIndex(s, "_")+1:]
+	}
+	return string(e) + "值未定义"
+}
+
+
+// 短信验证码类型
+type TThostFtdcSMSCodeType [17]byte
+func (s TThostFtdcSMSCodeType) String() string {
+	return BytesToString(s[:])
+}
+
+func (s TThostFtdcSMSCodeType) GBString() string {
+	return BytesToGBK(s[:])
+}
+
+
+// 短信内容类型
+type TThostFtdcSMSContentType [129]byte
+func (s TThostFtdcSMSContentType) String() string {
+	return BytesToString(s[:])
+}
+
+func (s TThostFtdcSMSContentType) GBString() string {
+	return BytesToGBK(s[:])
+}
+
+
+// 手机号类型
+type TThostFtdcSMSPhoneType [17]byte
+func (s TThostFtdcSMSPhoneType) String() string {
+	return BytesToString(s[:])
+}
+
+func (s TThostFtdcSMSPhoneType) GBString() string {
 	return BytesToGBK(s[:])
 }
 

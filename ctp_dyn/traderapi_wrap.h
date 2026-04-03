@@ -40,6 +40,10 @@ public:
     /// 客户端认证响应
     void OnRspAuthenticate(CThostFtdcRspAuthenticateField* pRspAuthenticateField, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast);
 
+    /// 该方法在处理私有流之前被调用
+    ///@param nSeqNo 即将被处理的私有流的序号
+    void OnRtnPrivateSeqNo(int nSeqNo);
+
     /// 登录请求响应
     void OnRspUserLogin(CThostFtdcRspUserLoginField* pRspUserLogin, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast);
 
@@ -520,6 +524,48 @@ public:
     /// 投资者对冲设置查询响应
     void OnRspQryOffsetSetting(CThostFtdcOffsetSettingField* pOffsetSetting, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast);
 
+    /// 申请短信验证码响应
+    void OnRspGenSMSCode(CThostFtdcRspGenSMSCodeField* pRspGenSMSCode, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast);
+
+    /// 短信验证信息通知
+    void OnRtnSMSVerifyInfoFromSec(CThostFtdcSMSVerifyInfoFromSecField* pSMSVerifyInfoFromSec);
+
+    /// 套利确认响应
+    void OnRspSpdApply(CThostFtdcInputSpdApplyField* pInputSpdApply, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast);
+
+    /// 套利申请撤销响应
+    void OnRspSpdApplyAction(CThostFtdcInputSpdApplyActionField* pInputSpdApplyAction, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast);
+
+    /// 查询套利申请响应
+    void OnRspQrySpdApply(CThostFtdcSpdApplyField* pSpdApply, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast);
+
+    /// 套利申请回报
+    void OnRtnSpdApply(CThostFtdcSpdApplyField* pSpdApply);
+
+    /// 套利确认错误回报
+    void OnErrRtnSpdApply(CThostFtdcInputSpdApplyField* pInputSpdApply, CThostFtdcRspInfoField* pRspInfo);
+
+    /// 套利申请撤销错误回报
+    void OnErrRtnSpdApplyAction(CThostFtdcSpdApplyActionField* pSpdApplyAction, CThostFtdcRspInfoField* pRspInfo);
+
+    /// 套保确认响应
+    void OnRspHedgeCfm(CThostFtdcInputHedgeCfmField* pInputHedgeCfm, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast);
+
+    /// 套保申请撤销响应
+    void OnRspHedgeCfmAction(CThostFtdcInputHedgeCfmActionField* pInputHedgeCfmAction, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast);
+
+    /// 查询套保申请响应
+    void OnRspQryHedgeCfm(CThostFtdcHedgeCfmField* pHedgeCfm, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast);
+
+    /// 套保申请回报
+    void OnRtnHedgeCfm(CThostFtdcHedgeCfmField* pHedgeCfm);
+
+    /// 套保确认错误回报
+    void OnErrRtnHedgeCfm(CThostFtdcInputHedgeCfmField* pInputHedgeCfm, CThostFtdcRspInfoField* pRspInfo);
+
+    /// 套保申请撤销错误回报
+    void OnErrRtnHedgeCfmAction(CThostFtdcHedgeCfmActionField* pHedgeCfmAction, CThostFtdcRspInfoField* pRspInfo);
+
     /// 获取API的版本信息
     ///@retrun 获取到的版本号
     const char* GetApiVersion();
@@ -573,8 +619,10 @@ public:
     ///         THOST_TERT_RESTART:从本交易日开始重传
     ///         THOST_TERT_RESUME:从上次收到的续传
     ///         THOST_TERT_QUICK:只传送登录后私有流的内容
+    ///         THOST_TERT_RESUME_FROM_SEQ_NO:从指定序号开始重传，序号从1开始
+    ///@param nSeqNo 私有流序号，只在THOST_TERT_RESUME_FROM_SEQ_NO模式下有效
     ///@remark 该方法要在Init方法前调用。若不调用则不会收到私有流的数据。
-    void SubscribePrivateTopic(THOST_TE_RESUME_TYPE nResumeType);
+    void SubscribePrivateTopic(THOST_TE_RESUME_TYPE nResumeType, int nSeqNo = 1);
 
     /// 订阅公共流。
     ///@param nResumeType 公共流重传方式
@@ -954,6 +1002,27 @@ public:
 
     /// 投资者对冲设置查询
     int ReqQryOffsetSetting(CThostFtdcQryOffsetSettingField* pQryOffsetSetting, int nRequestID);
+
+    /// 申请短信验证码
+    int ReqGenSMSCode(CThostFtdcReqGenSMSCodeField* pReqGenSMSCode, int nRequestID);
+
+    /// 套利确认
+    int ReqSpdApply(CThostFtdcInputSpdApplyField* pInputSpdApply, int nRequestID);
+
+    /// 套利申请撤销
+    int ReqSpdApplyAction(CThostFtdcInputSpdApplyActionField* pInputSpdApplyAction, int nRequestID);
+
+    /// 查询套利申请
+    int ReqQrySpdApply(CThostFtdcQrySpdApplyField* pQrySpdApply, int nRequestID);
+
+    /// 套保确认
+    int ReqHedgeCfm(CThostFtdcInputHedgeCfmField* pInputHedgeCfm, int nRequestID);
+
+    /// 套保申请撤销
+    int ReqHedgeCfmAction(CThostFtdcInputHedgeCfmActionField* pInputHedgeCfmAction, int nRequestID);
+
+    /// 查询套保申请
+    int ReqQryHedgeCfm(CThostFtdcQryHedgeCfmField* pQryHedgeCfm, int nRequestID);
 
 private:
     CThostFtdcTraderApi* pUserApi;

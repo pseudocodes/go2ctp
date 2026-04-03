@@ -159,10 +159,12 @@ void _wrap_tts_CThostFtdcTraderApi_RegisterSpi(TTSCTPTraderSpi* pTraderApi, CTho
 ///        THOST_TERT_RESTART:从本交易日开始重传
 ///        THOST_TERT_RESUME:从上次收到的续传
 ///        THOST_TERT_QUICK:只传送登录后私有流的内容
+///        THOST_TERT_RESUME_FROM_SEQ_NO:从指定序号开始重传，序号从1开始
+///@param nSeqNo 私有流序号，只在THOST_TERT_RESUME_FROM_SEQ_NO模式下有效
 ///@remark 该方法要在Init方法前调用。若不调用则不会收到私有流的数据。
-void _wrap_tts_CThostFtdcTraderApi_SubscribePrivateTopic(TTSCTPTraderSpi* pTraderApi, enum THOST_TE_RESUME_TYPE nResumeType)
+void _wrap_tts_CThostFtdcTraderApi_SubscribePrivateTopic(TTSCTPTraderSpi* pTraderApi, enum THOST_TE_RESUME_TYPE nResumeType, int nSeqNo)
 {
-    return pTraderApi->SubscribePrivateTopic(nResumeType);
+    return pTraderApi->SubscribePrivateTopic(nResumeType, nSeqNo);
 }
 
 // 订阅公共流。
@@ -908,6 +910,41 @@ int _wrap_tts_CThostFtdcTraderApi_ReqQryOffsetSetting(TTSCTPTraderSpi* ptr, CTho
     return ptr->ReqQryOffsetSetting(pQryOffsetSetting, nRequestID);
 }
 
+int _wrap_tts_CThostFtdcTraderApi_ReqGenSMSCode(TTSCTPTraderSpi* ptr, CThostFtdcReqGenSMSCodeField* pReqGenSMSCode, int nRequestID)
+{
+    return ptr->ReqGenSMSCode(pReqGenSMSCode, nRequestID);
+}
+
+int _wrap_tts_CThostFtdcTraderApi_ReqSpdApply(TTSCTPTraderSpi* ptr, CThostFtdcInputSpdApplyField* pInputSpdApply, int nRequestID)
+{
+    return ptr->ReqSpdApply(pInputSpdApply, nRequestID);
+}
+
+int _wrap_tts_CThostFtdcTraderApi_ReqSpdApplyAction(TTSCTPTraderSpi* ptr, CThostFtdcInputSpdApplyActionField* pInputSpdApplyAction, int nRequestID)
+{
+    return ptr->ReqSpdApplyAction(pInputSpdApplyAction, nRequestID);
+}
+
+int _wrap_tts_CThostFtdcTraderApi_ReqQrySpdApply(TTSCTPTraderSpi* ptr, CThostFtdcQrySpdApplyField* pQrySpdApply, int nRequestID)
+{
+    return ptr->ReqQrySpdApply(pQrySpdApply, nRequestID);
+}
+
+int _wrap_tts_CThostFtdcTraderApi_ReqHedgeCfm(TTSCTPTraderSpi* ptr, CThostFtdcInputHedgeCfmField* pInputHedgeCfm, int nRequestID)
+{
+    return ptr->ReqHedgeCfm(pInputHedgeCfm, nRequestID);
+}
+
+int _wrap_tts_CThostFtdcTraderApi_ReqHedgeCfmAction(TTSCTPTraderSpi* ptr, CThostFtdcInputHedgeCfmActionField* pInputHedgeCfmAction, int nRequestID)
+{
+    return ptr->ReqHedgeCfmAction(pInputHedgeCfmAction, nRequestID);
+}
+
+int _wrap_tts_CThostFtdcTraderApi_ReqQryHedgeCfm(TTSCTPTraderSpi* ptr, CThostFtdcQryHedgeCfmField* pQryHedgeCfm, int nRequestID)
+{
+    return ptr->ReqQryHedgeCfm(pQryHedgeCfm, nRequestID);
+}
+
 #ifdef __cplusplus
 }
 #endif
@@ -945,6 +982,13 @@ extern "C" void wrap_tts_TraderOnRspAuthenticate(uintptr_t, CThostFtdcRspAuthent
 void TTSCTPTraderSpi::OnRspAuthenticate(CThostFtdcRspAuthenticateField* pRspAuthenticateField, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
 {
     wrap_tts_TraderOnRspAuthenticate(gUserApi, pRspAuthenticateField, pRspInfo, nRequestID, bIsLast);
+}
+
+// 该方法在处理私有流之前被调用
+extern "C" void wrap_tts_TraderOnRtnPrivateSeqNo(uintptr_t, int);
+void TTSCTPTraderSpi::OnRtnPrivateSeqNo(int nSeqNo)
+{
+    wrap_tts_TraderOnRtnPrivateSeqNo(gUserApi, nSeqNo);
 }
 
 // 登录请求响应
@@ -2056,6 +2100,90 @@ void TTSCTPTraderSpi::OnRspQryOffsetSetting(CThostFtdcOffsetSettingField* pOffse
     wrap_tts_TraderOnRspQryOffsetSetting(gUserApi, pOffsetSetting, pRspInfo, nRequestID, bIsLast);
 }
 
+extern "C" void wrap_tts_TraderOnRspGenSMSCode(uintptr_t, CThostFtdcRspGenSMSCodeField*, CThostFtdcRspInfoField*, int, bool);
+void TTSCTPTraderSpi::OnRspGenSMSCode(CThostFtdcRspGenSMSCodeField* pRspGenSMSCode, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+{
+    wrap_tts_TraderOnRspGenSMSCode(gUserApi, pRspGenSMSCode, pRspInfo, nRequestID, bIsLast);
+}
+
+extern "C" void wrap_tts_TraderOnRtnSMSVerifyInfoFromSec(uintptr_t, CThostFtdcSMSVerifyInfoFromSecField*);
+void TTSCTPTraderSpi::OnRtnSMSVerifyInfoFromSec(CThostFtdcSMSVerifyInfoFromSecField* pSMSVerifyInfoFromSec)
+{
+    wrap_tts_TraderOnRtnSMSVerifyInfoFromSec(gUserApi, pSMSVerifyInfoFromSec);
+}
+
+extern "C" void wrap_tts_TraderOnRspSpdApply(uintptr_t, CThostFtdcInputSpdApplyField*, CThostFtdcRspInfoField*, int, bool);
+void TTSCTPTraderSpi::OnRspSpdApply(CThostFtdcInputSpdApplyField* pInputSpdApply, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+{
+    wrap_tts_TraderOnRspSpdApply(gUserApi, pInputSpdApply, pRspInfo, nRequestID, bIsLast);
+}
+
+extern "C" void wrap_tts_TraderOnRspSpdApplyAction(uintptr_t, CThostFtdcInputSpdApplyActionField*, CThostFtdcRspInfoField*, int, bool);
+void TTSCTPTraderSpi::OnRspSpdApplyAction(CThostFtdcInputSpdApplyActionField* pInputSpdApplyAction, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+{
+    wrap_tts_TraderOnRspSpdApplyAction(gUserApi, pInputSpdApplyAction, pRspInfo, nRequestID, bIsLast);
+}
+
+extern "C" void wrap_tts_TraderOnRspQrySpdApply(uintptr_t, CThostFtdcSpdApplyField*, CThostFtdcRspInfoField*, int, bool);
+void TTSCTPTraderSpi::OnRspQrySpdApply(CThostFtdcSpdApplyField* pSpdApply, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+{
+    wrap_tts_TraderOnRspQrySpdApply(gUserApi, pSpdApply, pRspInfo, nRequestID, bIsLast);
+}
+
+extern "C" void wrap_tts_TraderOnRtnSpdApply(uintptr_t, CThostFtdcSpdApplyField*);
+void TTSCTPTraderSpi::OnRtnSpdApply(CThostFtdcSpdApplyField* pSpdApply)
+{
+    wrap_tts_TraderOnRtnSpdApply(gUserApi, pSpdApply);
+}
+
+extern "C" void wrap_tts_TraderOnErrRtnSpdApply(uintptr_t, CThostFtdcInputSpdApplyField*, CThostFtdcRspInfoField*);
+void TTSCTPTraderSpi::OnErrRtnSpdApply(CThostFtdcInputSpdApplyField* pInputSpdApply, CThostFtdcRspInfoField* pRspInfo)
+{
+    wrap_tts_TraderOnErrRtnSpdApply(gUserApi, pInputSpdApply, pRspInfo);
+}
+
+extern "C" void wrap_tts_TraderOnErrRtnSpdApplyAction(uintptr_t, CThostFtdcSpdApplyActionField*, CThostFtdcRspInfoField*);
+void TTSCTPTraderSpi::OnErrRtnSpdApplyAction(CThostFtdcSpdApplyActionField* pSpdApplyAction, CThostFtdcRspInfoField* pRspInfo)
+{
+    wrap_tts_TraderOnErrRtnSpdApplyAction(gUserApi, pSpdApplyAction, pRspInfo);
+}
+
+extern "C" void wrap_tts_TraderOnRspHedgeCfm(uintptr_t, CThostFtdcInputHedgeCfmField*, CThostFtdcRspInfoField*, int, bool);
+void TTSCTPTraderSpi::OnRspHedgeCfm(CThostFtdcInputHedgeCfmField* pInputHedgeCfm, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+{
+    wrap_tts_TraderOnRspHedgeCfm(gUserApi, pInputHedgeCfm, pRspInfo, nRequestID, bIsLast);
+}
+
+extern "C" void wrap_tts_TraderOnRspHedgeCfmAction(uintptr_t, CThostFtdcInputHedgeCfmActionField*, CThostFtdcRspInfoField*, int, bool);
+void TTSCTPTraderSpi::OnRspHedgeCfmAction(CThostFtdcInputHedgeCfmActionField* pInputHedgeCfmAction, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+{
+    wrap_tts_TraderOnRspHedgeCfmAction(gUserApi, pInputHedgeCfmAction, pRspInfo, nRequestID, bIsLast);
+}
+
+extern "C" void wrap_tts_TraderOnRspQryHedgeCfm(uintptr_t, CThostFtdcHedgeCfmField*, CThostFtdcRspInfoField*, int, bool);
+void TTSCTPTraderSpi::OnRspQryHedgeCfm(CThostFtdcHedgeCfmField* pHedgeCfm, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+{
+    wrap_tts_TraderOnRspQryHedgeCfm(gUserApi, pHedgeCfm, pRspInfo, nRequestID, bIsLast);
+}
+
+extern "C" void wrap_tts_TraderOnRtnHedgeCfm(uintptr_t, CThostFtdcHedgeCfmField*);
+void TTSCTPTraderSpi::OnRtnHedgeCfm(CThostFtdcHedgeCfmField* pHedgeCfm)
+{
+    wrap_tts_TraderOnRtnHedgeCfm(gUserApi, pHedgeCfm);
+}
+
+extern "C" void wrap_tts_TraderOnErrRtnHedgeCfm(uintptr_t, CThostFtdcInputHedgeCfmField*, CThostFtdcRspInfoField*);
+void TTSCTPTraderSpi::OnErrRtnHedgeCfm(CThostFtdcInputHedgeCfmField* pInputHedgeCfm, CThostFtdcRspInfoField* pRspInfo)
+{
+    wrap_tts_TraderOnErrRtnHedgeCfm(gUserApi, pInputHedgeCfm, pRspInfo);
+}
+
+extern "C" void wrap_tts_TraderOnErrRtnHedgeCfmAction(uintptr_t, CThostFtdcHedgeCfmActionField*, CThostFtdcRspInfoField*);
+void TTSCTPTraderSpi::OnErrRtnHedgeCfmAction(CThostFtdcHedgeCfmActionField* pHedgeCfmAction, CThostFtdcRspInfoField* pRspInfo)
+{
+    wrap_tts_TraderOnErrRtnHedgeCfmAction(gUserApi, pHedgeCfmAction, pRspInfo);
+}
+
 TTSCTPTraderSpi::TTSCTPTraderSpi(CThostFtdcTraderApi* pUserApi)
 {
     this->pUserApi = pUserApi;
@@ -2180,10 +2308,12 @@ void TTSCTPTraderSpi::RegisterSpi(CThostFtdcTraderSpi* pSpi)
 ///        THOST_TERT_RESTART:从本交易日开始重传
 ///        THOST_TERT_RESUME:从上次收到的续传
 ///        THOST_TERT_QUICK:只传送登录后私有流的内容
+///        THOST_TERT_RESUME_FROM_SEQ_NO:从指定序号开始重传，序号从1开始
+///@param nSeqNo 私有流序号，只在THOST_TERT_RESUME_FROM_SEQ_NO模式下有效
 ///@remark 该方法要在Init方法前调用。若不调用则不会收到私有流的数据。
-void TTSCTPTraderSpi::SubscribePrivateTopic(THOST_TE_RESUME_TYPE nResumeType)
+void TTSCTPTraderSpi::SubscribePrivateTopic(THOST_TE_RESUME_TYPE nResumeType, int nSeqNo)
 {
-    this->pUserApi->SubscribePrivateTopic(nResumeType);
+    this->pUserApi->SubscribePrivateTopic(nResumeType, nSeqNo);
 }
 
 // 订阅公共流。
@@ -2945,4 +3075,39 @@ int TTSCTPTraderSpi::ReqCancelOffsetSetting(CThostFtdcInputOffsetSettingField* p
 int TTSCTPTraderSpi::ReqQryOffsetSetting(CThostFtdcQryOffsetSettingField* pQryOffsetSetting, int nRequestID)
 {
     return this->pUserApi->ReqQryOffsetSetting(pQryOffsetSetting, nRequestID);
+}
+
+int TTSCTPTraderSpi::ReqGenSMSCode(CThostFtdcReqGenSMSCodeField* pReqGenSMSCode, int nRequestID)
+{
+    return this->pUserApi->ReqGenSMSCode(pReqGenSMSCode, nRequestID);
+}
+
+int TTSCTPTraderSpi::ReqSpdApply(CThostFtdcInputSpdApplyField* pInputSpdApply, int nRequestID)
+{
+    return this->pUserApi->ReqSpdApply(pInputSpdApply, nRequestID);
+}
+
+int TTSCTPTraderSpi::ReqSpdApplyAction(CThostFtdcInputSpdApplyActionField* pInputSpdApplyAction, int nRequestID)
+{
+    return this->pUserApi->ReqSpdApplyAction(pInputSpdApplyAction, nRequestID);
+}
+
+int TTSCTPTraderSpi::ReqQrySpdApply(CThostFtdcQrySpdApplyField* pQrySpdApply, int nRequestID)
+{
+    return this->pUserApi->ReqQrySpdApply(pQrySpdApply, nRequestID);
+}
+
+int TTSCTPTraderSpi::ReqHedgeCfm(CThostFtdcInputHedgeCfmField* pInputHedgeCfm, int nRequestID)
+{
+    return this->pUserApi->ReqHedgeCfm(pInputHedgeCfm, nRequestID);
+}
+
+int TTSCTPTraderSpi::ReqHedgeCfmAction(CThostFtdcInputHedgeCfmActionField* pInputHedgeCfmAction, int nRequestID)
+{
+    return this->pUserApi->ReqHedgeCfmAction(pInputHedgeCfmAction, nRequestID);
+}
+
+int TTSCTPTraderSpi::ReqQryHedgeCfm(CThostFtdcQryHedgeCfmField* pQryHedgeCfm, int nRequestID)
+{
+    return this->pUserApi->ReqQryHedgeCfm(pQryHedgeCfm, nRequestID);
 }

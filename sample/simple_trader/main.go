@@ -262,7 +262,7 @@ func Bytes2StringGBK(t []byte) string {
 }
 
 var (
-	CTPLibPathLinux = "../../ctp/lib/v6.7.11_20250617_api_traderapi_se_linux64/thosttraderapi_se.so"
+	CTPLibPathLinux = "../../ctp/lib/v6.7.13_20260225_api_traderapi_se_linux64/thosttraderapi_se.so"
 	CTPLibPathMacos = "../../ctp/lib/v6.7.7_MacOS_20240716/thosttraderapi_se.framework/Versions/A/thosttraderapi_se"
 )
 
@@ -280,8 +280,9 @@ func sample1() {
 
 	tdapi.RegisterSpi(baseSpi)
 	// tdapi.RegisterFront("tcp://121.37.90.193:20002")
-	tdapi.RegisterFront(SimnowEnv["td"]["sim1"])
-	// tdapi.RegisterFront(SimnowEnv["td"]["7x24"])
+	tdapi.RegisterFront(SimnowEnv["td"]["7x24"])
+	tdapi.SubscribePrivateTopic(thost.THOST_TERT_QUICK)
+	tdapi.SubscribePublicTopic(thost.THOST_TERT_QUICK)
 
 	tdapi.Init()
 
@@ -317,6 +318,6 @@ func sample2() {
 }
 
 func main() {
-	// sample1()
-	sample2()
+	sample1()
+	// sample2()
 }
