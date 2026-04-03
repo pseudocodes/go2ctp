@@ -42,7 +42,7 @@ extern void _wrap_CThostFtdcTraderApi_RegisterFensUserInfo(uintptr_t, struct CTh
 
 extern void _wrap_CThostFtdcTraderApi_RegisterSpi(uintptr_t, uintptr_t);
 
-extern void _wrap_CThostFtdcTraderApi_SubscribePrivateTopic(uintptr_t, enum THOST_TE_RESUME_TYPE);
+extern void _wrap_CThostFtdcTraderApi_SubscribePrivateTopic(uintptr_t, enum THOST_TE_RESUME_TYPE, int);
 
 extern void _wrap_CThostFtdcTraderApi_SubscribePublicTopic(uintptr_t, enum THOST_TE_RESUME_TYPE);
 
@@ -292,6 +292,20 @@ extern int _wrap_CThostFtdcTraderApi_ReqCancelOffsetSetting(uintptr_t, struct CT
 
 extern int _wrap_CThostFtdcTraderApi_ReqQryOffsetSetting(uintptr_t, struct CThostFtdcQryOffsetSettingField *, int);
 
+extern int _wrap_CThostFtdcTraderApi_ReqGenSMSCode(uintptr_t, struct CThostFtdcReqGenSMSCodeField *, int);
+
+extern int _wrap_CThostFtdcTraderApi_ReqSpdApply(uintptr_t, struct CThostFtdcInputSpdApplyField *, int);
+
+extern int _wrap_CThostFtdcTraderApi_ReqSpdApplyAction(uintptr_t, struct CThostFtdcInputSpdApplyActionField *, int);
+
+extern int _wrap_CThostFtdcTraderApi_ReqQrySpdApply(uintptr_t, struct CThostFtdcQrySpdApplyField *, int);
+
+extern int _wrap_CThostFtdcTraderApi_ReqHedgeCfm(uintptr_t, struct CThostFtdcInputHedgeCfmField *, int);
+
+extern int _wrap_CThostFtdcTraderApi_ReqHedgeCfmAction(uintptr_t, struct CThostFtdcInputHedgeCfmActionField *, int);
+
+extern int _wrap_CThostFtdcTraderApi_ReqQryHedgeCfm(uintptr_t, struct CThostFtdcQryHedgeCfmField *, int);
+
 */
 import "C"
 import (
@@ -417,9 +431,15 @@ func (s *TraderApi) RegisterSpi(pSpi thost.TraderSpi) {
 // /         THOST_TERT_RESTART:从本交易日开始重传
 // /         THOST_TERT_RESUME:从上次收到的续传
 // /         THOST_TERT_QUICK:只传送登录后私有流的内容
+// /         THOST_TERT_RESUME_FROM_SEQ_NO:从指定序号开始重传，序号从1开始
+// /@param nSeqNo 私有流序号，只在THOST_TERT_RESUME_FROM_SEQ_NO模式下有效，默认为1
 // /@remark 该方法要在Init方法前调用。若不调用则不会收到私有流的数据。
-func (s *TraderApi) SubscribePrivateTopic(nResumeType thost.THOST_TE_RESUME_TYPE) {
-	C._wrap_CThostFtdcTraderApi_SubscribePrivateTopic(C.uintptr_t(s.apiPtr), C.enum_THOST_TE_RESUME_TYPE(nResumeType))
+func (s *TraderApi) SubscribePrivateTopic(nResumeType thost.THOST_TE_RESUME_TYPE, nSeqNo ...int) {
+	seqNo := 1
+	if len(nSeqNo) > 0 {
+		seqNo = nSeqNo[0]
+	}
+	C._wrap_CThostFtdcTraderApi_SubscribePrivateTopic(C.uintptr_t(s.apiPtr), C.enum_THOST_TE_RESUME_TYPE(nResumeType), C.int(seqNo))
 }
 
 // 订阅公共流。
@@ -1052,6 +1072,41 @@ func (s *TraderApi) ReqQryOffsetSetting(pQryOffsetSetting *thost.CThostFtdcQryOf
 	return (int)(C._wrap_CThostFtdcTraderApi_ReqQryOffsetSetting(C.uintptr_t(s.apiPtr), (*C.struct_CThostFtdcQryOffsetSettingField)(unsafe.Pointer(pQryOffsetSetting)), C.int(nRequestID)))
 }
 
+// 申请短信验证码
+func (s *TraderApi) ReqGenSMSCode(pReqGenSMSCode *thost.CThostFtdcReqGenSMSCodeField, nRequestID int) int {
+	return (int)(C._wrap_CThostFtdcTraderApi_ReqGenSMSCode(C.uintptr_t(s.apiPtr), (*C.struct_CThostFtdcReqGenSMSCodeField)(unsafe.Pointer(pReqGenSMSCode)), C.int(nRequestID)))
+}
+
+// 套利确认
+func (s *TraderApi) ReqSpdApply(pInputSpdApply *thost.CThostFtdcInputSpdApplyField, nRequestID int) int {
+	return (int)(C._wrap_CThostFtdcTraderApi_ReqSpdApply(C.uintptr_t(s.apiPtr), (*C.struct_CThostFtdcInputSpdApplyField)(unsafe.Pointer(pInputSpdApply)), C.int(nRequestID)))
+}
+
+// 套利申请撤销
+func (s *TraderApi) ReqSpdApplyAction(pInputSpdApplyAction *thost.CThostFtdcInputSpdApplyActionField, nRequestID int) int {
+	return (int)(C._wrap_CThostFtdcTraderApi_ReqSpdApplyAction(C.uintptr_t(s.apiPtr), (*C.struct_CThostFtdcInputSpdApplyActionField)(unsafe.Pointer(pInputSpdApplyAction)), C.int(nRequestID)))
+}
+
+// 查询套利申请
+func (s *TraderApi) ReqQrySpdApply(pQrySpdApply *thost.CThostFtdcQrySpdApplyField, nRequestID int) int {
+	return (int)(C._wrap_CThostFtdcTraderApi_ReqQrySpdApply(C.uintptr_t(s.apiPtr), (*C.struct_CThostFtdcQrySpdApplyField)(unsafe.Pointer(pQrySpdApply)), C.int(nRequestID)))
+}
+
+// 套保确认
+func (s *TraderApi) ReqHedgeCfm(pInputHedgeCfm *thost.CThostFtdcInputHedgeCfmField, nRequestID int) int {
+	return (int)(C._wrap_CThostFtdcTraderApi_ReqHedgeCfm(C.uintptr_t(s.apiPtr), (*C.struct_CThostFtdcInputHedgeCfmField)(unsafe.Pointer(pInputHedgeCfm)), C.int(nRequestID)))
+}
+
+// 套保申请撤销
+func (s *TraderApi) ReqHedgeCfmAction(pInputHedgeCfmAction *thost.CThostFtdcInputHedgeCfmActionField, nRequestID int) int {
+	return (int)(C._wrap_CThostFtdcTraderApi_ReqHedgeCfmAction(C.uintptr_t(s.apiPtr), (*C.struct_CThostFtdcInputHedgeCfmActionField)(unsafe.Pointer(pInputHedgeCfmAction)), C.int(nRequestID)))
+}
+
+// 查询套保申请
+func (s *TraderApi) ReqQryHedgeCfm(pQryHedgeCfm *thost.CThostFtdcQryHedgeCfmField, nRequestID int) int {
+	return (int)(C._wrap_CThostFtdcTraderApi_ReqQryHedgeCfm(C.uintptr_t(s.apiPtr), (*C.struct_CThostFtdcQryHedgeCfmField)(unsafe.Pointer(pQryHedgeCfm)), C.int(nRequestID)))
+}
+
 //export wrapTraderOnFrontConnected
 func wrapTraderOnFrontConnected(v uintptr) {
 	api := cgo.Handle(v).Value().(*TraderApi)
@@ -1074,6 +1129,12 @@ func wrapTraderOnHeartBeatWarning(v uintptr, nTimeLapse C.int) {
 func wrapTraderOnRspAuthenticate(v uintptr, pRspAuthenticateField *C.struct_CThostFtdcRspAuthenticateField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) {
 	api := cgo.Handle(v).Value().(*TraderApi)
 	api.spi.OnRspAuthenticate((*thost.CThostFtdcRspAuthenticateField)(unsafe.Pointer(pRspAuthenticateField)), (*thost.CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
+}
+
+//export wrapTraderOnRtnPrivateSeqNo
+func wrapTraderOnRtnPrivateSeqNo(v uintptr, nSeqNo C.int) {
+	api := cgo.Handle(v).Value().(*TraderApi)
+	api.spi.OnRtnPrivateSeqNo(int(nSeqNo))
 }
 
 //export wrapTraderOnRspUserLogin
@@ -2034,4 +2095,88 @@ func wrapTraderOnErrRtnCancelOffsetSetting(v uintptr, pCancelOffsetSetting *C.st
 func wrapTraderOnRspQryOffsetSetting(v uintptr, pOffsetSetting *C.struct_CThostFtdcOffsetSettingField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) {
 	api := cgo.Handle(v).Value().(*TraderApi)
 	api.spi.OnRspQryOffsetSetting((*thost.CThostFtdcOffsetSettingField)(unsafe.Pointer(pOffsetSetting)), (*thost.CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
+}
+
+//export wrapTraderOnRspGenSMSCode
+func wrapTraderOnRspGenSMSCode(v uintptr, pRspGenSMSCode *C.struct_CThostFtdcRspGenSMSCodeField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) {
+	api := cgo.Handle(v).Value().(*TraderApi)
+	api.spi.OnRspGenSMSCode((*thost.CThostFtdcRspGenSMSCodeField)(unsafe.Pointer(pRspGenSMSCode)), (*thost.CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
+}
+
+//export wrapTraderOnRtnSMSVerifyInfoFromSec
+func wrapTraderOnRtnSMSVerifyInfoFromSec(v uintptr, pSMSVerifyInfoFromSec *C.struct_CThostFtdcSMSVerifyInfoFromSecField) {
+	api := cgo.Handle(v).Value().(*TraderApi)
+	api.spi.OnRtnSMSVerifyInfoFromSec((*thost.CThostFtdcSMSVerifyInfoFromSecField)(unsafe.Pointer(pSMSVerifyInfoFromSec)))
+}
+
+//export wrapTraderOnRspSpdApply
+func wrapTraderOnRspSpdApply(v uintptr, pInputSpdApply *C.struct_CThostFtdcInputSpdApplyField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) {
+	api := cgo.Handle(v).Value().(*TraderApi)
+	api.spi.OnRspSpdApply((*thost.CThostFtdcInputSpdApplyField)(unsafe.Pointer(pInputSpdApply)), (*thost.CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
+}
+
+//export wrapTraderOnRspSpdApplyAction
+func wrapTraderOnRspSpdApplyAction(v uintptr, pInputSpdApplyAction *C.struct_CThostFtdcInputSpdApplyActionField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) {
+	api := cgo.Handle(v).Value().(*TraderApi)
+	api.spi.OnRspSpdApplyAction((*thost.CThostFtdcInputSpdApplyActionField)(unsafe.Pointer(pInputSpdApplyAction)), (*thost.CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
+}
+
+//export wrapTraderOnRspQrySpdApply
+func wrapTraderOnRspQrySpdApply(v uintptr, pSpdApply *C.struct_CThostFtdcSpdApplyField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) {
+	api := cgo.Handle(v).Value().(*TraderApi)
+	api.spi.OnRspQrySpdApply((*thost.CThostFtdcSpdApplyField)(unsafe.Pointer(pSpdApply)), (*thost.CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
+}
+
+//export wrapTraderOnRtnSpdApply
+func wrapTraderOnRtnSpdApply(v uintptr, pSpdApply *C.struct_CThostFtdcSpdApplyField) {
+	api := cgo.Handle(v).Value().(*TraderApi)
+	api.spi.OnRtnSpdApply((*thost.CThostFtdcSpdApplyField)(unsafe.Pointer(pSpdApply)))
+}
+
+//export wrapTraderOnErrRtnSpdApply
+func wrapTraderOnErrRtnSpdApply(v uintptr, pInputSpdApply *C.struct_CThostFtdcInputSpdApplyField, pRspInfo *C.struct_CThostFtdcRspInfoField) {
+	api := cgo.Handle(v).Value().(*TraderApi)
+	api.spi.OnErrRtnSpdApply((*thost.CThostFtdcInputSpdApplyField)(unsafe.Pointer(pInputSpdApply)), (*thost.CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)))
+}
+
+//export wrapTraderOnErrRtnSpdApplyAction
+func wrapTraderOnErrRtnSpdApplyAction(v uintptr, pSpdApplyAction *C.struct_CThostFtdcSpdApplyActionField, pRspInfo *C.struct_CThostFtdcRspInfoField) {
+	api := cgo.Handle(v).Value().(*TraderApi)
+	api.spi.OnErrRtnSpdApplyAction((*thost.CThostFtdcSpdApplyActionField)(unsafe.Pointer(pSpdApplyAction)), (*thost.CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)))
+}
+
+//export wrapTraderOnRspHedgeCfm
+func wrapTraderOnRspHedgeCfm(v uintptr, pInputHedgeCfm *C.struct_CThostFtdcInputHedgeCfmField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) {
+	api := cgo.Handle(v).Value().(*TraderApi)
+	api.spi.OnRspHedgeCfm((*thost.CThostFtdcInputHedgeCfmField)(unsafe.Pointer(pInputHedgeCfm)), (*thost.CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
+}
+
+//export wrapTraderOnRspHedgeCfmAction
+func wrapTraderOnRspHedgeCfmAction(v uintptr, pInputHedgeCfmAction *C.struct_CThostFtdcInputHedgeCfmActionField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) {
+	api := cgo.Handle(v).Value().(*TraderApi)
+	api.spi.OnRspHedgeCfmAction((*thost.CThostFtdcInputHedgeCfmActionField)(unsafe.Pointer(pInputHedgeCfmAction)), (*thost.CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
+}
+
+//export wrapTraderOnRspQryHedgeCfm
+func wrapTraderOnRspQryHedgeCfm(v uintptr, pHedgeCfm *C.struct_CThostFtdcHedgeCfmField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) {
+	api := cgo.Handle(v).Value().(*TraderApi)
+	api.spi.OnRspQryHedgeCfm((*thost.CThostFtdcHedgeCfmField)(unsafe.Pointer(pHedgeCfm)), (*thost.CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
+}
+
+//export wrapTraderOnRtnHedgeCfm
+func wrapTraderOnRtnHedgeCfm(v uintptr, pHedgeCfm *C.struct_CThostFtdcHedgeCfmField) {
+	api := cgo.Handle(v).Value().(*TraderApi)
+	api.spi.OnRtnHedgeCfm((*thost.CThostFtdcHedgeCfmField)(unsafe.Pointer(pHedgeCfm)))
+}
+
+//export wrapTraderOnErrRtnHedgeCfm
+func wrapTraderOnErrRtnHedgeCfm(v uintptr, pInputHedgeCfm *C.struct_CThostFtdcInputHedgeCfmField, pRspInfo *C.struct_CThostFtdcRspInfoField) {
+	api := cgo.Handle(v).Value().(*TraderApi)
+	api.spi.OnErrRtnHedgeCfm((*thost.CThostFtdcInputHedgeCfmField)(unsafe.Pointer(pInputHedgeCfm)), (*thost.CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)))
+}
+
+//export wrapTraderOnErrRtnHedgeCfmAction
+func wrapTraderOnErrRtnHedgeCfmAction(v uintptr, pHedgeCfmAction *C.struct_CThostFtdcHedgeCfmActionField, pRspInfo *C.struct_CThostFtdcRspInfoField) {
+	api := cgo.Handle(v).Value().(*TraderApi)
+	api.spi.OnErrRtnHedgeCfmAction((*thost.CThostFtdcHedgeCfmActionField)(unsafe.Pointer(pHedgeCfmAction)), (*thost.CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)))
 }

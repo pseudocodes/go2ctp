@@ -38,6 +38,10 @@ type BaseTraderSpi struct {
 	/// 客户端认证响应
 	OnRspAuthenticateCallback func(*thost.CThostFtdcRspAuthenticateField, *thost.CThostFtdcRspInfoField, int, bool)
 
+	/// 该方法在处理私有流之前被调用
+	///@param nSeqNo 即将被处理的私有流的序号
+	OnRtnPrivateSeqNoCallback func(int)
+
 	/// 登录请求响应
 	OnRspUserLoginCallback func(*thost.CThostFtdcRspUserLoginField, *thost.CThostFtdcRspInfoField, int, bool)
 
@@ -517,6 +521,48 @@ type BaseTraderSpi struct {
 
 	/// 投资者对冲设置查询响应
 	OnRspQryOffsetSettingCallback func(*thost.CThostFtdcOffsetSettingField, *thost.CThostFtdcRspInfoField, int, bool)
+
+	/// 申请短信验证码响应
+	OnRspGenSMSCodeCallback func(*thost.CThostFtdcRspGenSMSCodeField, *thost.CThostFtdcRspInfoField, int, bool)
+
+	/// 短信验证信息通知
+	OnRtnSMSVerifyInfoFromSecCallback func(*thost.CThostFtdcSMSVerifyInfoFromSecField)
+
+	/// 套利确认响应
+	OnRspSpdApplyCallback func(*thost.CThostFtdcInputSpdApplyField, *thost.CThostFtdcRspInfoField, int, bool)
+
+	/// 套利申请撤销响应
+	OnRspSpdApplyActionCallback func(*thost.CThostFtdcInputSpdApplyActionField, *thost.CThostFtdcRspInfoField, int, bool)
+
+	/// 查询套利申请响应
+	OnRspQrySpdApplyCallback func(*thost.CThostFtdcSpdApplyField, *thost.CThostFtdcRspInfoField, int, bool)
+
+	/// 套利申请回报
+	OnRtnSpdApplyCallback func(*thost.CThostFtdcSpdApplyField)
+
+	/// 套利确认错误回报
+	OnErrRtnSpdApplyCallback func(*thost.CThostFtdcInputSpdApplyField, *thost.CThostFtdcRspInfoField)
+
+	/// 套利申请撤销错误回报
+	OnErrRtnSpdApplyActionCallback func(*thost.CThostFtdcSpdApplyActionField, *thost.CThostFtdcRspInfoField)
+
+	/// 套保确认响应
+	OnRspHedgeCfmCallback func(*thost.CThostFtdcInputHedgeCfmField, *thost.CThostFtdcRspInfoField, int, bool)
+
+	/// 套保申请撤销响应
+	OnRspHedgeCfmActionCallback func(*thost.CThostFtdcInputHedgeCfmActionField, *thost.CThostFtdcRspInfoField, int, bool)
+
+	/// 查询套保申请响应
+	OnRspQryHedgeCfmCallback func(*thost.CThostFtdcHedgeCfmField, *thost.CThostFtdcRspInfoField, int, bool)
+
+	/// 套保申请回报
+	OnRtnHedgeCfmCallback func(*thost.CThostFtdcHedgeCfmField)
+
+	/// 套保确认错误回报
+	OnErrRtnHedgeCfmCallback func(*thost.CThostFtdcInputHedgeCfmField, *thost.CThostFtdcRspInfoField)
+
+	/// 套保申请撤销错误回报
+	OnErrRtnHedgeCfmActionCallback func(*thost.CThostFtdcHedgeCfmActionField, *thost.CThostFtdcRspInfoField)
 }
 
 // / 当客户端与交易后台建立起通信连接时（还未登录前），该方法被调用。
@@ -551,6 +597,14 @@ func (s *BaseTraderSpi) OnHeartBeatWarning(nTimeLapse int) {
 func (s *BaseTraderSpi) OnRspAuthenticate(pRspAuthenticateField *thost.CThostFtdcRspAuthenticateField, pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
 	if s.OnRspAuthenticateCallback != nil {
 		s.OnRspAuthenticateCallback(pRspAuthenticateField, pRspInfo, nRequestID, bIsLast)
+	}
+}
+
+// / 该方法在处理私有流之前被调用
+// /@param nSeqNo 即将被处理的私有流的序号
+func (s *BaseTraderSpi) OnRtnPrivateSeqNo(nSeqNo int) {
+	if s.OnRtnPrivateSeqNoCallback != nil {
+		s.OnRtnPrivateSeqNoCallback(nSeqNo)
 	}
 }
 
@@ -1671,5 +1725,103 @@ func (s *BaseTraderSpi) OnErrRtnCancelOffsetSetting(pCancelOffsetSetting *thost.
 func (s *BaseTraderSpi) OnRspQryOffsetSetting(pOffsetSetting *thost.CThostFtdcOffsetSettingField, pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
 	if s.OnRspQryOffsetSettingCallback != nil {
 		s.OnRspQryOffsetSettingCallback(pOffsetSetting, pRspInfo, nRequestID, bIsLast)
+	}
+}
+
+// / 申请短信验证码响应
+func (s *BaseTraderSpi) OnRspGenSMSCode(pRspGenSMSCode *thost.CThostFtdcRspGenSMSCodeField, pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
+	if s.OnRspGenSMSCodeCallback != nil {
+		s.OnRspGenSMSCodeCallback(pRspGenSMSCode, pRspInfo, nRequestID, bIsLast)
+	}
+}
+
+// / 短信验证信息通知
+func (s *BaseTraderSpi) OnRtnSMSVerifyInfoFromSec(pSMSVerifyInfoFromSec *thost.CThostFtdcSMSVerifyInfoFromSecField) {
+	if s.OnRtnSMSVerifyInfoFromSecCallback != nil {
+		s.OnRtnSMSVerifyInfoFromSecCallback(pSMSVerifyInfoFromSec)
+	}
+}
+
+// / 套利确认响应
+func (s *BaseTraderSpi) OnRspSpdApply(pInputSpdApply *thost.CThostFtdcInputSpdApplyField, pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
+	if s.OnRspSpdApplyCallback != nil {
+		s.OnRspSpdApplyCallback(pInputSpdApply, pRspInfo, nRequestID, bIsLast)
+	}
+}
+
+// / 套利申请撤销响应
+func (s *BaseTraderSpi) OnRspSpdApplyAction(pInputSpdApplyAction *thost.CThostFtdcInputSpdApplyActionField, pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
+	if s.OnRspSpdApplyActionCallback != nil {
+		s.OnRspSpdApplyActionCallback(pInputSpdApplyAction, pRspInfo, nRequestID, bIsLast)
+	}
+}
+
+// / 查询套利申请响应
+func (s *BaseTraderSpi) OnRspQrySpdApply(pSpdApply *thost.CThostFtdcSpdApplyField, pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
+	if s.OnRspQrySpdApplyCallback != nil {
+		s.OnRspQrySpdApplyCallback(pSpdApply, pRspInfo, nRequestID, bIsLast)
+	}
+}
+
+// / 套利申请回报
+func (s *BaseTraderSpi) OnRtnSpdApply(pSpdApply *thost.CThostFtdcSpdApplyField) {
+	if s.OnRtnSpdApplyCallback != nil {
+		s.OnRtnSpdApplyCallback(pSpdApply)
+	}
+}
+
+// / 套利确认错误回报
+func (s *BaseTraderSpi) OnErrRtnSpdApply(pInputSpdApply *thost.CThostFtdcInputSpdApplyField, pRspInfo *thost.CThostFtdcRspInfoField) {
+	if s.OnErrRtnSpdApplyCallback != nil {
+		s.OnErrRtnSpdApplyCallback(pInputSpdApply, pRspInfo)
+	}
+}
+
+// / 套利申请撤销错误回报
+func (s *BaseTraderSpi) OnErrRtnSpdApplyAction(pSpdApplyAction *thost.CThostFtdcSpdApplyActionField, pRspInfo *thost.CThostFtdcRspInfoField) {
+	if s.OnErrRtnSpdApplyActionCallback != nil {
+		s.OnErrRtnSpdApplyActionCallback(pSpdApplyAction, pRspInfo)
+	}
+}
+
+// / 套保确认响应
+func (s *BaseTraderSpi) OnRspHedgeCfm(pInputHedgeCfm *thost.CThostFtdcInputHedgeCfmField, pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
+	if s.OnRspHedgeCfmCallback != nil {
+		s.OnRspHedgeCfmCallback(pInputHedgeCfm, pRspInfo, nRequestID, bIsLast)
+	}
+}
+
+// / 套保申请撤销响应
+func (s *BaseTraderSpi) OnRspHedgeCfmAction(pInputHedgeCfmAction *thost.CThostFtdcInputHedgeCfmActionField, pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
+	if s.OnRspHedgeCfmActionCallback != nil {
+		s.OnRspHedgeCfmActionCallback(pInputHedgeCfmAction, pRspInfo, nRequestID, bIsLast)
+	}
+}
+
+// / 查询套保申请响应
+func (s *BaseTraderSpi) OnRspQryHedgeCfm(pHedgeCfm *thost.CThostFtdcHedgeCfmField, pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
+	if s.OnRspQryHedgeCfmCallback != nil {
+		s.OnRspQryHedgeCfmCallback(pHedgeCfm, pRspInfo, nRequestID, bIsLast)
+	}
+}
+
+// / 套保申请回报
+func (s *BaseTraderSpi) OnRtnHedgeCfm(pHedgeCfm *thost.CThostFtdcHedgeCfmField) {
+	if s.OnRtnHedgeCfmCallback != nil {
+		s.OnRtnHedgeCfmCallback(pHedgeCfm)
+	}
+}
+
+// / 套保确认错误回报
+func (s *BaseTraderSpi) OnErrRtnHedgeCfm(pInputHedgeCfm *thost.CThostFtdcInputHedgeCfmField, pRspInfo *thost.CThostFtdcRspInfoField) {
+	if s.OnErrRtnHedgeCfmCallback != nil {
+		s.OnErrRtnHedgeCfmCallback(pInputHedgeCfm, pRspInfo)
+	}
+}
+
+// / 套保申请撤销错误回报
+func (s *BaseTraderSpi) OnErrRtnHedgeCfmAction(pHedgeCfmAction *thost.CThostFtdcHedgeCfmActionField, pRspInfo *thost.CThostFtdcRspInfoField) {
+	if s.OnErrRtnHedgeCfmActionCallback != nil {
+		s.OnErrRtnHedgeCfmActionCallback(pHedgeCfmAction, pRspInfo)
 	}
 }

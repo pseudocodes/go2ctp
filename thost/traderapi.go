@@ -33,6 +33,10 @@ type TraderSpi interface {
 	/// 客户端认证响应
 	OnRspAuthenticate(pRspAuthenticateField *CThostFtdcRspAuthenticateField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
 
+	/// 该方法在处理私有流之前被调用
+	///@param nSeqNo 即将被处理的私有流的序号
+	OnRtnPrivateSeqNo(nSeqNo int)
+
 	/// 登录请求响应
 	OnRspUserLogin(pRspUserLogin *CThostFtdcRspUserLoginField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
 
@@ -512,6 +516,48 @@ type TraderSpi interface {
 
 	/// 投资者对冲设置查询响应
 	OnRspQryOffsetSetting(pOffsetSetting *CThostFtdcOffsetSettingField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+
+	/// 申请短信验证码响应
+	OnRspGenSMSCode(pRspGenSMSCode *CThostFtdcRspGenSMSCodeField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+
+	/// 短信验证信息通知
+	OnRtnSMSVerifyInfoFromSec(pSMSVerifyInfoFromSec *CThostFtdcSMSVerifyInfoFromSecField)
+
+	/// 套利确认响应
+	OnRspSpdApply(pInputSpdApply *CThostFtdcInputSpdApplyField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+
+	/// 套利申请撤销响应
+	OnRspSpdApplyAction(pInputSpdApplyAction *CThostFtdcInputSpdApplyActionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+
+	/// 查询套利申请响应
+	OnRspQrySpdApply(pSpdApply *CThostFtdcSpdApplyField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+
+	/// 套利申请回报
+	OnRtnSpdApply(pSpdApply *CThostFtdcSpdApplyField)
+
+	/// 套利确认错误回报
+	OnErrRtnSpdApply(pInputSpdApply *CThostFtdcInputSpdApplyField, pRspInfo *CThostFtdcRspInfoField)
+
+	/// 套利申请撤销错误回报
+	OnErrRtnSpdApplyAction(pSpdApplyAction *CThostFtdcSpdApplyActionField, pRspInfo *CThostFtdcRspInfoField)
+
+	/// 套保确认响应
+	OnRspHedgeCfm(pInputHedgeCfm *CThostFtdcInputHedgeCfmField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+
+	/// 套保申请撤销响应
+	OnRspHedgeCfmAction(pInputHedgeCfmAction *CThostFtdcInputHedgeCfmActionField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+
+	/// 查询套保申请响应
+	OnRspQryHedgeCfm(pHedgeCfm *CThostFtdcHedgeCfmField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
+
+	/// 套保申请回报
+	OnRtnHedgeCfm(pHedgeCfm *CThostFtdcHedgeCfmField)
+
+	/// 套保确认错误回报
+	OnErrRtnHedgeCfm(pInputHedgeCfm *CThostFtdcInputHedgeCfmField, pRspInfo *CThostFtdcRspInfoField)
+
+	/// 套保申请撤销错误回报
+	OnErrRtnHedgeCfmAction(pHedgeCfmAction *CThostFtdcHedgeCfmActionField, pRspInfo *CThostFtdcRspInfoField)
 }
 
 type TraderApi interface {
@@ -569,8 +615,10 @@ type TraderApi interface {
 	///         THOST_TERT_RESTART:从本交易日开始重传
 	///         THOST_TERT_RESUME:从上次收到的续传
 	///         THOST_TERT_QUICK:只传送登录后私有流的内容
+	///         THOST_TERT_RESUME_FROM_SEQ_NO:从指定序号开始重传，序号从1开始
+	///@param nSeqNo 私有流序号，只在THOST_TERT_RESUME_FROM_SEQ_NO模式下有效，默认为1
 	///@remark 该方法要在Init方法前调用。若不调用则不会收到私有流的数据。
-	SubscribePrivateTopic(nResumeType THOST_TE_RESUME_TYPE)
+	SubscribePrivateTopic(nResumeType THOST_TE_RESUME_TYPE, nSeqNo ...int)
 
 	/// 订阅公共流。
 	///@param nResumeType 公共流重传方式
@@ -948,4 +996,25 @@ type TraderApi interface {
 
 	/// 投资者对冲设置查询
 	ReqQryOffsetSetting(pQryOffsetSetting *CThostFtdcQryOffsetSettingField, nRequestID int) int
+
+	/// 申请短信验证码
+	ReqGenSMSCode(pReqGenSMSCode *CThostFtdcReqGenSMSCodeField, nRequestID int) int
+
+	/// 套利确认
+	ReqSpdApply(pInputSpdApply *CThostFtdcInputSpdApplyField, nRequestID int) int
+
+	/// 套利申请撤销
+	ReqSpdApplyAction(pInputSpdApplyAction *CThostFtdcInputSpdApplyActionField, nRequestID int) int
+
+	/// 查询套利申请
+	ReqQrySpdApply(pQrySpdApply *CThostFtdcQrySpdApplyField, nRequestID int) int
+
+	/// 套保确认
+	ReqHedgeCfm(pInputHedgeCfm *CThostFtdcInputHedgeCfmField, nRequestID int) int
+
+	/// 套保申请撤销
+	ReqHedgeCfmAction(pInputHedgeCfmAction *CThostFtdcInputHedgeCfmActionField, nRequestID int) int
+
+	/// 查询套保申请
+	ReqQryHedgeCfm(pQryHedgeCfm *CThostFtdcQryHedgeCfmField, nRequestID int) int
 }

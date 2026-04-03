@@ -108,9 +108,9 @@ void _wrap_CThostFtdcTraderApi_RegisterSpi(QCTPTraderSpi* ptr, CThostFtdcTraderS
     return ptr->RegisterSpi(pSpi);
 }
 
-void _wrap_CThostFtdcTraderApi_SubscribePrivateTopic(QCTPTraderSpi* ptr, THOST_TE_RESUME_TYPE nResumeType)
+void _wrap_CThostFtdcTraderApi_SubscribePrivateTopic(QCTPTraderSpi* ptr, THOST_TE_RESUME_TYPE nResumeType, int nSeqNo)
 {
-    return ptr->SubscribePrivateTopic(nResumeType);
+    return ptr->SubscribePrivateTopic(nResumeType, nSeqNo);
 }
 
 void _wrap_CThostFtdcTraderApi_SubscribePublicTopic(QCTPTraderSpi* ptr, THOST_TE_RESUME_TYPE nResumeType)
@@ -734,6 +734,41 @@ int _wrap_CThostFtdcTraderApi_ReqQryOffsetSetting(QCTPTraderSpi* ptr, CThostFtdc
     return ptr->ReqQryOffsetSetting(pQryOffsetSetting, nRequestID);
 }
 
+int _wrap_CThostFtdcTraderApi_ReqGenSMSCode(QCTPTraderSpi* ptr, CThostFtdcReqGenSMSCodeField* pReqGenSMSCode, int nRequestID)
+{
+    return ptr->ReqGenSMSCode(pReqGenSMSCode, nRequestID);
+}
+
+int _wrap_CThostFtdcTraderApi_ReqSpdApply(QCTPTraderSpi* ptr, CThostFtdcInputSpdApplyField* pInputSpdApply, int nRequestID)
+{
+    return ptr->ReqSpdApply(pInputSpdApply, nRequestID);
+}
+
+int _wrap_CThostFtdcTraderApi_ReqSpdApplyAction(QCTPTraderSpi* ptr, CThostFtdcInputSpdApplyActionField* pInputSpdApplyAction, int nRequestID)
+{
+    return ptr->ReqSpdApplyAction(pInputSpdApplyAction, nRequestID);
+}
+
+int _wrap_CThostFtdcTraderApi_ReqQrySpdApply(QCTPTraderSpi* ptr, CThostFtdcQrySpdApplyField* pQrySpdApply, int nRequestID)
+{
+    return ptr->ReqQrySpdApply(pQrySpdApply, nRequestID);
+}
+
+int _wrap_CThostFtdcTraderApi_ReqHedgeCfm(QCTPTraderSpi* ptr, CThostFtdcInputHedgeCfmField* pInputHedgeCfm, int nRequestID)
+{
+    return ptr->ReqHedgeCfm(pInputHedgeCfm, nRequestID);
+}
+
+int _wrap_CThostFtdcTraderApi_ReqHedgeCfmAction(QCTPTraderSpi* ptr, CThostFtdcInputHedgeCfmActionField* pInputHedgeCfmAction, int nRequestID)
+{
+    return ptr->ReqHedgeCfmAction(pInputHedgeCfmAction, nRequestID);
+}
+
+int _wrap_CThostFtdcTraderApi_ReqQryHedgeCfm(QCTPTraderSpi* ptr, CThostFtdcQryHedgeCfmField* pQryHedgeCfm, int nRequestID)
+{
+    return ptr->ReqQryHedgeCfm(pQryHedgeCfm, nRequestID);
+}
+
 #ifdef __cplusplus
 }
 #endif
@@ -760,6 +795,12 @@ extern "C" void wrapTraderOnRspAuthenticate(uintptr_t, CThostFtdcRspAuthenticate
 void QCTPTraderSpi::OnRspAuthenticate(CThostFtdcRspAuthenticateField* pRspAuthenticateField, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
 {
     wrapTraderOnRspAuthenticate(gUserApi, pRspAuthenticateField, pRspInfo, nRequestID, bIsLast);
+}
+
+extern "C" void wrapTraderOnRtnPrivateSeqNo(uintptr_t, int);
+void QCTPTraderSpi::OnRtnPrivateSeqNo(int nSeqNo)
+{
+    wrapTraderOnRtnPrivateSeqNo(gUserApi, nSeqNo);
 }
 
 extern "C" void wrapTraderOnRspUserLogin(uintptr_t, CThostFtdcRspUserLoginField*, CThostFtdcRspInfoField*, int, bool);
@@ -1722,6 +1763,90 @@ void QCTPTraderSpi::OnRspQryOffsetSetting(CThostFtdcOffsetSettingField* pOffsetS
     wrapTraderOnRspQryOffsetSetting(gUserApi, pOffsetSetting, pRspInfo, nRequestID, bIsLast);
 }
 
+extern "C" void wrapTraderOnRspGenSMSCode(uintptr_t, CThostFtdcRspGenSMSCodeField*, CThostFtdcRspInfoField*, int, bool);
+void QCTPTraderSpi::OnRspGenSMSCode(CThostFtdcRspGenSMSCodeField* pRspGenSMSCode, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+{
+    wrapTraderOnRspGenSMSCode(gUserApi, pRspGenSMSCode, pRspInfo, nRequestID, bIsLast);
+}
+
+extern "C" void wrapTraderOnRtnSMSVerifyInfoFromSec(uintptr_t, CThostFtdcSMSVerifyInfoFromSecField*);
+void QCTPTraderSpi::OnRtnSMSVerifyInfoFromSec(CThostFtdcSMSVerifyInfoFromSecField* pSMSVerifyInfoFromSec)
+{
+    wrapTraderOnRtnSMSVerifyInfoFromSec(gUserApi, pSMSVerifyInfoFromSec);
+}
+
+extern "C" void wrapTraderOnRspSpdApply(uintptr_t, CThostFtdcInputSpdApplyField*, CThostFtdcRspInfoField*, int, bool);
+void QCTPTraderSpi::OnRspSpdApply(CThostFtdcInputSpdApplyField* pInputSpdApply, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+{
+    wrapTraderOnRspSpdApply(gUserApi, pInputSpdApply, pRspInfo, nRequestID, bIsLast);
+}
+
+extern "C" void wrapTraderOnRspSpdApplyAction(uintptr_t, CThostFtdcInputSpdApplyActionField*, CThostFtdcRspInfoField*, int, bool);
+void QCTPTraderSpi::OnRspSpdApplyAction(CThostFtdcInputSpdApplyActionField* pInputSpdApplyAction, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+{
+    wrapTraderOnRspSpdApplyAction(gUserApi, pInputSpdApplyAction, pRspInfo, nRequestID, bIsLast);
+}
+
+extern "C" void wrapTraderOnRspQrySpdApply(uintptr_t, CThostFtdcSpdApplyField*, CThostFtdcRspInfoField*, int, bool);
+void QCTPTraderSpi::OnRspQrySpdApply(CThostFtdcSpdApplyField* pSpdApply, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+{
+    wrapTraderOnRspQrySpdApply(gUserApi, pSpdApply, pRspInfo, nRequestID, bIsLast);
+}
+
+extern "C" void wrapTraderOnRtnSpdApply(uintptr_t, CThostFtdcSpdApplyField*);
+void QCTPTraderSpi::OnRtnSpdApply(CThostFtdcSpdApplyField* pSpdApply)
+{
+    wrapTraderOnRtnSpdApply(gUserApi, pSpdApply);
+}
+
+extern "C" void wrapTraderOnErrRtnSpdApply(uintptr_t, CThostFtdcInputSpdApplyField*, CThostFtdcRspInfoField*);
+void QCTPTraderSpi::OnErrRtnSpdApply(CThostFtdcInputSpdApplyField* pInputSpdApply, CThostFtdcRspInfoField* pRspInfo)
+{
+    wrapTraderOnErrRtnSpdApply(gUserApi, pInputSpdApply, pRspInfo);
+}
+
+extern "C" void wrapTraderOnErrRtnSpdApplyAction(uintptr_t, CThostFtdcSpdApplyActionField*, CThostFtdcRspInfoField*);
+void QCTPTraderSpi::OnErrRtnSpdApplyAction(CThostFtdcSpdApplyActionField* pSpdApplyAction, CThostFtdcRspInfoField* pRspInfo)
+{
+    wrapTraderOnErrRtnSpdApplyAction(gUserApi, pSpdApplyAction, pRspInfo);
+}
+
+extern "C" void wrapTraderOnRspHedgeCfm(uintptr_t, CThostFtdcInputHedgeCfmField*, CThostFtdcRspInfoField*, int, bool);
+void QCTPTraderSpi::OnRspHedgeCfm(CThostFtdcInputHedgeCfmField* pInputHedgeCfm, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+{
+    wrapTraderOnRspHedgeCfm(gUserApi, pInputHedgeCfm, pRspInfo, nRequestID, bIsLast);
+}
+
+extern "C" void wrapTraderOnRspHedgeCfmAction(uintptr_t, CThostFtdcInputHedgeCfmActionField*, CThostFtdcRspInfoField*, int, bool);
+void QCTPTraderSpi::OnRspHedgeCfmAction(CThostFtdcInputHedgeCfmActionField* pInputHedgeCfmAction, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+{
+    wrapTraderOnRspHedgeCfmAction(gUserApi, pInputHedgeCfmAction, pRspInfo, nRequestID, bIsLast);
+}
+
+extern "C" void wrapTraderOnRspQryHedgeCfm(uintptr_t, CThostFtdcHedgeCfmField*, CThostFtdcRspInfoField*, int, bool);
+void QCTPTraderSpi::OnRspQryHedgeCfm(CThostFtdcHedgeCfmField* pHedgeCfm, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
+{
+    wrapTraderOnRspQryHedgeCfm(gUserApi, pHedgeCfm, pRspInfo, nRequestID, bIsLast);
+}
+
+extern "C" void wrapTraderOnRtnHedgeCfm(uintptr_t, CThostFtdcHedgeCfmField*);
+void QCTPTraderSpi::OnRtnHedgeCfm(CThostFtdcHedgeCfmField* pHedgeCfm)
+{
+    wrapTraderOnRtnHedgeCfm(gUserApi, pHedgeCfm);
+}
+
+extern "C" void wrapTraderOnErrRtnHedgeCfm(uintptr_t, CThostFtdcInputHedgeCfmField*, CThostFtdcRspInfoField*);
+void QCTPTraderSpi::OnErrRtnHedgeCfm(CThostFtdcInputHedgeCfmField* pInputHedgeCfm, CThostFtdcRspInfoField* pRspInfo)
+{
+    wrapTraderOnErrRtnHedgeCfm(gUserApi, pInputHedgeCfm, pRspInfo);
+}
+
+extern "C" void wrapTraderOnErrRtnHedgeCfmAction(uintptr_t, CThostFtdcHedgeCfmActionField*, CThostFtdcRspInfoField*);
+void QCTPTraderSpi::OnErrRtnHedgeCfmAction(CThostFtdcHedgeCfmActionField* pHedgeCfmAction, CThostFtdcRspInfoField* pRspInfo)
+{
+    wrapTraderOnErrRtnHedgeCfmAction(gUserApi, pHedgeCfmAction, pRspInfo);
+}
+
 QCTPTraderSpi::QCTPTraderSpi(CThostFtdcTraderApi* pUserApi)
 {
     this->pUserApi = pUserApi;
@@ -1783,9 +1908,9 @@ void QCTPTraderSpi::RegisterSpi(CThostFtdcTraderSpi* pSpi)
     return this->pUserApi->RegisterSpi(pSpi);
 }
 
-void QCTPTraderSpi::SubscribePrivateTopic(THOST_TE_RESUME_TYPE nResumeType)
+void QCTPTraderSpi::SubscribePrivateTopic(THOST_TE_RESUME_TYPE nResumeType, int nSeqNo)
 {
-    return this->pUserApi->SubscribePrivateTopic(nResumeType);
+    return this->pUserApi->SubscribePrivateTopic(nResumeType, nSeqNo);
 }
 
 void QCTPTraderSpi::SubscribePublicTopic(THOST_TE_RESUME_TYPE nResumeType)
@@ -2417,4 +2542,39 @@ int QCTPTraderSpi::ReqCancelOffsetSetting(CThostFtdcInputOffsetSettingField* pIn
 int QCTPTraderSpi::ReqQryOffsetSetting(CThostFtdcQryOffsetSettingField* pQryOffsetSetting, int nRequestID)
 {
     return this->pUserApi->ReqQryOffsetSetting(pQryOffsetSetting, nRequestID);
+}
+
+int QCTPTraderSpi::ReqGenSMSCode(CThostFtdcReqGenSMSCodeField* pReqGenSMSCode, int nRequestID)
+{
+    return this->pUserApi->ReqGenSMSCode(pReqGenSMSCode, nRequestID);
+}
+
+int QCTPTraderSpi::ReqSpdApply(CThostFtdcInputSpdApplyField* pInputSpdApply, int nRequestID)
+{
+    return this->pUserApi->ReqSpdApply(pInputSpdApply, nRequestID);
+}
+
+int QCTPTraderSpi::ReqSpdApplyAction(CThostFtdcInputSpdApplyActionField* pInputSpdApplyAction, int nRequestID)
+{
+    return this->pUserApi->ReqSpdApplyAction(pInputSpdApplyAction, nRequestID);
+}
+
+int QCTPTraderSpi::ReqQrySpdApply(CThostFtdcQrySpdApplyField* pQrySpdApply, int nRequestID)
+{
+    return this->pUserApi->ReqQrySpdApply(pQrySpdApply, nRequestID);
+}
+
+int QCTPTraderSpi::ReqHedgeCfm(CThostFtdcInputHedgeCfmField* pInputHedgeCfm, int nRequestID)
+{
+    return this->pUserApi->ReqHedgeCfm(pInputHedgeCfm, nRequestID);
+}
+
+int QCTPTraderSpi::ReqHedgeCfmAction(CThostFtdcInputHedgeCfmActionField* pInputHedgeCfmAction, int nRequestID)
+{
+    return this->pUserApi->ReqHedgeCfmAction(pInputHedgeCfmAction, nRequestID);
+}
+
+int QCTPTraderSpi::ReqQryHedgeCfm(CThostFtdcQryHedgeCfmField* pQryHedgeCfm, int nRequestID)
+{
+    return this->pUserApi->ReqQryHedgeCfm(pQryHedgeCfm, nRequestID);
 }

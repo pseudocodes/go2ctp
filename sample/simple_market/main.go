@@ -147,7 +147,7 @@ func CreateBaseSpi2() *baseSpi2 {
 }
 
 var (
-	CTPLibPathLinux = "../../ctp/lib/v6.7.11_20250617_api_traderapi_se_linux64/thostmduserapi_se.so"
+	CTPLibPathLinux = "../../ctp/lib/v6.7.13_20260225_api_traderapi_se_linux64/thostmduserapi_se.so"
 	CTPLibPathMacos = "../../ctp/lib/v6.7.7_MacOS_20240716/thostmduserapi_se.framework/Versions/A/thostmduserapi_se"
 
 	// TTSLibPathDarwin = "This/Is/Sample/PathToOpenCTP.dylib"
@@ -219,6 +219,6 @@ func sample2() {
 }
 
 func main() {
-	// sample1()
-	sample2()
+	sample1()
+	// sample2()
 }

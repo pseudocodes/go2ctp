@@ -1,5 +1,22 @@
 # Changelog
 
+## [Unreleased] - 2026-04-03
+
+### Changed
+
+- 新增分支 6.7.13 对应官方 CTP 库版本 v6.7.13_20260225
+- 同步更新 ctp 和 ctp_dyn 封装代码
+- master 分支对应最新 CTP 版本
+
+### Added
+
+- 新增 TraderSpi 回调接口: OnRtnPrivateSeqNo, OnRspGenSMSCode, 套利确认系列 (OnRspSpdApply 等), 套保确认系列 (OnRspHedgeCfm 等)
+- 新增 TraderApi 请求方法: ReqGenSMSCode, 套利确认系列 (ReqSpdApply 等), 套保确认系列 (ReqHedgeCfm 等)
+- SubscribePrivateTopic 接口新增可选参数 nSeqNo，支持从指定序号开始重传私有流
+- 新增枚举值 THOST_TERT_RESUME_FROM_SEQ_NO
+- 新增数据类型: DeviceTagType, SMSCodeType, SMSContentType, SMSPhoneType, ApplyStatusType, CmbTypeType
+
+
 ## [Unreleased] - 2026-01-25
 - 更新分支 6.7.11 更新封装代码
 - master 分支对应最新 CTP 版本
