@@ -186,7 +186,7 @@ int _wrap_tts_CThostFtdcMdApi_UnSubscribeForQuoteRsp(TTSCTPMdSpi* pMdApi, char**
 int _wrap_tts_CThostFtdcMdApi_ReqUserLogin(TTSCTPMdSpi* pMdApi, CThostFtdcReqUserLoginField* pReqUserLoginField, int nRequestID)
 {
     int ret = pMdApi->ReqUserLogin(pReqUserLoginField, nRequestID);
-    printf("req_user_login: %d", ret);
+    // printf("req_user_login: %d", ret);
     return ret;
 }
 
