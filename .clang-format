@@ -1,0 +1,33 @@
+# go2ctp C/C++ 封装代码格式约定
+#
+# ctp/ 与 ctp_dyn/ 下的 wrap 代码由 tools/codegen 生成，排版风格等价于 clang-format 的
+# WebKit 预设 (clang-format 16 下对现有 8 个 wrap 文件重排结果为零差异)。
+# 关键项在 BasedOnStyle 之外再显式固定一遍，避免不同 clang-format 版本对 WebKit 预设的
+# 定义漂移导致文件被大规模重排。
+#
+# 注意: ctp/lib/ 下为上期技术官方 SDK 头文件，由该目录下单独的 .clang-format 关闭格式化。
+---
+Language: Cpp
+BasedOnStyle: WebKit
+
+# 4 空格缩进，不使用 Tab
+IndentWidth: 4
+ContinuationIndentWidth: 4
+UseTab: Never
+AccessModifierOffset: -4
+
+# 不限制行宽: wrap 代码中的函数签名普遍很长，换行位置由生成器控制
+ColumnLimit: 0
+
+# 指针/引用贴紧类型: CThostFtdcReqUserLoginField* pReqUserLoginField
+PointerAlignment: Left
+ReferenceAlignment: Pointer
+
+# 仅函数定义的左花括号换行，class/struct/enum/控制语句的花括号保持同行
+BreakBeforeBraces: WebKit
+
+AlignAfterOpenBracket: DontAlign
+IndentCaseLabels: false
+
+# include 顺序由生成器与手工维护，不做重排
+SortIncludes: false

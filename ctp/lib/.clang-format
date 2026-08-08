@@ -1,0 +1,8 @@
+# 上期技术官方 CTP SDK 头文件，保持原厂排版，不参与项目格式化。
+#
+# 各平台 SDK 包的排版风格并不统一 (Linux 包为空格缩进，MacOS 包为 Tab 缩进 + CRLF)，
+# 若跟随项目根目录的 .clang-format，编辑器 format-on-save 会对这些 vendored 头文件
+# 产生数千行与升级无关的改动，干扰 SDK 版本间的 diff 比对。
+---
+DisableFormat: true
+SortIncludes: false
