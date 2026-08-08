@@ -4,7 +4,12 @@
 
 对应 Rust 语言封装查看 **[Ctp2rs](https://github.com/pseudocodes/ctp2rs/)** 项目
 
-当前主分支对应 CTP 版本为 `v6.7.11`
+当前主分支对应 CTP 版本为 `v6.7.13`
+
+| 平台  | 库目录                                              | 说明                                                                                    |
+| ----- | --------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| Linux | `ctp/lib/v6.7.13_20260225_api_traderapi_se_linux64` | `thosttraderapi_se.so` / `thostmduserapi_se.so`                                         |
+| MacOS | `ctp/lib/v6.7.13_MacOS_20260529`                    | `thosttraderapi_se.framework` / `thostmduserapi_se.framework`，x86_64 + arm64 universal |
 
 ## Sample
 
@@ -265,22 +270,23 @@ func main() {
 
 **A.06**: 相关信息如下
 > *	官方从 CTP 6.7.0 版本开始提供 `.framework` 的动态库，而不像 OpenCTP 那样采用 `.dylib` 来提供支持
-> *	官方打包发布的 `framework` 包可能有设置问题，包中软连接变成文本文件，如果直接引入该 `framework` 至 `Xcode` 项目会造成无法编译
+> *	官方打包发布的 `framework` 包可能有设置问题，包中软连接变成文本文件，如果直接引入该 `framework` 至 `Xcode` 项目会造成无法编译；本项目内置的 `v6.7.13_MacOS_20260529` 包中软连接正常，无需额外处理
 > * `framework` 静态编译时就需要设定 `@rpath` 路径，运行二进制文件时才能获得动态库的路径，在这种场景下，更合适的方式还是采用动态库 `dlopen` 方式, 
 > * MacOS 命令行下可以直接编译源代码程序并链接 `framework`，首次运行启动之后请到`系统设置->隐私与安全性->安全性` 标签中对 `thostmduserapi_se` 以及 `thosttraderapi_se` 这两个文件进行信任允许操作
 
 **Q.07**: OpenCTP 与上期 CTP 在 MacOS 环境的区别
 
 **A.07**: 相关信息如下
-> * 上期 CTP MacOS 环境与 Linux 环境的区别主要在于 `CThostFtdcTraderApi` 中的 `ReqUserLogin` 接口参数不同, MacOS 对应接口比 Linux 多了两个穿透式信息的参数
+> * **自 `v6.7.13` 起该差异已不存在**：官方 MacOS 版本 SDK 的 `ReqUserLogin` 已与 Linux 统一为两参数接口，穿透式认证的终端信息统一通过 `RegisterUserSystemInfo` / `SubmitUserSystemInfo` 上报。因此本项目 `v6.7.13` 分支不再对 `ReqUserLogin` 做平台分支处理，`ctp.TraderSystemInfo` / `ctp_dyn.TraderSystemInfo` 选项以及 wrap 层的 `ReqUserLoginMac` 仅为兼容旧调用保留，实际不再向登录接口传递 `length` / `systemInfo`
+> * `v6.7.13` 之前的历史差异说明：上期 CTP MacOS 环境与 Linux 环境的区别主要在于 `CThostFtdcTraderApi` 中的 `ReqUserLogin` 接口参数不同, MacOS 对应接口比 Linux 多了两个穿透式信息的参数
 ```cpp
 // Linux 接口
 virtual int ReqUserLogin(CThostFtdcReqUserLoginField* pReqUserLoginField, int nRequestID) = 0;
 
-// MacOS 接口
+// MacOS 接口 (v6.7.13 之前)
 virtual int ReqUserLogin(CThostFtdcReqUserLoginField* pReqUserLoginField, int nRequestID, TThostFtdcSystemInfoLenType length, TThostFtdcClientSystemInfoType systemInfo) = 0;
 ```
-> * OpenCTP 提供的 MacOS 的头文件接口与 Linux 统一，即 `ReqUserLogin` 采用两参数接口，封装 `go2ctp` 过程中与 [@krenx](https://github.com/krenx1983) 沟通过这个问题，对方当时未有计划提供对标接口支持, 因此本项目在 MacOS 环境下编译 OpenCTP 相关库时，请采用 ctp_dyn pacakge，编译指令如下 
+> * OpenCTP 提供的 MacOS 的头文件接口一直与 Linux 统一，即 `ReqUserLogin` 采用两参数接口，封装 `go2ctp` 过程中与 [@krenx](https://github.com/krenx1983) 沟通过这个问题，对方当时未有计划提供对标接口支持; 现在两者接口已一致，但 OpenCTP 在 MacOS 下提供的是 `.dylib` 而非 `.framework`，静态链接的 ctp package 绑定的是官方 `framework`，因此 MacOS 环境下使用 OpenCTP 库时仍请采用 ctp_dyn package，编译指令如下 
 
 ```shell
 ?> cd sample/simple_trader && go build -tags openctp
@@ -296,6 +302,7 @@ virtual int ReqUserLogin(CThostFtdcReqUserLoginField* pReqUserLoginField, int nR
 * 实测 linux 环境中 `v6.7.2` 封装文件能支持 CTP 动态库版本到 `v6.5.1`, 高版本的 API 无法在低版本动态库调用时使用
 *  `6.7.7` 分支 `ctp_dyn` 不兼容 `6.7.2` 版本的 ctp/openctp 的动态库, 如果高版本封装加载了低版本动态库，程序编译运行之后会发生卡死或提示出错； 
 * `6.7.11` 分支 `ctp_dyn` 不兼容之前任何版本；
+* `6.7.13` 分支 `ctp_dyn` 不兼容之前任何版本，该版本新增了多个虚函数并调整了 `SubscribePrivateTopic` 的参数，类方法内存布局与 `6.7.11` 不同；MacOS 与 Linux 的封装代码自该版本起完全一致；
 * 存在能够强制加载低版本动态库函数的封装方案，但是考虑到生产环境下应不隐藏风险，尽早抛出错误的原则，未采用强制加载的封装方案.
 * 此外，请注意开发环境的区别，不要在 MacOS 环境下加载 so 动态库
 
@@ -307,16 +314,16 @@ virtual int ReqUserLogin(CThostFtdcReqUserLoginField* pReqUserLoginField, int nR
  
 ## 同类项目
 
-| 项目地址    | Description | 推荐指数 | 
-| --------- | ----------- |---------|
-| https://github.com/gaxxx/ctp | 最早 golang 版本的 ctp 封装，作者发布在水木论坛，在这个项目中 <br> 可以观察到 go 早期版本的封装编译指令 | ☆☆☆☆☆ |
-| https://github.com/pseudocodes/goctp   | 含 DataCollect 封装支持，提供 go 类型结构的 convert 转换方法   | ★★★★☆ |
-| https://github.com/haifengat/goctp <br> [https://gitee.com/haifengat/goctp/v2](https://gitee.com/haifengat/goctp/tree/v2/) | 描述见 FAQ. | ★★★★☆|
-| https://github.com/hankchan/goctp | 描述见 FAQ. | ★★★☆☆ |
-| https://github.com/mayiweb/goctp | 源自 https://github.com/hankchan/goctp | ★★★☆☆ |
-| https://github.com/kkqy/ctp-go | a. 对 CTP 的版本处理与 `A.01` 中的描述相同，不同版本放置于不同分支下 <br> b. 该项目将 Swig 编译后展开的代码直接放置于项目中，有 FAQ 中 `A.02` 中描述的问题，该项目文档也说明了编译速度慢的问题 <br> c. CTP 结构体创建在 c 内存空间侧，需要手动自行回收  |★★☆☆☆|
-| https://github.com/ztrade/ctp| a. 项目整体布局类似 https://github.com/pseudocodes/goctp, 细节在于 wrapper 代码中将 Api 和 Spi 的 C++ 类分别进行了独立封装，与 SWIG 的展开代码类似 <br> b. 调用 Api 接口时 C 内存空间侧申请一次内存并拷贝结构体数据，Spi 回调侧 go 内存空间侧申请一次内存并拷贝结构体，相较本项目整体多了两次内存申请以及数据深拷贝 | ★★★★☆ |
-|https://github.com/etveritas/ctp-wrapper/| a. 采用了与 [ftdc2_ctp](https://github.com/shawn666liu/ftdc2c_ctp) 类似的方案，先用一层封装代码将 C++ 接口暴露为纯 C 接口，然后基于 C 接口的封装库实现 Go/Python 的进一步 FFI 封装;<br> b. go FFI 封装思路类似 `go2ctp/ctp_dyn` 但未采用 cgo 进行代码桥接，而是采用了 `purego` 库将 API 以及 SPI 回调函数与 c 库符号一一注册绑定的形式来实现虚表映射，将 cgo 封装代码的工作推到了 c 库构建的代码中, <br> c. 项目适合开发者 DIY 构建其他语言的 CTP FFI 项目, 项目布局不适合作为 go 的稳定库引用 | ★★★★☆|
+| 项目地址                                                                                                                   | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | 推荐指数 |
+| -------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
+| https://github.com/gaxxx/ctp                                                                                               | 最早 golang 版本的 ctp 封装，作者发布在水木论坛，在这个项目中 <br> 可以观察到 go 早期版本的封装编译指令                                                                                                                                                                                                                                                                                                                                                                                        | ☆☆☆☆☆    |
+| https://github.com/pseudocodes/goctp                                                                                       | 含 DataCollect 封装支持，提供 go 类型结构的 convert 转换方法                                                                                                                                                                                                                                                                                                                                                                                                                                   | ★★★★☆    |
+| https://github.com/haifengat/goctp <br> [https://gitee.com/haifengat/goctp/v2](https://gitee.com/haifengat/goctp/tree/v2/) | 描述见 FAQ.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | ★★★★☆    |
+| https://github.com/hankchan/goctp                                                                                          | 描述见 FAQ.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | ★★★☆☆    |
+| https://github.com/mayiweb/goctp                                                                                           | 源自 https://github.com/hankchan/goctp                                                                                                                                                                                                                                                                                                                                                                                                                                                         | ★★★☆☆    |
+| https://github.com/kkqy/ctp-go                                                                                             | a. 对 CTP 的版本处理与 `A.01` 中的描述相同，不同版本放置于不同分支下 <br> b. 该项目将 Swig 编译后展开的代码直接放置于项目中，有 FAQ 中 `A.02` 中描述的问题，该项目文档也说明了编译速度慢的问题 <br> c. CTP 结构体创建在 c 内存空间侧，需要手动自行回收                                                                                                                                                                                                                                         | ★★☆☆☆    |
+| https://github.com/ztrade/ctp                                                                                              | a. 项目整体布局类似 https://github.com/pseudocodes/goctp, 细节在于 wrapper 代码中将 Api 和 Spi 的 C++ 类分别进行了独立封装，与 SWIG 的展开代码类似 <br> b. 调用 Api 接口时 C 内存空间侧申请一次内存并拷贝结构体数据，Spi 回调侧 go 内存空间侧申请一次内存并拷贝结构体，相较本项目整体多了两次内存申请以及数据深拷贝                                                                                                                                                                            | ★★★★☆    |
+| https://github.com/etveritas/ctp-wrapper/                                                                                  | a. 采用了与 [ftdc2_ctp](https://github.com/shawn666liu/ftdc2c_ctp) 类似的方案，先用一层封装代码将 C++ 接口暴露为纯 C 接口，然后基于 C 接口的封装库实现 Go/Python 的进一步 FFI 封装;<br> b. go FFI 封装思路类似 `go2ctp/ctp_dyn` 但未采用 cgo 进行代码桥接，而是采用了 `purego` 库将 API 以及 SPI 回调函数与 c 库符号一一注册绑定的形式来实现虚表映射，将 cgo 封装代码的工作推到了 c 库构建的代码中, <br> c. 项目适合开发者 DIY 构建其他语言的 CTP FFI 项目, 项目布局不适合作为 go 的稳定库引用 | ★★★★☆    |
 
 
 ## Base on `go2ctp`

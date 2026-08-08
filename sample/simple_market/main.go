@@ -95,7 +95,7 @@ func (s *baseSpi) OnFrontDisconnected(nReason int) {
 func (s *baseSpi) OnRspUserLogin(pRspUserLogin *thost.CThostFtdcRspUserLoginField, pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
 	log.Printf("RspUserLogin: %+v\nRspInfo: %+v\n", pRspUserLogin, nil)
 	log.Println(s.mdapi.GetTradingDay())
-	s.mdapi.SubscribeMarketData("ag2604")
+	s.mdapi.SubscribeMarketData("ag2610")
 }
 
 func (s *baseSpi) OnRspSubMarketData(pSpecificInstrument *thost.CThostFtdcSpecificInstrumentField, pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
@@ -136,7 +136,7 @@ func CreateBaseSpi2() *baseSpi2 {
 	s.OnRspUserLoginCallback = func(pRspUserLogin *thost.CThostFtdcRspUserLoginField, pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
 		log.Printf("RspUserLogin: %+v\nRspInfo: %+v\n", pRspUserLogin, nil)
 		log.Println(s.mdapi.GetTradingDay())
-		s.mdapi.SubscribeMarketData("ag2604")
+		s.mdapi.SubscribeMarketData("ag2610")
 	}
 	s.OnRtnDepthMarketDataCallback = func(pDepthMarketData *thost.CThostFtdcDepthMarketDataField) {
 		// log.Printf("tick {%+v}\n", quote)
@@ -148,7 +148,7 @@ func CreateBaseSpi2() *baseSpi2 {
 
 var (
 	CTPLibPathLinux = "../../ctp/lib/v6.7.13_20260225_api_traderapi_se_linux64/thostmduserapi_se.so"
-	CTPLibPathMacos = "../../ctp/lib/v6.7.7_MacOS_20240716/thostmduserapi_se.framework/Versions/A/thostmduserapi_se"
+	CTPLibPathMacos = "../../ctp/lib/v6.7.13_MacOS_20260529/thostmduserapi_se.framework/Versions/A/thostmduserapi_se"
 
 	// TTSLibPathDarwin = "This/Is/Sample/PathToOpenCTP.dylib"
 	// TTSLibPathLinux  = "This/Is/Sample/PathToOpenCTP.so"

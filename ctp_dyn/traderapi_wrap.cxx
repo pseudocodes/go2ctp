@@ -2361,32 +2361,18 @@ int TTSCTPTraderSpi::SubmitWechatUserSystemInfo(CThostFtdcWechatUserSystemInfoFi
 // 用户登录请求
 int TTSCTPTraderSpi::ReqUserLogin(CThostFtdcReqUserLoginField* pReqUserLoginField, int nRequestID)
 {
-#ifdef __APPLE__
-#ifdef __OPENCTP__
     return this->pUserApi->ReqUserLogin(pReqUserLoginField, nRequestID);
-#else
-    return this->pUserApi->ReqUserLogin(pReqUserLoginField, nRequestID, 0, nullptr);
-#endif
-#elif __linux__
-    return this->pUserApi->ReqUserLogin(pReqUserLoginField, nRequestID);
-#endif
 }
 
-// 用户登录请求
+// 用户登录请求 (四参数形式, 仅为兼容旧调用保留)
+// 自 v6.7.13 起 MacOS 版本 SDK 的 ReqUserLogin 已与 Linux/OpenCTP 统一为两参数接口,
+// length/systemInfo 不再通过登录接口传递, 穿透式信息请改用 RegisterUserSystemInfo/SubmitUserSystemInfo
 int TTSCTPTraderSpi::ReqUserLogin(CThostFtdcReqUserLoginField* pReqUserLoginField, int nRequestID, TThostFtdcSystemInfoLenType length,
     TThostFtdcClientSystemInfoType systemInfo)
 {
-#ifdef __APPLE__
-
-#ifdef __OPENCTP__
+    (void)length;
+    (void)systemInfo;
     return this->pUserApi->ReqUserLogin(pReqUserLoginField, nRequestID);
-#else
-    return this->pUserApi->ReqUserLogin(pReqUserLoginField, nRequestID, length, systemInfo);
-#endif
-
-#elif __linux__
-    return this->pUserApi->ReqUserLogin(pReqUserLoginField, nRequestID);
-#endif
 }
 
 // 登出请求

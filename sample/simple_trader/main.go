@@ -263,7 +263,7 @@ func Bytes2StringGBK(t []byte) string {
 
 var (
 	CTPLibPathLinux = "../../ctp/lib/v6.7.13_20260225_api_traderapi_se_linux64/thosttraderapi_se.so"
-	CTPLibPathMacos = "../../ctp/lib/v6.7.7_MacOS_20240716/thosttraderapi_se.framework/Versions/A/thosttraderapi_se"
+	CTPLibPathMacos = "../../ctp/lib/v6.7.13_MacOS_20260529/thosttraderapi_se.framework/Versions/A/thosttraderapi_se"
 )
 
 func sample1() {

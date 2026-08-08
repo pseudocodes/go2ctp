@@ -1946,22 +1946,18 @@ int QCTPTraderSpi::SubmitWechatUserSystemInfo(CThostFtdcWechatUserSystemInfoFiel
 // 用户登录请求
 int QCTPTraderSpi::ReqUserLogin(CThostFtdcReqUserLoginField* pReqUserLoginField, int nRequestID)
 {
-#ifdef __APPLE__
-    return this->pUserApi->ReqUserLogin(pReqUserLoginField, nRequestID, 0, NULL);
-#elif __linux__
     return this->pUserApi->ReqUserLogin(pReqUserLoginField, nRequestID);
-#endif
 }
 
-// 用户登录请求
+// 用户登录请求 (四参数形式, 仅为兼容旧调用保留)
+// 自 v6.7.13 起 MacOS 版本 SDK 的 ReqUserLogin 已与 Linux 统一为两参数接口,
+// length/systemInfo 不再通过登录接口传递, 穿透式信息请改用 RegisterUserSystemInfo/SubmitUserSystemInfo
 int QCTPTraderSpi::ReqUserLogin(CThostFtdcReqUserLoginField* pReqUserLoginField, int nRequestID, TThostFtdcSystemInfoLenType length,
     TThostFtdcClientSystemInfoType systemInfo)
 {
-#ifdef __APPLE__
-    return this->pUserApi->ReqUserLogin(pReqUserLoginField, nRequestID, length, systemInfo);
-#elif __linux__
+    (void)length;
+    (void)systemInfo;
     return this->pUserApi->ReqUserLogin(pReqUserLoginField, nRequestID);
-#endif
 }
 
 int QCTPTraderSpi::ReqUserLogout(CThostFtdcUserLogoutField* pUserLogout, int nRequestID)

@@ -1,5 +1,23 @@
 # Changelog
 
+## [Unreleased] - 2026-08-08
+
+### Added
+
+- 新增 MacOS 平台 CTP SDK v6.7.13_MacOS_20260529 (`ctp/lib/v6.7.13_MacOS_20260529`)，framework 为 x86_64 + arm64 universal
+- `ctp` package 恢复 `#cgo darwin` 静态链接配置，通过 `-F` / `-framework` / `-rpath` 绑定新版 framework
+- `ctp_dyn` package 补充 `#cgo darwin` 头文件路径，默认与 `tts`/`openctp` 两种构建均可在 MacOS 下编译
+- 新增 `.clang-format` 固定 wrap 代码风格 (等价 WebKit 预设)，并在 `ctp/lib/` 下以 `DisableFormat` 排除官方 SDK 头文件，避免编辑器 format-on-save 产生大规模无关重排
+
+### Changed
+
+- MacOS 版本 SDK 的 `ReqUserLogin` 自 v6.7.13 起已与 Linux 统一为两参数接口，移除 `ctp` / `ctp_dyn` 中 `#ifdef __APPLE__` 及 `runtime.GOOS == "darwin"` 的平台分支
+  - wrap 层 `ReqUserLoginMac` 与 `TraderSystemInfo` 选项仅为兼容旧调用保留，`length` / `systemInfo` 不再传递给登录接口，穿透式信息请使用 `RegisterUserSystemInfo` / `SubmitUserSystemInfo`
+- 修正 `ctp_dyn/lib_tts.go` 中仍指向已删除的 v6.7.11 目录的 linux 头文件路径
+- 修正 `ctp_dyn` 动态库路径校验：扩展名比较缺少前导点，且 MacOS framework 二进制不带扩展名
+- 更新 sample 中 MacOS 动态库路径至新版 framework
+- 更新 README：版本号、平台库目录对照表、FAQ A.06 / A.07 / A.08
+
 ## [Unreleased] - 2026-04-03
 
 ### Changed

@@ -311,7 +311,6 @@ import "C"
 import (
 	"os"
 	"path/filepath"
-	"runtime"
 	"runtime/cgo"
 	"strings"
 	"unsafe"
@@ -481,15 +480,12 @@ func (s *TraderApi) SubmitWechatUserSystemInfo(pUserSystemInfo *thost.CThostFtdc
 }
 
 // 用户登录请求
+//
+// 自 CTP v6.7.13 起 MacOS 版本 SDK 的 ReqUserLogin 已与 Linux 统一为两参数接口，此处不再按平台分支；
+// 穿透式认证的终端信息请通过 RegisterUserSystemInfo/SubmitUserSystemInfo 上报。
+// params 参数保留仅为兼容旧调用方式，实际未使用。
 func (s *TraderApi) ReqUserLogin(pReqUserLoginField *thost.CThostFtdcReqUserLoginField, nRequestID int, params ...any) int {
-	if runtime.GOOS != "darwin" {
-		return (int)(C._wrap_CThostFtdcTraderApi_ReqUserLogin(C.uintptr_t(s.apiPtr), (*C.struct_CThostFtdcReqUserLoginField)(unsafe.Pointer(pReqUserLoginField)), C.int(nRequestID)))
-	}
-	if s.length == 0 {
-		return (int)(C._wrap_CThostFtdcTraderApi_ReqUserLoginMac(C.uintptr_t(s.apiPtr), (*C.struct_CThostFtdcReqUserLoginField)(unsafe.Pointer(pReqUserLoginField)), C.int(nRequestID), C.int(0), (*C.char)(nil)))
-	}
-	out := (*C.char)(unsafe.Pointer(&s.systemInfo[0]))
-	return (int)(C._wrap_CThostFtdcTraderApi_ReqUserLoginMac(C.uintptr_t(s.apiPtr), (*C.struct_CThostFtdcReqUserLoginField)(unsafe.Pointer(pReqUserLoginField)), C.int(nRequestID), C.int(s.length), out))
+	return (int)(C._wrap_CThostFtdcTraderApi_ReqUserLogin(C.uintptr_t(s.apiPtr), (*C.struct_CThostFtdcReqUserLoginField)(unsafe.Pointer(pReqUserLoginField)), C.int(nRequestID)))
 }
 
 // 登出请求

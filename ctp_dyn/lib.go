@@ -19,5 +19,9 @@ package ctp_dyn
 #cgo linux CXXFLAGS: -std=c++11
 #cgo linux CPPFLAGS: -fPIC -I. -I${SRCDIR}/../ctp/lib/v6.7.13_20260225_api_traderapi_se_linux64
 
+#cgo darwin LDFLAGS: -L. -ldl
+#cgo darwin CXXFLAGS: -std=c++11
+#cgo darwin CPPFLAGS: -I. -I${SRCDIR}/../ctp/lib/v6.7.13_MacOS_20260529
+
 */
 import "C"
