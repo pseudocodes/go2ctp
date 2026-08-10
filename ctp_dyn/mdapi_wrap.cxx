@@ -328,7 +328,7 @@ TTSCTPMdSpi::TTSCTPMdSpi(uintptr_t gUserApi, const char* pszDLLPath, const char*
         fprintf(stderr, "[%s] dlsym error: %s\n", pszDLLPath, dlerror());
         exit(-1);
     }
-    printf("bIsUsingUdp: %d, bIsMulticast: %d, bIsProductionMode: %d\n", bIsUsingUdp, bIsMulticast, bIsProductionMode);
+    // printf("bIsUsingUdp: %d, bIsMulticast: %d, bIsProductionMode: %d\n", bIsUsingUdp, bIsMulticast, bIsProductionMode);
     this->pUserApi = mdcreator(pszFlowPath, bIsUsingUdp, bIsMulticast, bIsProductionMode);
     this->gUserApi = gUserApi;
 }
