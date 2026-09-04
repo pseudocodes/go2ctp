@@ -38,6 +38,7 @@
 #define NOMINMAX
 #endif
 #include <windows.h>
+#include "api_version.h"
 
 #define CTP_TRADER_CREATE_SYMBOL "?CreateFtdcTraderApi@CThostFtdcTraderApi@@SAPEAV1@PEBD_N@Z"
 
@@ -1904,8 +1905,8 @@ QCTPTraderSpi::QCTPTraderSpi(CThostFtdcTraderApi* pUserApi, uintptr_t gUserApi)
 const char* QCTPTraderSpi::GetApiVersion()
 {
 #ifdef _WIN32
-    // Windows 版 DLL 未导出静态成员 GetApiVersion, 返回编译期版本
-    return "6.7.13";
+    // Windows 版 DLL 未导出静态成员 GetApiVersion, 返回编译期版本 (常量见 api_version.h)
+    return CTP_SE_API_VERSION;
 #else
     return this->pUserApi->GetApiVersion();
 #endif

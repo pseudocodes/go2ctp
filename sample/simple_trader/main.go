@@ -267,14 +267,6 @@ var (
 	CTPLibPathWindows = "../../ctp/lib/v6.7.13_20260225_api_traderapi_se_win64/thosttraderapi_se.dll"
 )
 
-// frontFromEnv 允许通过环境变量 SIMNOW_TD_FRONT 覆盖前置地址 (如 tcp://182.254.243.31:30001)
-func frontFromEnv(key, fallback string) string {
-	if v := os.Getenv(key); v != "" {
-		return v
-	}
-	return fallback
-}
-
 func sample1() {
 	var tdapi thost.TraderApi
 	if runtime.GOOS == "darwin" {
@@ -291,7 +283,7 @@ func sample1() {
 
 	tdapi.RegisterSpi(baseSpi)
 	// tdapi.RegisterFront("tcp://121.37.90.193:20002")
-	tdapi.RegisterFront(frontFromEnv("SIMNOW_TD_FRONT", SimnowEnv["td"]["7x24"]))
+	tdapi.RegisterFront(SimnowEnv["td"]["7x24"])
 	tdapi.SubscribePrivateTopic(thost.THOST_TERT_QUICK)
 	tdapi.SubscribePublicTopic(thost.THOST_TERT_QUICK)
 
@@ -311,7 +303,7 @@ func sample2() {
 
 	tdapi.RegisterSpi(baseSpi)
 
-	tdapi.RegisterFront(frontFromEnv("SIMNOW_TD_FRONT", SimnowEnv["td"]["7x24"]))
+	tdapi.RegisterFront(SimnowEnv["td"]["7x24"])
 	// tdapi.RegisterFront(SimnowEnv["td"]["sim1"])
 
 	tdapi.Init()

@@ -14,7 +14,7 @@
 ### Changed
 
 - Windows 下 `CreateFtdcMdApi` / `CreateFtdcTraderApi` 运行期以 MSVC 修饰名 (`?CreateFtdcMdApi@CThostFtdcMdApi@@SAPEAV1@PEBD_N1_N@Z` / `?CreateFtdcTraderApi@CThostFtdcTraderApi@@SAPEAV1@PEBD_N@Z`) 经 `GetProcAddress` 解析 (MinGW 的 Itanium 修饰名无法链接 MSVC import lib)，其余接口均为虚函数调用，无链接期符号依赖；`ctp` 包在 Windows 下要求 dll 与可执行文件同目录部署
-- Windows 版 DLL 未导出静态成员 `GetApiVersion`，Windows 平台返回编译期版本号 `6.7.13` (Linux 返回 `v6.7.13_20260225 14:16:30.12079` 完整构建戳)
+- Windows 版 DLL 未导出静态成员 `GetApiVersion` (亦无 VS_VERSION_INFO 资源、SDK 头文件无版本宏)，Windows 平台返回编译期版本常量 `CTP_SE_API_VERSION` (唯一定义于 `ctp/api_version.h`，与版本目录同步维护；Linux 返回 `v6.7.13_20260225 14:16:30.12079` 完整构建戳)
 - 更新 README：平台支持表、FAQ A.04 (不再拒绝 Windows 支持)、Windows 编译与部署说明
 - 仅支持 windows/amd64：32 位构建在编译期 `#error` 拒绝 (32 位 stdcall 修饰名与调用约定差异)
 - `ctp_dyn` 的 `CreateTraderApi` / `CreateMdApi` 接入既有 `checkDynamicLibPath` 平台扩展名校验 (此前该函数从未被调用，属死代码)，库路径与平台不符时启动即 panic 明确报错；校验逻辑同步补充 Windows `.dll` 分支

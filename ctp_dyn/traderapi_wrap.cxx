@@ -12,6 +12,7 @@
 
 #ifdef _WIN32
 #include "dlfcn_win32.h"
+#include "../ctp/api_version.h"
 #else
 #include <dlfcn.h>
 #endif
@@ -2242,8 +2243,8 @@ const char*
 TTSCTPTraderSpi::GetApiVersion()
 {
 #ifdef _WIN32
-    // Windows 版 DLL 未导出静态成员 GetApiVersion, 返回编译期版本
-    return "6.7.13";
+    // Windows 版 DLL 未导出静态成员 GetApiVersion, 返回编译期版本 (常量见 ctp/api_version.h)
+    return CTP_SE_API_VERSION;
 #else
     typedef const char* (*GetApiVersion)();
     GetApiVersion getVersion = (GetApiVersion)dlsym(this->dllHandle, TraderApiVersionSymbol);
