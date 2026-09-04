@@ -39,13 +39,12 @@
 #include <windows.h>
 
 #define CTP_MD_CREATE_SYMBOL "?CreateFtdcMdApi@CThostFtdcMdApi@@SAPEAV1@PEBD_N1_N@Z"
-// thost*.dll 与可执行文件同目录部署 (Windows 默认 DLL 搜索首先命中应用目录)
-#define CTP_MD_DLL_NAME L"thostmduserapi_se.dll"
 
 static CThostFtdcMdApi* createFtdcMdApi(const char* pszFlowPath, const bool bIsUsingUdp, const bool bIsMulticast, bool bIsProductionMode)
 {
     typedef CThostFtdcMdApi* (*MdApiCreator)(const char*, const bool, const bool, bool);
-    static HMODULE hModule = LoadLibraryExW(CTP_MD_DLL_NAME, NULL, 0);
+    // thost*.dll 与可执行文件同目录部署 (Windows 默认 DLL 搜索首先命中应用目录)
+    static HMODULE hModule = LoadLibraryExW(L"thostmduserapi_se.dll", NULL, 0);
     if (hModule == NULL) {
         fprintf(stderr, "load thostmduserapi_se.dll failed: error=%lu (deploy the ctp dlls next to the executable)\n", GetLastError());
         exit(-1);

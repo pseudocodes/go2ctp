@@ -36,10 +36,9 @@ typedef long long intgo;
 
 // CreateFtdcTraderApi/GetApiVersion 是静态成员函数, dlsym 需给出对应平台的修饰名。
 // Windows 的 MSVC 构建 DLL 仅导出 CreateFtdcTraderApi, 不导出 GetApiVersion
-// (此时 TraderApiVersionSymbol 为空, GetApiVersion() 返回编译期版本)。
+// (版本符号仅在非 Windows 下定义, Windows 的 GetApiVersion() 返回编译期版本)。
 #ifdef _WIN32
 const char* TraderApiCreateSymbol = "?CreateFtdcTraderApi@CThostFtdcTraderApi@@SAPEAV1@PEBD_N@Z";
-const char* TraderApiVersionSymbol = "";
 #else
 const char* TraderApiCreateSymbol = "_ZN19CThostFtdcTraderApi19CreateFtdcTraderApiEPKcb";
 const char* TraderApiVersionSymbol = "_ZN19CThostFtdcTraderApi13GetApiVersionEv";

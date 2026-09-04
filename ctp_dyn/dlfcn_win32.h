@@ -35,7 +35,6 @@
 #include <stdlib.h>
 
 #define RTLD_NOW 0
-#define RTLD_LAZY 1
 
 static const char* dlerror(void)
 {

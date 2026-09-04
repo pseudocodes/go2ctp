@@ -40,13 +40,12 @@
 #include <windows.h>
 
 #define CTP_TRADER_CREATE_SYMBOL "?CreateFtdcTraderApi@CThostFtdcTraderApi@@SAPEAV1@PEBD_N@Z"
-// thost*.dll 与可执行文件同目录部署 (Windows 默认 DLL 搜索首先命中应用目录)
-#define CTP_TRADER_DLL_NAME L"thosttraderapi_se.dll"
 
 static CThostFtdcTraderApi* createFtdcTraderApi(const char* pszFlowPath, bool bIsProductionMode)
 {
     typedef CThostFtdcTraderApi* (*TdApiCreator)(const char*, bool);
-    static HMODULE hModule = LoadLibraryExW(CTP_TRADER_DLL_NAME, NULL, 0);
+    // thost*.dll 与可执行文件同目录部署 (Windows 默认 DLL 搜索首先命中应用目录)
+    static HMODULE hModule = LoadLibraryExW(L"thosttraderapi_se.dll", NULL, 0);
     if (hModule == NULL) {
         fprintf(stderr, "load thosttraderapi_se.dll failed: error=%lu (deploy the ctp dlls next to the executable)\n", GetLastError());
         exit(-1);

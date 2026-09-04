@@ -34,10 +34,9 @@
 
 // CreateFtdcMdApi/GetApiVersion 是静态成员函数, dlsym 需给出对应平台的修饰名。
 // Windows 的 MSVC 构建 DLL 仅导出 CreateFtdcMdApi, 不导出 GetApiVersion
-// (此时 MdApiVersionSymbol 为空, GetApiVersion() 返回编译期版本)。
+// (版本符号仅在非 Windows 下定义, Windows 的 GetApiVersion() 返回编译期版本)。
 #ifdef _WIN32
 const char* MdApiCreateSymbol = "?CreateFtdcMdApi@CThostFtdcMdApi@@SAPEAV1@PEBD_N1_N@Z";
-const char* MdApiVersionSymbol = "";
 #else
 const char* MdApiCreateSymbol = "_ZN15CThostFtdcMdApi15CreateFtdcMdApiEPKcbbb";
 const char* MdApiVersionSymbol = "_ZN15CThostFtdcMdApi13GetApiVersionEv";

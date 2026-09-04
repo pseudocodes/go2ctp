@@ -24,10 +24,11 @@ package ctp_dyn
 #cgo darwin CPPFLAGS: -I. -I${SRCDIR}/../ctp/lib/v6.7.13_MacOS_20260529
 
 // Windows: 无 dlfcn, wrap 层经 dlfcn_win32.h (LoadLibraryExW/GetProcAddress) 动态加载;
+// v6.7.13 起 Windows 与 Linux SDK 头文件逐 token 一致, 编译期直接复用 linux 目录头文件;
 // -static 将 mingw C++ 运行时静态链入, 只需部署 go 可执行文件 + 用户指定的 ctp dll。
-#cgo windows LDFLAGS: -static -static-libgcc -static-libstdc++
+#cgo windows LDFLAGS: -static
 #cgo windows CXXFLAGS: -std=c++11
-#cgo windows CPPFLAGS: -I. -I${SRCDIR}/../ctp/lib/v6.7.13_20260225_api_traderapi_se_win64
+#cgo windows CPPFLAGS: -I. -I${SRCDIR}/../ctp/lib/v6.7.13_20260225_api_traderapi_se_linux64
 
 */
 import "C"

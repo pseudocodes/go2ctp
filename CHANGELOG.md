@@ -5,11 +5,11 @@
 ### Added
 
 - 新增 Windows 平台支持 (windows/amd64，cgo + MinGW-w64，无需 WSL)
-- 新增 Windows 平台 CTP SDK v6.7.13_20260225 (`ctp/lib/v6.7.13_20260225_api_traderapi_se_win64`)，含官方 MSVC 构建的 `thosttraderapi_se.dll` / `thostmduserapi_se.dll` 及 import lib
+- 新增 Windows 平台 CTP SDK v6.7.13_20260225 (`ctp/lib/v6.7.13_20260225_api_traderapi_se_win64`)，含官方 MSVC 构建的 `thosttraderapi_se.dll` / `thostmduserapi_se.dll`；v6.7.13 起 Windows 与 Linux SDK 头文件逐 token 一致，编译期直接复用 linux 目录的 UTF-8 头文件，不冗余拷贝
 - `ctp_dyn` 新增 `dlfcn_win32.h`：以 `LoadLibraryExW` / `GetProcAddress` 实现 `dlopen` / `dlsym` / `dlclose` / `dlerror` 兼容层，支持运行时加载官方/融航/OpenCTP-fts 等任意 Windows 路径的 CTP dll (含中文及相对路径)
-- `ctp` / `ctp_dyn` 补充 `#cgo windows` 编译指令；`checkDynamicLibPath` 增加 Windows `.dll` 校验；sample 增加 Windows 动态库路径分支
+- `ctp` / `ctp_dyn` 补充 `#cgo windows` 编译指令；sample 增加 Windows 动态库路径分支与前置地址环境变量覆盖 (`SIMNOW_TD_FRONT` / `SIMNOW_MD_FRONT`)
 - `ctp` / `ctp_dyn` 新增 `nocgo.go` (`//go:build !cgo`)：cgo 被禁用 (无 C 工具链 / CGO_ENABLED=0 / 交叉编译) 时以单条显式编译报错 (`undefined: CgoRequired_...`) 取代成片误导性的 `undefined: ctp_dyn.CreateMdApi` 符号错误
-- Windows 下编译产物使用 `-static -static-libgcc -static-libstdc++`，仅依赖系统 UCRT，部署时只需 go 可执行文件 + ctp dll
+- Windows 下编译产物使用 `-static`，仅依赖系统 UCRT，部署时只需 go 可执行文件 + ctp dll
 
 ### Changed
 

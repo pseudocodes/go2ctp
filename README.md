@@ -274,7 +274,7 @@ func main() {
 > * **`ctp` 包部署**: 生成的可执行文件需与 `thosttraderapi_se.dll` / `thostmduserapi_se.dll`（位于 `ctp/lib/v6.7.13_20260225_api_traderapi_se_win64`）**同目录**放置（Windows 无 rpath，运行期按模块名在应用目录查找）
 > * **`ctp_dyn` 包部署**: 与 Linux/MacOS 一致，用户以路径显式传入 dll，路径可含中文（内部按 UTF-8 → UTF-16 转换后 `LoadLibraryExW` 加载）
 > * **`GetApiVersion()`**: Windows 版 dll 未导出该静态函数，Windows 平台返回编译期版本号 `6.7.13`（Linux 返回带构建戳的完整版本串），如需以运行期实际加载库为准（如 OpenCTP-fts 换库）请注意该差异
-> * **exe 依赖**: 编译已带 `-static -static-libgcc -static-libstdc++`，产物仅依赖系统 UCRT，无需随带 mingw 的 dll；CTP dll 自身仅依赖系统库，无需 VC++ 运行库
+> * **exe 依赖**: 编译已带 `-static`（libstdc++/libgcc/winpthread 全部静态链入），产物仅依赖系统 UCRT，无需随带 mingw 的 dll；CTP dll 自身仅依赖系统库，无需 VC++ 运行库
 
 **Q.05**: ctp 目录和 ctp_dyn 目录的封装有什么不同
 
