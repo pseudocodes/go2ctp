@@ -20,6 +20,15 @@ package ctp
 #cgo darwin LDFLAGS: -L. -F${SRCDIR}/lib/v6.7.13_MacOS_20260529 -framework thostmduserapi_se -framework thosttraderapi_se -Wl,-rpath,${SRCDIR}/lib/v6.7.13_MacOS_20260529
 #cgo darwin CXXFLAGS: -std=c++11
 #cgo darwin CPPFLAGS: -I. -I${SRCDIR}/lib/v6.7.13_MacOS_20260529/
+
+// Windows 下 CTP 库为 MSVC 构建的 thostmduserapi_se.dll / thosttraderapi_se.dll。
+// MinGW-w64 无法按 Itanium 修饰名链接 MSVC 静态成员函数（CreateFtdcMdApi/GetApiVersion），
+// 因此不在链接期绑定 import lib，改由 wrap 层运行期 LoadLibrary + GetProcAddress 解析
+// （见 mdapi_wrap.cxx / traderapi_wrap.cxx 中 _WIN32 分支），要求 dll 与可执行文件同目录部署。
+// -static 使 C++ 运行时（libstdc++/libgcc/winpthread）静态链入，避免额外部署 mingw dll。
+#cgo windows LDFLAGS: -static -static-libgcc -static-libstdc++
+#cgo windows CXXFLAGS: -std=c++11
+#cgo windows CPPFLAGS: -I. -I${SRCDIR}/lib/v6.7.13_20260225_api_traderapi_se_win64/
 */
 import "C"
 import (

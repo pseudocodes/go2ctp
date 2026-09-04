@@ -10,7 +10,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#ifdef _WIN32
+#include "dlfcn_win32.h"
+#else
 #include <dlfcn.h>
+#endif
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -28,8 +32,16 @@
 
 #include "mdapi_wrap.h"
 
+// CreateFtdcMdApi/GetApiVersion 是静态成员函数, dlsym 需给出对应平台的修饰名。
+// Windows 的 MSVC 构建 DLL 仅导出 CreateFtdcMdApi, 不导出 GetApiVersion
+// (此时 MdApiVersionSymbol 为空, GetApiVersion() 返回编译期版本)。
+#ifdef _WIN32
+const char* MdApiCreateSymbol = "?CreateFtdcMdApi@CThostFtdcMdApi@@SAPEAV1@PEBD_N1_N@Z";
+const char* MdApiVersionSymbol = "";
+#else
 const char* MdApiCreateSymbol = "_ZN15CThostFtdcMdApi15CreateFtdcMdApiEPKcbbb";
 const char* MdApiVersionSymbol = "_ZN15CThostFtdcMdApi13GetApiVersionEv";
+#endif
 
 typedef long long intgo;
 typedef struct
@@ -353,10 +365,15 @@ uintptr_t _wrap_tts_CThostFtdcMdApi_DestroyUserMdApi(TTSCTPMdSpi* pMdApi)
 ///@retrun 获取到的版本号
 const char* TTSCTPMdSpi::GetApiVersion()
 {
+#ifdef _WIN32
+    // Windows 版 DLL 未导出静态成员 GetApiVersion, 返回编译期版本
+    return "6.7.13";
+#else
     typedef const char* (*GetApiVersion)();
     GetApiVersion getVersion = (GetApiVersion)dlsym(this->dllHandle, MdApiVersionSymbol);
     // return this->pUserApi->GetApiVersion();
     return getVersion();
+#endif
 }
 
 // 删除接口对象本身

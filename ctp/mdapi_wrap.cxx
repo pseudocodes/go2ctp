@@ -21,6 +21,49 @@
 
 #include "mdapi_wrap.h"
 
+// CThostFtdcMdApi::CreateFtdcMdApi 与 CThostFtdcMdApi::GetApiVersion 是静态成员函数:
+// Linux/macOS 下直接静态链接调用; Windows 下 DLL 由 MSVC 构建, 导出名为 MSVC 修饰名,
+// MinGW-w64 (Itanium 修饰名) 无法在链接期解析, 因此运行期 LoadLibrary + GetProcAddress
+// 取得 creator 后以函数指针调用 (x64 下 MSVC 与 MinGW 共用 Microsoft x64 调用约定, 二进制兼容)。
+// Windows 平台仅支持 windows/amd64 (64 位 MSVC 修饰名)。
+#ifdef _WIN32
+#ifndef _WIN64
+#error "go2ctp windows support requires 64-bit (GOARCH=amd64), the 32-bit CTP api uses a different ABI"
+#endif
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+#include <windows.h>
+
+#define CTP_MD_CREATE_SYMBOL "?CreateFtdcMdApi@CThostFtdcMdApi@@SAPEAV1@PEBD_N1_N@Z"
+// thost*.dll 与可执行文件同目录部署 (Windows 默认 DLL 搜索首先命中应用目录)
+#define CTP_MD_DLL_NAME L"thostmduserapi_se.dll"
+
+static CThostFtdcMdApi* createFtdcMdApi(const char* pszFlowPath, const bool bIsUsingUdp, const bool bIsMulticast, bool bIsProductionMode)
+{
+    typedef CThostFtdcMdApi* (*MdApiCreator)(const char*, const bool, const bool, bool);
+    static HMODULE hModule = LoadLibraryExW(CTP_MD_DLL_NAME, NULL, 0);
+    if (hModule == NULL) {
+        fprintf(stderr, "load thostmduserapi_se.dll failed: error=%lu (deploy the ctp dlls next to the executable)\n", GetLastError());
+        exit(-1);
+    }
+    MdApiCreator creator = (MdApiCreator)GetProcAddress(hModule, CTP_MD_CREATE_SYMBOL);
+    if (creator == NULL) {
+        fprintf(stderr, "GetProcAddress(\"%s\") failed: error=%lu, check the ctp dll version\n", CTP_MD_CREATE_SYMBOL, GetLastError());
+        exit(-1);
+    }
+    return creator(pszFlowPath, bIsUsingUdp, bIsMulticast, bIsProductionMode);
+}
+#else
+static CThostFtdcMdApi* createFtdcMdApi(const char* pszFlowPath, const bool bIsUsingUdp, const bool bIsMulticast, bool bIsProductionMode)
+{
+    return CThostFtdcMdApi::CreateFtdcMdApi(pszFlowPath, bIsUsingUdp, bIsMulticast, bIsProductionMode);
+}
+#endif
+
 typedef long long intgo;
 typedef struct
 {
@@ -40,7 +83,7 @@ extern "C" {
 #endif
 QCTPMdSpi* _wrap_CThostFtdcMdApi_CreateFtdcMdApi()
 {
-    CThostFtdcMdApi* pUserApi = CThostFtdcMdApi::CreateFtdcMdApi("./data/", false);
+    CThostFtdcMdApi* pUserApi = createFtdcMdApi("./data/", false, false, true);
     QCTPMdSpi* pUserSpi = new QCTPMdSpi(pUserApi);
     pUserSpi->RegisterSpi(pUserSpi);
     return pUserSpi;
@@ -49,7 +92,7 @@ QCTPMdSpi* _wrap_CThostFtdcMdApi_CreateFtdcMdApi()
 QCTPMdSpi* _wrap_CThostFtdcMdApi_CreateFtdcMdApi2(uintptr_t gUserApi, const char* pszFlowPath, const bool bIsUsingUdp, const bool bIsMulticast, bool bIsProductionMode)
 {
     // printf("go_user_api %lu\n", gUserApi);
-    CThostFtdcMdApi* pUserApi = CThostFtdcMdApi::CreateFtdcMdApi(pszFlowPath, bIsUsingUdp, bIsMulticast, bIsProductionMode);
+    CThostFtdcMdApi* pUserApi = createFtdcMdApi(pszFlowPath, bIsUsingUdp, bIsMulticast, bIsProductionMode);
     QCTPMdSpi* pUserSpi = new QCTPMdSpi(pUserApi, gUserApi);
     pUserSpi->RegisterSpi(pUserSpi);
     return pUserSpi;
@@ -236,7 +279,12 @@ uintptr_t _wrap_CThostFtdcMdApi_DestroyUserMdApi(QCTPMdSpi* pMdApi)
 
 const char* QCTPMdSpi::GetApiVersion()
 {
+#ifdef _WIN32
+    // Windows 版 DLL 未导出静态成员 GetApiVersion, 返回编译期版本
+    return "6.7.13";
+#else
     return this->pUserApi->GetApiVersion();
+#endif
 }
 
 void QCTPMdSpi::Release()
