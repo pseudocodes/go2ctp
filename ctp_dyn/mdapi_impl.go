@@ -105,6 +105,9 @@ func CreateMdApi(options ...MdOption) thost.MdApi {
 	for _, opt := range options {
 		opt(api)
 	}
+	if err := checkDynamicLibPath(api.dllPath); err != nil {
+		panic(err)
+	}
 	if api.flowPath != "" {
 		var err error
 		if strings.HasSuffix(api.flowPath, "/") {
