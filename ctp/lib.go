@@ -13,13 +13,13 @@
 package ctp
 
 /*
-#cgo linux LDFLAGS: -fPIC -L. -L${SRCDIR}/lib/v6.7.13_20260225_api_traderapi_se_linux64 -Wl,-rpath=${SRCDIR}/lib/v6.7.13_20260225_api_traderapi_se_linux64 -l:thostmduserapi_se.so -l:thosttraderapi_se.so -lstdc++
+#cgo linux LDFLAGS:  -Wl,-rpath,${SRCDIR}/lib/v6.7.13_20260225_api_traderapi_se_linux64 ${SRCDIR}/lib/v6.7.13_20260225_api_traderapi_se_linux64/thostmduserapi_se.so ${SRCDIR}/lib/v6.7.13_20260225_api_traderapi_se_linux64/thosttraderapi_se.so -lstdc++
 #cgo linux CXXFLAGS: -std=c++11
-#cgo linux CPPFLAGS: -fPIC -I. -I${SRCDIR}/lib/v6.7.13_20260225_api_traderapi_se_linux64/
+#cgo linux CPPFLAGS: -fPIC -I${SRCDIR}/lib/v6.7.13_20260225_api_traderapi_se_linux64
 
-#cgo darwin LDFLAGS: -L. -F${SRCDIR}/lib/v6.7.13_MacOS_20260529 -framework thostmduserapi_se -framework thosttraderapi_se -Wl,-rpath,${SRCDIR}/lib/v6.7.13_MacOS_20260529
+#cgo darwin LDFLAGS:  -F${SRCDIR}/lib/v6.7.13_MacOS_20260529 -framework thostmduserapi_se -framework thosttraderapi_se -Wl,-rpath,${SRCDIR}/lib/v6.7.13_MacOS_20260529
 #cgo darwin CXXFLAGS: -std=c++11
-#cgo darwin CPPFLAGS: -I. -I${SRCDIR}/lib/v6.7.13_MacOS_20260529/
+#cgo darwin CPPFLAGS: -I${SRCDIR}/lib/v6.7.13_MacOS_20260529
 
 // Windows 下 CTP 库为 MSVC 构建的 thostmduserapi_se.dll / thosttraderapi_se.dll (win64 目录)。
 // MinGW-w64 无法按 Itanium 修饰名链接 MSVC 静态成员函数（CreateFtdcMdApi/GetApiVersion），
@@ -28,9 +28,9 @@ package ctp
 // v6.7.13 起 Windows 与 Linux SDK 头文件逐 token 一致（结构体无 long 类型），
 // 故编译期直接复用 linux 目录的 UTF-8 头文件，win64 目录只保留 dll。
 // -static 使 C++ 运行时（libstdc++/libgcc/winpthread）静态链入，避免额外部署 mingw dll。
-#cgo windows LDFLAGS: -static
+#cgo windows LDFLAGS:  -static
 #cgo windows CXXFLAGS: -std=c++11
-#cgo windows CPPFLAGS: -I. -I${SRCDIR}/lib/v6.7.13_20260225_api_traderapi_se_linux64/
+#cgo windows CPPFLAGS: -I${SRCDIR}/lib/v6.7.13_20260225_api_traderapi_se_linux64
 */
 import "C"
 import (
