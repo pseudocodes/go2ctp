@@ -262,8 +262,9 @@ func Bytes2StringGBK(t []byte) string {
 }
 
 var (
-	CTPLibPathLinux = "../../ctp/lib/v6.7.13_20260225_api_traderapi_se_linux64/thosttraderapi_se.so"
-	CTPLibPathMacos = "../../ctp/lib/v6.7.13_MacOS_20260529/thosttraderapi_se.framework/Versions/A/thosttraderapi_se"
+	CTPLibPathLinux   = "../../ctp/lib/v6.7.13_20260225_api_traderapi_se_linux64/thosttraderapi_se.so"
+	CTPLibPathMacos   = "../../ctp/lib/v6.7.13_MacOS_20260529/thosttraderapi_se.framework/Versions/A/thosttraderapi_se"
+	CTPLibPathWindows = "../../ctp/lib/v6.7.13_20260225_api_traderapi_se_win64/thosttraderapi_se.dll"
 )
 
 func sample1() {
@@ -273,6 +274,8 @@ func sample1() {
 
 	} else if runtime.GOOS == "linux" {
 		tdapi = ctp_dyn.CreateTraderApi(ctp_dyn.TraderDynamicLibPath(CTPLibPathLinux), ctp_dyn.TraderFlowPath("./data/"))
+	} else if runtime.GOOS == "windows" {
+		tdapi = ctp_dyn.CreateTraderApi(ctp_dyn.TraderDynamicLibPath(CTPLibPathWindows), ctp_dyn.TraderFlowPath("./data/"))
 	}
 
 	baseSpi := CreateBaseSpi()

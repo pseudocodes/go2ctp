@@ -1,15 +1,16 @@
 # Go2ctp
 
-上海期货信息技术 CTP 接口 go 语言原生封装，支持生产，测评，OpenCTP, LocalCTP 版本, 适配 Linux, MacOS
+上海期货信息技术 CTP 接口 go 语言原生封装，支持生产，测评，OpenCTP, LocalCTP 版本, 适配 Linux, MacOS, Windows
 
 对应 Rust 语言封装查看 **[Ctp2rs](https://github.com/pseudocodes/ctp2rs/)** 项目
 
 当前主分支对应 CTP 版本为 `v6.7.13`
 
-| 平台  | 库目录                                              | 说明                                                                                    |
-| ----- | --------------------------------------------------- | --------------------------------------------------------------------------------------- |
-| Linux | `ctp/lib/v6.7.13_20260225_api_traderapi_se_linux64` | `thosttraderapi_se.so` / `thostmduserapi_se.so`                                         |
-| MacOS | `ctp/lib/v6.7.13_MacOS_20260529`                    | `thosttraderapi_se.framework` / `thostmduserapi_se.framework`，x86_64 + arm64 universal |
+| 平台    | 库目录                                              | 说明                                                                                    |
+| ------- | --------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| Linux   | `ctp/lib/v6.7.13_20260225_api_traderapi_se_linux64` | `thosttraderapi_se.so` / `thostmduserapi_se.so`                                         |
+| MacOS   | `ctp/lib/v6.7.13_MacOS_20260529`                    | `thosttraderapi_se.framework` / `thostmduserapi_se.framework`，x86_64 + arm64 universal |
+| Windows | `ctp/lib/v6.7.13_20260225_api_traderapi_se_win64`   | `thosttraderapi_se.dll` / `thostmduserapi_se.dll`，amd64 (仅 64 位)                     |
 
 ## Sample
 
@@ -187,6 +188,7 @@ func main() {
 		
 		CTPLibPathMacos = "/the/user/path/to/thostmduserapi_se.framework/thostmduserapi_se"
 		CTPLibPathLinux = "/the/user/path/to/thostmduserapi_se.so"
+		CTPLibPathWindows = "C:\\the\\user\\path\\to\\thostmduserapi_se.dll"
 		TTSLibPathMacos = "/the/user/path/to/openctp/thostmduserapi_se.dylib"
 	)
 	if runtime.GOOS == "darwin" {
@@ -194,6 +196,9 @@ func main() {
 		frontAddr = SimnowFront
 	} else if runtime.GOOS == "linux" {
 		mdapi = ctp_dyn.CreateMdApi(ctp_dyn.MdDynamicLibPath(CTPLibPathLinux), ctp_dyn.MdFlowPath("./data/"), ctp_dyn.MdUsingUDP(false), ctp_dyn.MdMultiCast(false))
+		frontAddr = SimnowFront
+	} else if runtime.GOOS == "windows" {
+		mdapi = ctp_dyn.CreateMdApi(ctp_dyn.MdDynamicLibPath(CTPLibPathWindows), ctp_dyn.MdFlowPath("./data/"), ctp_dyn.MdUsingUDP(false), ctp_dyn.MdMultiCast(false))
 		frontAddr = SimnowFront
 	}
 
@@ -253,16 +258,30 @@ func main() {
 > * 运行时多个 API 实例共存，不同平台的 API 实例可以同时存在一个进程空间中，例如可以同时连接实盘， SIMNOW， OPENCTP
 > * 全局指针 map 采用了标准库中的 cgo.Handle 无并发问题
 
-**Q.04**: 为什么不提供 Windows 平台支持
+**Q.04**: Windows 平台如何编译与部署
 
-**A.04**: 开发者没有 Windows 环境，不想装虚拟机，有兴趣的开发者可以提 PR
+**A.04**: 自 v6.7.13 起本项目原生支持 Windows (windows/amd64)，无需 WSL。要点如下
+> * **编译工具链**: cgo + **MinGW-w64 工具链（任选一种发行版：winlibs 或 MSYS2 UCRT64）**，无需安装 Visual Studio / MSVC
+>   * **MinGW-w64 与 WinLibs 的关系**: [MinGW-w64](https://www.mingw-w64.org/) 是工程/运行时本身（Windows 头文件 + UCRT + libstdc++ 移植 + 导入库），官方只发布源码；[WinLibs](https://winlibs.com/)、MSYS2、scoop/choco 等都是对它的**打包分发**，ABI 相同、产物可互换。[官网下载页](https://www.mingw-w64.org/downloads/) 的 "Pre-built toolchains" 列出 Arch Linux / Fedora / Debian / Cygwin 等众多平台，是因为同一工具链存在两种宿主形态：**Linux/macOS 上的交叉编译器**（如 `x86_64-w64-mingw32-g++`，在 Linux/CI 上编出 Windows exe，本项目 WSL 交叉编译走的就是这条路径）与 **Windows 原生工具链**（本机 go build 需要此类，对应 WinLibs / MSYS2 条目）。本项目 Windows 本机编译推荐 WinLibs：
+>     * 下载选择（winlibs.com Download 一节，**不要**用页面顶部 "don't know" 快捷链接，那是 MSVCRT 版）：**UCRT runtime → 最新 "GCC x.x.x (POSIX threads) + MinGW-w64 x.x.x (UCRT)" → Win64 → Zip archive**，文件名形如 `winlibs-x86_64-posix-seh-gcc-16.2.0-mingw-w64ucrt-14.0.0-r1.zip`（要点：UCRT 而非 MSVCRT、x86_64 而非 i686、posix 线程而非 mcf/win32、不带 LLVM 的精简版）
+>     * 安装：zip 顶层自带 `mingw64` 目录，解压到目标位置（如 `C:\myapp`）得到 `C:\myapp\mingw64\bin\g++.exe` 即可
+>     * MSYS2：`pacman -S mingw-w64-ucrt-x86_64-toolchain`，滚动更新、生态庞大 (cmake/ninja/各库)，适合长期 Windows 开发环境
+>     * 名称字段含义：`ucrt` = 链接 Win10+ 系统 Universal C Runtime；`posix` = 线程模型（std::thread 完整支持）；`seh` = x64 异常展开模型（64 位下唯一选择，dwarf/mcf 只属于 32 位）
+> * **环境搭建 (一次性)**: 将工具链 `bin` 目录（注意必须含 `\bin`）加入 PATH 并**重开终端**，cgo 即自动启用；`where gcc` 能找到即配置成功。也可不依赖 PATH，用绝对路径固化：`go env -w CGO_ENABLED=1 CC=<安装目录>\bin\gcc.exe CXX=<安装目录>\bin\g++.exe`；两者任选，若日后迁移/更换工具链安装位置，记得同步更新 `go env -w CC=… CXX=…`（或删除恢复自动检测：`go env -u CC CXX`）
+> * **报 `undefined: ctp_dyn.CreateMdApi` / `undefined: ctp.CreateTraderApi` 等成片符号不存在**：说明 cgo 被禁用，`ctp` / `ctp_dyn` 包中含 `import "C"` 的实现文件全部被排除、包成了空壳。根因几乎都是 gcc 不在 PATH (`go env CGO_ENABLED` 解析为 0)。注意 **cgo 的自动检测只识别 PATH 中的 `gcc`，`go env -w CC=<绝对路径>` 不会触发自动启用**。本项目已内置 `!cgo` 提示文件，禁用 cgo 构建时会直接报 `undefined: CgoRequired_PutGccOnPath_OrSetCGOENABLED1_SeeREADME`，按上述方法配置即可
+> * **编译**: gcc 在 PATH 后正常 `go build` 即可（`CGO_ENABLED=1`，Windows amd64 检测到 gcc 后默认开启）；仅支持 64 位，32 位 (GOARCH=386) 编译期报错；构建整个 sample 建议用包路径形式 `go build ./sample/simple_market`
+> * **ABI 说明**: 官方 Windows CTP dll 由 MSVC 构建。CTP 的 Spi 类没有声明虚析构函数、Api 类析构为非虚，且 Windows 与 Linux SDK 头文件逐 token 一致（结构体无 `long` 类型），因此 MinGW 编译的 SPI 子类与虚表调用和 MSVC dll 的槽位排布完全兼容；唯一例外是 `CreateFtdcMdApi` / `CreateFtdcTraderApi` 这类**静态成员函数**（Itanium 与 MSVC 修饰名不同，无法链接），本项目在 Windows 下改为运行期 `LoadLibrary` + `GetProcAddress`（MSVC 修饰名）解析
+> * **`ctp` 包部署**: 生成的可执行文件需与 `thosttraderapi_se.dll` / `thostmduserapi_se.dll`（位于 `ctp/lib/v6.7.13_20260225_api_traderapi_se_win64`）**同目录**放置（Windows 无 rpath，运行期按模块名在应用目录查找）
+> * **`ctp_dyn` 包部署**: 与 Linux/MacOS 一致，用户以路径显式传入 dll，路径可含中文（内部按 UTF-8 → UTF-16 转换后 `LoadLibraryExW` 加载）
+> * **`GetApiVersion()`**: Windows 版 dll 未导出该静态函数，Windows 平台返回编译期版本号 `6.7.13`（Linux 返回带构建戳的完整版本串），如需以运行期实际加载库为准（如 OpenCTP-fts 换库）请注意该差异
+> * **exe 依赖**: 编译已带 `-static`（libstdc++/libgcc/winpthread 全部静态链入），产物仅依赖系统 UCRT，无需随带 mingw 的 dll；CTP dll 自身仅依赖系统库，无需 VC++ 运行库
 
 **Q.05**: ctp 目录和 ctp_dyn 目录的封装有什么不同
 
 **A.05**: 
 > * ctp 的封装来自 [*pseudocodes/goctp*](https://github.com/pseudocodes/goctp), 剔除了 *lite* 和 *convert* 相关代码，原则上只提供一层封装，直接桥接 cgo 空间回调过来的数据
-> * ctp 目录属于静态编译链接，其他项目采用该目录下的代码，依赖的动态库的路径会在编译构建期完成初始绑定，默认路径为 go2ctp 库的存放路径，只部署二进制程序在 Linux 环境需要设置 LD_LIBRARY_PATH 环境变量来提供依赖的 ctp 动态库路径; MacOS 环境一般不用再独立设置 `@rpath`，推荐 MacOS 环境采用 ctp_dyn 依赖
-> * ctp_dyn 封装方式采用了读取动态库符号的方式，通过在运行时提供动态库的路径，完成 API 实例对象的生成和绑定，理论上 ctp_dyn 的封装方式更灵活方便，可以通过配置的方式动态的替换 linux 下不同平台的库，包括官方生产和测评版本，rohan(融航)，openctp-tts 平台，无需再编译项目代码. ctp_dyn 同时支持 openctp 的 MacOS 版本 dylib
+> * ctp 目录属于静态编译链接，其他项目采用该目录下的代码，依赖的动态库的路径会在编译构建期完成初始绑定，默认路径为 go2ctp 库的存放路径，只部署二进制程序在 Linux 环境需要设置 LD_LIBRARY_PATH 环境变量来提供依赖的 ctp 动态库路径; MacOS 环境一般不用再独立设置 `@rpath`，推荐 MacOS 环境采用 ctp_dyn 依赖; Windows 环境由于 dll 无法使用 rpath，`ctp` 包改为运行期按模块名加载，将官方 dll 与可执行文件同目录部署即可
+> * ctp_dyn 封装方式采用了读取动态库符号的方式，通过在运行时提供动态库的路径，完成 API 实例对象的生成和绑定，理论上 ctp_dyn 的封装方式更灵活方便，可以通过配置的方式动态的替换 linux 下不同平台的库，包括官方生产和测评版本，rohan(融航)，openctp-tts 平台，无需再编译项目代码. ctp_dyn 同时支持 openctp 的 MacOS 版本 dylib 与 Windows 版本 dll
 > * ctp_dyn 使用需要用户明确提供动态库地址，部署时需要动态库与二进制程序一起部署
 >
 
@@ -310,6 +329,8 @@ virtual int ReqUserLogin(CThostFtdcReqUserLoginField* pReqUserLoginField, int nR
 ## 注意事项
 * 使用 ctp_dyn 时请对齐分支版本以及动态库版本
 * MacOS 环境下如出现编译后运行无响应，可以排查系统以及 Go 版本
+* Windows 环境仅支持 windows/amd64 (32 位编译期报错)，编译需 MinGW-w64 工具链 (详见 FAQ A.04)；`ctp` 包部署时 dll 必须与可执行文件同目录，`ctp_dyn` 包按路径显式传入 dll
+* Windows 下 `GetApiVersion()` 返回编译期版本号 `6.7.13` (官方 Windows dll 未导出该静态函数)，与 Linux 返回的完整构建戳存在差异
 
  
 ## 同类项目

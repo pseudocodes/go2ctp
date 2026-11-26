@@ -1,5 +1,29 @@
 # Changelog
 
+## [Unreleased] - 2026-09-03
+
+### Added
+
+- 新增 Windows 平台支持 (windows/amd64，cgo + MinGW-w64，无需 WSL)
+- 新增 Windows 平台 CTP SDK v6.7.13_20260225 (`ctp/lib/v6.7.13_20260225_api_traderapi_se_win64`)，含官方 MSVC 构建的 `thosttraderapi_se.dll` / `thostmduserapi_se.dll`；v6.7.13 起 Windows 与 Linux SDK 头文件逐 token 一致，编译期直接复用 linux 目录的 UTF-8 头文件，不冗余拷贝
+- `ctp_dyn` 新增 `dlfcn_win32.h`：以 `LoadLibraryExW` / `GetProcAddress` 实现 `dlopen` / `dlsym` / `dlclose` / `dlerror` 兼容层，支持运行时加载官方/融航/OpenCTP-fts 等任意 Windows 路径的 CTP dll (含中文及相对路径)
+- `ctp` / `ctp_dyn` 补充 `#cgo windows` 编译指令；sample 增加 Windows 动态库路径分支与前置地址环境变量覆盖 (`SIMNOW_TD_FRONT` / `SIMNOW_MD_FRONT`)
+- `ctp` / `ctp_dyn` 新增 `nocgo.go` (`//go:build !cgo`)：cgo 被禁用 (无 C 工具链 / CGO_ENABLED=0 / 交叉编译) 时以单条显式编译报错 (`undefined: CgoRequired_...`) 取代成片误导性的 `undefined: ctp_dyn.CreateMdApi` 符号错误
+- Windows 下编译产物使用 `-static`，仅依赖系统 UCRT，部署时只需 go 可执行文件 + ctp dll
+
+### Changed
+
+- Windows 下 `CreateFtdcMdApi` / `CreateFtdcTraderApi` 运行期以 MSVC 修饰名 (`?CreateFtdcMdApi@CThostFtdcMdApi@@SAPEAV1@PEBD_N1_N@Z` / `?CreateFtdcTraderApi@CThostFtdcTraderApi@@SAPEAV1@PEBD_N@Z`) 经 `GetProcAddress` 解析 (MinGW 的 Itanium 修饰名无法链接 MSVC import lib)，其余接口均为虚函数调用，无链接期符号依赖；`ctp` 包在 Windows 下要求 dll 与可执行文件同目录部署
+- Windows 版 DLL 未导出静态成员 `GetApiVersion` (亦无 VS_VERSION_INFO 资源、SDK 头文件无版本宏)，Windows 平台返回编译期版本常量 `CTP_SE_API_VERSION` (唯一定义于 `ctp/api_version.h`，与版本目录同步维护；Linux 返回 `v6.7.13_20260225 14:16:30.12079` 完整构建戳)
+- 更新 README：平台支持表、FAQ A.04 (不再拒绝 Windows 支持)、Windows 编译与部署说明
+- 仅支持 windows/amd64：32 位构建在编译期 `#error` 拒绝 (32 位 stdcall 修饰名与调用约定差异)
+- `ctp_dyn` 的 `CreateTraderApi` / `CreateMdApi` 接入既有 `checkDynamicLibPath` 平台扩展名校验 (此前该函数从未被调用，属死代码)，库路径与平台不符时启动即 panic 明确报错；校验逻辑同步补充 Windows `.dll` 分支
+
+### comment
+
+- 官方 Windows SDK 头文件与 Linux 版逐 token 一致 (结构体无 `long` 类型，LLP64/LP64 布局无差异)；CTP 的 Spi 类无虚析构函数、Api 类析构为非虚，MSVC 与 MinGW 的虚表槽位排布完全重合，MinGW 编译的 SPI 子类可被 MSVC 构建的 dll 直接经虚表回调 (实测 SimNow 7x24 登录/报单/行情全链路通过)
+- 编译需要 MinGW-w64 工具链（任选一种发行版：winlibs x86_64-posix-seh-ucrt 或 MSYS2 `mingw-w64-ucrt-x86_64-toolchain`，两者 ABI 相同、可互换），`CGO_ENABLED=1` 即可，无其它构建要求
+
 ## [Unreleased] - 2026-08-08
 
 ### Added

@@ -21,6 +21,50 @@
 
 #include "traderapi_wrap.h"
 
+// CThostFtdcTraderApi::CreateFtdcTraderApi 与 CThostFtdcTraderApi::GetApiVersion 是静态成员函数:
+// Linux/macOS 下直接静态链接调用; Windows 下 DLL 由 MSVC 构建, 导出名为 MSVC 修饰名,
+// MinGW-w64 (Itanium 修饰名) 无法在链接期解析, 因此运行期 LoadLibrary + GetProcAddress
+// 取得 creator 后以函数指针调用 (x64 下 MSVC 与 MinGW 共用 Microsoft x64 调用约定, 二进制兼容)。
+// 类其余方法均为虚函数, 通过虚表调用不产生链接期符号依赖, 且 CTP 类无虚析构函数,
+// MinGW 与 MSVC 的虚表槽位排布完全一致。Windows 平台仅支持 windows/amd64。
+#ifdef _WIN32
+#ifndef _WIN64
+#error "go2ctp windows support requires 64-bit (GOARCH=amd64), the 32-bit CTP api uses a different ABI"
+#endif
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+#include <windows.h>
+#include "api_version.h"
+
+#define CTP_TRADER_CREATE_SYMBOL "?CreateFtdcTraderApi@CThostFtdcTraderApi@@SAPEAV1@PEBD_N@Z"
+
+static CThostFtdcTraderApi* createFtdcTraderApi(const char* pszFlowPath, bool bIsProductionMode)
+{
+    typedef CThostFtdcTraderApi* (*TdApiCreator)(const char*, bool);
+    // thost*.dll 与可执行文件同目录部署 (Windows 默认 DLL 搜索首先命中应用目录)
+    static HMODULE hModule = LoadLibraryExW(L"thosttraderapi_se.dll", NULL, 0);
+    if (hModule == NULL) {
+        fprintf(stderr, "load thosttraderapi_se.dll failed: error=%lu (deploy the ctp dlls next to the executable)\n", GetLastError());
+        exit(-1);
+    }
+    TdApiCreator creator = (TdApiCreator)GetProcAddress(hModule, CTP_TRADER_CREATE_SYMBOL);
+    if (creator == NULL) {
+        fprintf(stderr, "GetProcAddress(\"%s\") failed: error=%lu, check the ctp dll version\n", CTP_TRADER_CREATE_SYMBOL, GetLastError());
+        exit(-1);
+    }
+    return creator(pszFlowPath, bIsProductionMode);
+}
+#else
+static CThostFtdcTraderApi* createFtdcTraderApi(const char* pszFlowPath, bool bIsProductionMode)
+{
+    return CThostFtdcTraderApi::CreateFtdcTraderApi(pszFlowPath, bIsProductionMode);
+}
+#endif
+
 typedef long long intgo;
 
 #ifdef __cplusplus
@@ -29,7 +73,7 @@ extern "C" {
 
 QCTPTraderSpi* _wrap_CThostFtdcTraderApi_CreateFtdcTraderApi()
 {
-    CThostFtdcTraderApi* pUserApi = CThostFtdcTraderApi::CreateFtdcTraderApi("./data/");
+    CThostFtdcTraderApi* pUserApi = createFtdcTraderApi("./data/", true);
     QCTPTraderSpi* pUserSpi = new QCTPTraderSpi(pUserApi);
     pUserSpi->RegisterSpi(pUserSpi);
     return pUserSpi;
@@ -38,7 +82,7 @@ QCTPTraderSpi* _wrap_CThostFtdcTraderApi_CreateFtdcTraderApi()
 QCTPTraderSpi* _wrap_CThostFtdcTraderApi_CreateFtdcTraderApi2(uintptr_t gUserApi, const char* pszFlowPath, bool bIsProductionMode)
 {
     // printf("go_user_api %lu\n", gUserApi);
-    CThostFtdcTraderApi* pUserApi = CThostFtdcTraderApi::CreateFtdcTraderApi(pszFlowPath, bIsProductionMode);
+    CThostFtdcTraderApi* pUserApi = createFtdcTraderApi(pszFlowPath, bIsProductionMode);
     QCTPTraderSpi* pUserSpi = new QCTPTraderSpi(pUserApi, gUserApi);
     pUserSpi->RegisterSpi(pUserSpi);
     return pUserSpi;
@@ -1860,7 +1904,12 @@ QCTPTraderSpi::QCTPTraderSpi(CThostFtdcTraderApi* pUserApi, uintptr_t gUserApi)
 
 const char* QCTPTraderSpi::GetApiVersion()
 {
+#ifdef _WIN32
+    // Windows 版 DLL 未导出静态成员 GetApiVersion, 返回编译期版本 (常量见 api_version.h)
+    return CTP_SE_API_VERSION;
+#else
     return this->pUserApi->GetApiVersion();
+#endif
 }
 
 void QCTPTraderSpi::Release()

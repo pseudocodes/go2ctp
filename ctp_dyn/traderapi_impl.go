@@ -354,7 +354,8 @@ func TraderProductionMode(production bool) TraderOption {
 //
 // Linux 下要求 .so 文件; MacOS 下除 OpenCTP 提供的 .dylib 之外，
 // 还需要支持上期官方 .framework 包中不带扩展名的二进制，例如
-// ctp/lib/v6.7.13_MacOS_20260529/thosttraderapi_se.framework/Versions/A/thosttraderapi_se
+// ctp/lib/v6.7.13_MacOS_20260529/thosttraderapi_se.framework/Versions/A/thosttraderapi_se;
+// Windows 下要求 .dll 文件 (官方/融航/OpenCTP-fts 均为 .dll)
 func checkDynamicLibPath(path string) error {
 	ext := filepath.Ext(path)
 	switch runtime.GOOS {
@@ -365,6 +366,10 @@ func checkDynamicLibPath(path string) error {
 	case "darwin":
 		if ext != ".dylib" && !strings.Contains(path, ".framework/") {
 			return fmt.Errorf("no .dylib file or .framework binary in path: %s", path)
+		}
+	case "windows":
+		if !strings.EqualFold(ext, ".dll") {
+			return fmt.Errorf("no .dll file in path: %s", path)
 		}
 	}
 
@@ -392,6 +397,9 @@ func CreateTraderApi(options ...TraderOption) thost.TraderApi {
 	api.handle = cgo.NewHandle(api)
 	for _, opt := range options {
 		opt(api)
+	}
+	if err := checkDynamicLibPath(api.dllPath); err != nil {
+		panic(err)
 	}
 	if api.flowPath != "" {
 		var err error
