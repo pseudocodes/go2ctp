@@ -2099,12 +2099,6 @@ func wrapTraderOnRspGenSMSCode(v uintptr, pRspGenSMSCode *C.struct_CThostFtdcRsp
 	api.spi.OnRspGenSMSCode((*thost.CThostFtdcRspGenSMSCodeField)(unsafe.Pointer(pRspGenSMSCode)), (*thost.CThostFtdcRspInfoField)(unsafe.Pointer(pRspInfo)), int(nRequestID), bool(bIsLast))
 }
 
-//export wrapTraderOnRtnSMSVerifyInfoFromSec
-func wrapTraderOnRtnSMSVerifyInfoFromSec(v uintptr, pSMSVerifyInfoFromSec *C.struct_CThostFtdcSMSVerifyInfoFromSecField) {
-	api := cgo.Handle(v).Value().(*TraderApi)
-	api.spi.OnRtnSMSVerifyInfoFromSec((*thost.CThostFtdcSMSVerifyInfoFromSecField)(unsafe.Pointer(pSMSVerifyInfoFromSec)))
-}
-
 //export wrapTraderOnRspSpdApply
 func wrapTraderOnRspSpdApply(v uintptr, pInputSpdApply *C.struct_CThostFtdcInputSpdApplyField, pRspInfo *C.struct_CThostFtdcRspInfoField, nRequestID C.int, bIsLast C._Bool) {
 	api := cgo.Handle(v).Value().(*TraderApi)

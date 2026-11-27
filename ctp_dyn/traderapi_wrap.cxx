@@ -2106,12 +2106,6 @@ void TTSCTPTraderSpi::OnRspGenSMSCode(CThostFtdcRspGenSMSCodeField* pRspGenSMSCo
     wrap_tts_TraderOnRspGenSMSCode(gUserApi, pRspGenSMSCode, pRspInfo, nRequestID, bIsLast);
 }
 
-extern "C" void wrap_tts_TraderOnRtnSMSVerifyInfoFromSec(uintptr_t, CThostFtdcSMSVerifyInfoFromSecField*);
-void TTSCTPTraderSpi::OnRtnSMSVerifyInfoFromSec(CThostFtdcSMSVerifyInfoFromSecField* pSMSVerifyInfoFromSec)
-{
-    wrap_tts_TraderOnRtnSMSVerifyInfoFromSec(gUserApi, pSMSVerifyInfoFromSec);
-}
-
 extern "C" void wrap_tts_TraderOnRspSpdApply(uintptr_t, CThostFtdcInputSpdApplyField*, CThostFtdcRspInfoField*, int, bool);
 void TTSCTPTraderSpi::OnRspSpdApply(CThostFtdcInputSpdApplyField* pInputSpdApply, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
 {

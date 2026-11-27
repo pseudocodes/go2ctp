@@ -525,9 +525,6 @@ type BaseTraderSpi struct {
 	/// 生成短信验证码请求响应
 	OnRspGenSMSCodeCallback func(*thost.CThostFtdcRspGenSMSCodeField, *thost.CThostFtdcRspInfoField, int, bool)
 
-	/// 短信验证信息通知（来自交易所）
-	OnRtnSMSVerifyInfoFromSecCallback func(*thost.CThostFtdcSMSVerifyInfoFromSecField)
-
 	/// Spd套利确认申请响应
 	OnRspSpdApplyCallback func(*thost.CThostFtdcInputSpdApplyField, *thost.CThostFtdcRspInfoField, int, bool)
 
@@ -1732,13 +1729,6 @@ func (s *BaseTraderSpi) OnRspQryOffsetSetting(pOffsetSetting *thost.CThostFtdcOf
 func (s *BaseTraderSpi) OnRspGenSMSCode(pRspGenSMSCode *thost.CThostFtdcRspGenSMSCodeField, pRspInfo *thost.CThostFtdcRspInfoField, nRequestID int, bIsLast bool) {
 	if s.OnRspGenSMSCodeCallback != nil {
 		s.OnRspGenSMSCodeCallback(pRspGenSMSCode, pRspInfo, nRequestID, bIsLast)
-	}
-}
-
-// / 短信验证信息通知（来自交易所）
-func (s *BaseTraderSpi) OnRtnSMSVerifyInfoFromSec(pSMSVerifyInfoFromSec *thost.CThostFtdcSMSVerifyInfoFromSecField) {
-	if s.OnRtnSMSVerifyInfoFromSecCallback != nil {
-		s.OnRtnSMSVerifyInfoFromSecCallback(pSMSVerifyInfoFromSec)
 	}
 }
 

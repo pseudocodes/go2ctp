@@ -530,9 +530,6 @@ public:
     /// 申请短信验证码响应
     void OnRspGenSMSCode(CThostFtdcRspGenSMSCodeField* pRspGenSMSCode, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast);
 
-    /// 短信验证信息通知
-    void OnRtnSMSVerifyInfoFromSec(CThostFtdcSMSVerifyInfoFromSecField* pSMSVerifyInfoFromSec);
-
     /// 套利确认响应
     void OnRspSpdApply(CThostFtdcInputSpdApplyField* pInputSpdApply, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast);
 

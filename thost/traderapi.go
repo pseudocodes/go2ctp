@@ -520,9 +520,6 @@ type TraderSpi interface {
 	/// 申请短信验证码响应
 	OnRspGenSMSCode(pRspGenSMSCode *CThostFtdcRspGenSMSCodeField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
 
-	/// 短信验证信息通知
-	OnRtnSMSVerifyInfoFromSec(pSMSVerifyInfoFromSec *CThostFtdcSMSVerifyInfoFromSecField)
-
 	/// 套利确认响应
 	OnRspSpdApply(pInputSpdApply *CThostFtdcInputSpdApplyField, pRspInfo *CThostFtdcRspInfoField, nRequestID int, bIsLast bool)
 

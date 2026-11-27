@@ -1769,12 +1769,6 @@ void QCTPTraderSpi::OnRspGenSMSCode(CThostFtdcRspGenSMSCodeField* pRspGenSMSCode
     wrapTraderOnRspGenSMSCode(gUserApi, pRspGenSMSCode, pRspInfo, nRequestID, bIsLast);
 }
 
-extern "C" void wrapTraderOnRtnSMSVerifyInfoFromSec(uintptr_t, CThostFtdcSMSVerifyInfoFromSecField*);
-void QCTPTraderSpi::OnRtnSMSVerifyInfoFromSec(CThostFtdcSMSVerifyInfoFromSecField* pSMSVerifyInfoFromSec)
-{
-    wrapTraderOnRtnSMSVerifyInfoFromSec(gUserApi, pSMSVerifyInfoFromSec);
-}
-
 extern "C" void wrapTraderOnRspSpdApply(uintptr_t, CThostFtdcInputSpdApplyField*, CThostFtdcRspInfoField*, int, bool);
 void QCTPTraderSpi::OnRspSpdApply(CThostFtdcInputSpdApplyField* pInputSpdApply, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast)
 {
