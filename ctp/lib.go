@@ -13,7 +13,9 @@
 package ctp
 
 /*
-#cgo linux LDFLAGS: -fPIC -L. -L${SRCDIR}/lib/v6.7.13_20260225_api_traderapi_se_linux64 -Wl,-rpath=${SRCDIR}/lib/v6.7.13_20260225_api_traderapi_se_linux64 -l:thostmduserapi_se.so -l:thosttraderapi_se.so -lstdc++
+#cgo linux LDFLAGS: -fPIC -L. -L${SRCDIR}/lib/v6.7.13_20260225_api_traderapi_se_linux64 -Wl,-rpath=${SRCDIR}/lib/v6.7.13_20260225_api_traderapi_se_linux64
+#cgo linux LDFLAGS: ${SRCDIR}/lib/v6.7.13_20260225_api_traderapi_se_linux64/thostmduserapi_se.so
+#cgo linux LDFLAGS: ${SRCDIR}/lib/v6.7.13_20260225_api_traderapi_se_linux64/thosttraderapi_se.so -lstdc++
 #cgo linux CXXFLAGS: -std=c++11
 #cgo linux CPPFLAGS: -fPIC -I. -I${SRCDIR}/lib/v6.7.13_20260225_api_traderapi_se_linux64/
 
